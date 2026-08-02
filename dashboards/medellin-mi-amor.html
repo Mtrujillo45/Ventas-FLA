@@ -1,0 +1,444 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Medellín Mi Amor — Dashboard de Campaña</title>
+<style>
+  :root {
+    color-scheme: light;
+    --surface-1:      #fcfcfb;
+    --page:           #f9f9f7;
+    --text-primary:   #0b0b0b;
+    --text-secondary: #52514e;
+    --text-muted:     #898781;
+    --grid:           #e1e0d9;
+    --baseline:       #c3c2b7;
+    --border:         rgba(11,11,11,0.10);
+    --series-1:       #2a78d6; /* nuevos / web / medida principal */
+    --series-2:       #eb6834; /* recurrentes / manual */
+    --good:           #0ca30c;
+    --warning:        #fab219;
+    --critical:       #d03b3b;
+    --good-bg:        #eaf7ea;
+    --warning-bg:     #fff6e2;
+    --critical-bg:    #fbe9e9;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:where(:not([data-theme="light"])) {
+      color-scheme: dark;
+      --surface-1:      #1a1a19;
+      --page:           #0d0d0d;
+      --text-primary:   #ffffff;
+      --text-secondary: #c3c2b7;
+      --text-muted:     #898781;
+      --grid:           #2c2c2a;
+      --baseline:       #383835;
+      --border:         rgba(255,255,255,0.10);
+      --series-1:       #3987e5;
+      --series-2:       #d95926;
+      --good:           #0ca30c;
+      --warning:        #fab219;
+      --critical:       #e66767;
+      --good-bg:        rgba(12,163,12,0.14);
+      --warning-bg:     rgba(250,178,25,0.14);
+      --critical-bg:    rgba(230,103,103,0.14);
+    }
+  }
+  :root[data-theme="dark"] {
+    color-scheme: dark;
+    --surface-1:      #1a1a19;
+    --page:           #0d0d0d;
+    --text-primary:   #ffffff;
+    --text-secondary: #c3c2b7;
+    --text-muted:     #898781;
+    --grid:           #2c2c2a;
+    --baseline:       #383835;
+    --border:         rgba(255,255,255,0.10);
+    --series-1:       #3987e5;
+    --series-2:       #d95926;
+    --good:           #0ca30c;
+    --warning:        #fab219;
+    --critical:       #e66767;
+    --good-bg:        rgba(12,163,12,0.14);
+    --warning-bg:     rgba(250,178,25,0.14);
+    --critical-bg:    rgba(230,103,103,0.14);
+  }
+
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--page);
+    color: var(--text-primary);
+    font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+  .wrap { max-width: 1180px; margin: 0 auto; padding: 28px 20px 64px; }
+
+  header.top { margin-bottom: 24px; }
+  .eyebrow {
+    display: inline-flex; align-items: center; gap: 8px;
+    font-size: 12px; font-weight: 600; letter-spacing: .04em; text-transform: uppercase;
+    color: var(--series-1);
+    background: color-mix(in srgb, var(--series-1) 12%, transparent);
+    padding: 4px 10px; border-radius: 999px; margin-bottom: 10px;
+  }
+  h1 { font-size: 28px; font-weight: 700; margin: 0 0 6px; letter-spacing: -0.01em; }
+  .subtitle { font-size: 14px; color: var(--text-secondary); margin: 0 0 4px; }
+  .meta { font-size: 12.5px; color: var(--text-muted); }
+  .meta code { background: var(--grid); padding: 1px 5px; border-radius: 4px; font-size: 11.5px; }
+
+  .card {
+    background: var(--surface-1);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 20px 22px;
+  }
+  section { margin-top: 22px; }
+  h2 { font-size: 15px; font-weight: 700; margin: 0 0 4px; }
+  .section-sub { font-size: 12.5px; color: var(--text-muted); margin: 0 0 16px; }
+
+  /* KPI tiles */
+  .kpi-grid {
+    display: grid; grid-template-columns: repeat(6, 1fr); gap: 14px;
+  }
+  .kpi {
+    background: var(--surface-1); border: 1px solid var(--border); border-radius: 14px;
+    padding: 16px 16px 14px;
+  }
+  .kpi .label { font-size: 12px; color: var(--text-secondary); margin-bottom: 8px; }
+  .kpi .value { font-size: 24px; font-weight: 700; letter-spacing: -0.01em; }
+  .kpi .sub { font-size: 12px; color: var(--text-muted); margin-top: 4px; }
+  .kpi .sub.good { color: var(--good); }
+
+  /* bar chart (vertical, daily) */
+  .barchart { display: flex; align-items: flex-end; gap: 10px; height: 190px; padding-top: 20px; }
+  .bar-col { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: flex-end; height: 100%; }
+  .bar-value { font-size: 11px; color: var(--text-secondary); margin-bottom: 6px; white-space: nowrap; font-variant-numeric: tabular-nums; }
+  .bar-shape {
+    width: 100%; max-width: 34px; background: var(--series-1);
+    border-radius: 4px 4px 0 0;
+  }
+  .bar-shape.empty { background: var(--grid); }
+  .bar-label { margin-top: 8px; font-size: 11px; color: var(--text-muted); text-align: center; line-height: 1.25; }
+  .bar-label .day { color: var(--text-secondary); font-weight: 600; }
+
+  /* ranked horizontal bars */
+  .hbar-row { display: grid; grid-template-columns: 230px 1fr 120px; align-items: center; gap: 12px; padding: 7px 0; }
+  .hbar-row + .hbar-row { border-top: 1px solid var(--grid); }
+  .hbar-name { font-size: 13px; color: var(--text-primary); }
+  .hbar-track { position: relative; height: 14px; background: var(--grid); border-radius: 4px; overflow: hidden; }
+  .hbar-fill { position: absolute; inset: 0 auto 0 0; background: var(--series-1); border-radius: 4px; }
+  .hbar-value { font-size: 12.5px; text-align: right; font-variant-numeric: tabular-nums; color: var(--text-secondary); }
+  .hbar-value .units { color: var(--text-muted); font-size: 11.5px; display: block; }
+
+  /* composition stacked bars */
+  .comp-block { margin-bottom: 18px; }
+  .comp-title { font-size: 12.5px; color: var(--text-secondary); margin-bottom: 8px; display: flex; justify-content: space-between; }
+  .stack { display: flex; height: 22px; border-radius: 6px; overflow: hidden; }
+  .stack > div { display: flex; align-items: center; justify-content: center; font-size: 11px; color: #fff; font-weight: 600; }
+  .seg-1 { background: var(--series-1); }
+  .seg-2 { background: var(--series-2); }
+  .legend { display: flex; gap: 16px; margin-top: 8px; font-size: 12px; color: var(--text-secondary); }
+  .legend span { display: inline-flex; align-items: center; gap: 6px; }
+  .legend i { width: 10px; height: 10px; border-radius: 3px; display: inline-block; }
+
+  /* table */
+  table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  thead th {
+    text-align: left; font-weight: 600; color: var(--text-muted); font-size: 11.5px;
+    text-transform: uppercase; letter-spacing: .03em; padding: 8px 10px; border-bottom: 1px solid var(--grid);
+  }
+  tbody td { padding: 10px 10px; border-bottom: 1px solid var(--grid); vertical-align: middle; }
+  tbody tr:last-child td { border-bottom: none; }
+  td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; }
+  .badge {
+    display: inline-flex; align-items: center; gap: 5px; font-size: 11px; font-weight: 600;
+    padding: 3px 8px; border-radius: 999px;
+  }
+  .badge.critical { background: var(--critical-bg); color: var(--critical); }
+  .badge.warning  { background: var(--warning-bg); color: color-mix(in srgb, var(--warning) 55%, var(--text-primary)); }
+  .badge.good     { background: var(--good-bg); color: var(--good); }
+  .badge.flat     { background: var(--grid); color: var(--text-secondary); }
+  .prod-name small { display: block; color: var(--text-muted); font-size: 11px; margin-top: 2px; }
+
+  .two-col { display: grid; grid-template-columns: 1.4fr 1fr; gap: 16px; align-items: start; }
+
+  .callout {
+    display: flex; gap: 12px; align-items: flex-start;
+    border-radius: 12px; padding: 14px 16px; font-size: 13px; line-height: 1.5;
+  }
+  .callout.critical { background: var(--critical-bg); color: var(--text-primary); }
+  .callout.info { background: color-mix(in srgb, var(--series-1) 10%, var(--surface-1)); color: var(--text-primary); }
+  .callout .dot { width: 8px; height: 8px; border-radius: 50%; margin-top: 6px; flex-shrink: 0; }
+  .callout.critical .dot { background: var(--critical); }
+  .callout.info .dot { background: var(--series-1); }
+  .callout b { display: block; margin-bottom: 2px; }
+  .callout-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 14px; }
+
+  footer { margin-top: 28px; font-size: 11.5px; color: var(--text-muted); line-height: 1.6; }
+
+  @media (max-width: 900px) {
+    .kpi-grid { grid-template-columns: repeat(2, 1fr); }
+    .two-col { grid-template-columns: 1fr; }
+    .callout-grid { grid-template-columns: 1fr; }
+    .hbar-row { grid-template-columns: 120px 1fr 90px; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="top">
+    <div class="eyebrow">● Conectado vía Composio · Shopify Admin API</div>
+    <h1>Medellín Mi Amor — Dashboard de Campaña</h1>
+    <p class="subtitle">Mompossina Swimwear (mompossina.com) · Cápsula tributo a Medellín y la Feria de las Flores</p>
+    <p class="meta">
+      Periodo analizado: <code>22 jul – 30 jul 2026</code> (desde el lanzamiento de la colección) ·
+      Última actualización de datos: <code>30 jul 2026, 07:00 hora Bogotá</code>
+    </p>
+  </header>
+
+  <section class="kpi-grid">
+    <div class="kpi">
+      <div class="label">Ingresos de campaña</div>
+      <div class="value">$81.4M</div>
+      <div class="sub">COP, neto de descuentos por línea</div>
+    </div>
+    <div class="kpi">
+      <div class="label">Unidades vendidas</div>
+      <div class="value">697</div>
+      <div class="sub">en 8 días desde el lanzamiento</div>
+    </div>
+    <div class="kpi">
+      <div class="label">Órdenes con la campaña</div>
+      <div class="value">359</div>
+      <div class="sub">77.9% de las 461 órdenes de la tienda</div>
+    </div>
+    <div class="kpi">
+      <div class="label">% de ingresos de la tienda</div>
+      <div class="value">81.9%</div>
+      <div class="sub">$95.1M de $116.2M totales</div>
+    </div>
+    <div class="kpi">
+      <div class="label">Ticket promedio</div>
+      <div class="value">$264,906</div>
+      <div class="sub">vs. $251,983 promedio general</div>
+    </div>
+    <div class="kpi">
+      <div class="label">Clientes nuevos</div>
+      <div class="value">60.6%</div>
+      <div class="sub good">217 de 358 compradores identificados</div>
+    </div>
+  </section>
+
+  <section class="card">
+    <h2>Ingresos por día</h2>
+    <p class="section-sub">Ingresos de línea de productos de la campaña, por fecha de orden</p>
+    <div class="barchart" role="img" aria-label="Ingresos diarios de la campaña Medellín Mi Amor entre el 22 y el 30 de julio de 2026">
+      <div class="bar-col"><div class="bar-value">$0.4M</div><div class="bar-shape" style="height:2%"></div><div class="bar-label"><span class="day">22 jul</span></div></div>
+      <div class="bar-col"><div class="bar-value">—</div><div class="bar-shape empty" style="height:2%"></div><div class="bar-label"><span class="day">23 jul</span><br>sin órdenes</div></div>
+      <div class="bar-col"><div class="bar-value">$11.7M</div><div class="bar-shape" style="height:54%"></div><div class="bar-label"><span class="day">24 jul</span></div></div>
+      <div class="bar-col"><div class="bar-value">$21.6M</div><div class="bar-shape" style="height:100%"></div><div class="bar-label"><span class="day">25 jul</span><br>pico</div></div>
+      <div class="bar-col"><div class="bar-value">$12.2M</div><div class="bar-shape" style="height:57%"></div><div class="bar-label"><span class="day">26 jul</span></div></div>
+      <div class="bar-col"><div class="bar-value">$12.1M</div><div class="bar-shape" style="height:56%"></div><div class="bar-label"><span class="day">27 jul</span></div></div>
+      <div class="bar-col"><div class="bar-value">$10.4M</div><div class="bar-shape" style="height:48%"></div><div class="bar-label"><span class="day">28 jul</span><br>+2 KITs básicos</div></div>
+      <div class="bar-col"><div class="bar-value">$11.9M</div><div class="bar-shape" style="height:55%"></div><div class="bar-label"><span class="day">29 jul</span></div></div>
+      <div class="bar-col"><div class="bar-value">$1.1M</div><div class="bar-shape" style="height:5%"></div><div class="bar-label"><span class="day">30 jul</span><br>parcial</div></div>
+    </div>
+  </section>
+
+  <section class="two-col">
+    <div class="card">
+      <h2>Ingresos por producto</h2>
+      <p class="section-sub">Ordenado de mayor a menor ingreso generado en la campaña</p>
+
+      <div class="hbar-row">
+        <div class="hbar-name">Medellín Mi Amor Mesh Shirt</div>
+        <div class="hbar-track"><div class="hbar-fill" style="width:100%"></div></div>
+        <div class="hbar-value">$42.7M<span class="units">285 uds</span></div>
+      </div>
+      <div class="hbar-row">
+        <div class="hbar-name">Abanico Medellín Mi Amor</div>
+        <div class="hbar-track"><div class="hbar-fill" style="width:35.3%"></div></div>
+        <div class="hbar-value">$15.1M<span class="units">224 uds</span></div>
+      </div>
+      <div class="hbar-row">
+        <div class="hbar-name">Un Guarito T-Shirt</div>
+        <div class="hbar-track"><div class="hbar-fill" style="width:29.4%"></div></div>
+        <div class="hbar-value">$12.5M<span class="units">87 uds</span></div>
+      </div>
+      <div class="hbar-row">
+        <div class="hbar-name">Bloom Mesh Shirt</div>
+        <div class="hbar-track"><div class="hbar-fill" style="width:7.9%"></div></div>
+        <div class="hbar-value">$3.4M<span class="units">25 uds</span></div>
+      </div>
+      <div class="hbar-row">
+        <div class="hbar-name">Eterna Primavera Mesh Shirt</div>
+        <div class="hbar-track"><div class="hbar-fill" style="width:6.2%"></div></div>
+        <div class="hbar-value">$2.7M<span class="units">19 uds</span></div>
+      </div>
+      <div class="hbar-row">
+        <div class="hbar-name">Medellín Mi Amor Primavera Charm</div>
+        <div class="hbar-track"><div class="hbar-fill" style="width:5.9%"></div></div>
+        <div class="hbar-value">$2.5M<span class="units">18 uds</span></div>
+      </div>
+      <div class="hbar-row">
+        <div class="hbar-name">Medellín Mi Amor Headkerchief</div>
+        <div class="hbar-track"><div class="hbar-fill" style="width:5.7%"></div></div>
+        <div class="hbar-value">$2.4M<span class="units">38 uds</span></div>
+      </div>
+      <div class="hbar-row">
+        <div class="hbar-name">Eterna Primavera T-Shirt</div>
+        <div class="hbar-track"><div class="hbar-fill" style="width:0.3%"></div></div>
+        <div class="hbar-value">$0.13M<span class="units">1 ud</span></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>Composición de la demanda</h2>
+      <p class="section-sub">Órdenes que incluyeron al menos un producto de la campaña</p>
+
+      <div class="comp-block">
+        <div class="comp-title"><span>Clientes nuevos vs. recurrentes</span><span>358 órdenes</span></div>
+        <div class="stack">
+          <div class="seg-1" style="width:60.6%">60.6%</div>
+          <div class="seg-2" style="width:39.4%">39.4%</div>
+        </div>
+        <div class="legend">
+          <span><i style="background:var(--series-1)"></i>Nuevos (217)</span>
+          <span><i style="background:var(--series-2)"></i>Recurrentes (141)</span>
+        </div>
+      </div>
+
+      <div class="comp-block">
+        <div class="comp-title"><span>Canal de venta</span><span>359 órdenes</span></div>
+        <div class="stack">
+          <div class="seg-1" style="width:87.2%">87.2%</div>
+          <div class="seg-2" style="width:12.8%">12.8%</div>
+        </div>
+        <div class="legend">
+          <span><i style="background:var(--series-1)"></i>Tienda online (313)</span>
+          <span><i style="background:var(--series-2)"></i>Orden manual / evento (46)</span>
+        </div>
+      </div>
+
+      <div class="comp-block" style="margin-bottom:0">
+        <div class="comp-title"><span>Tipo de carrito</span><span>359 órdenes</span></div>
+        <div class="stack">
+          <div class="seg-1" style="width:48.2%">48.2%</div>
+          <div class="seg-2" style="width:51.8%">51.8%</div>
+        </div>
+        <div class="legend">
+          <span><i style="background:var(--series-1)"></i>Solo campaña (173)</span>
+          <span><i style="background:var(--series-2)"></i>Mixto con otros productos (186)</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="card">
+    <h2>Detalle e inventario por producto</h2>
+    <p class="section-sub">Cobertura estimada = inventario actual ÷ velocidad de venta diaria observada desde el lanzamiento</p>
+    <table>
+      <thead>
+        <tr>
+          <th>Producto</th>
+          <th class="num">Precio</th>
+          <th class="num">Uds. vendidas</th>
+          <th class="num">Ingresos</th>
+          <th class="num">Stock actual</th>
+          <th class="num">Cobertura</th>
+          <th>Estado</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="prod-name">Medellín Mi Amor Mesh Shirt<small>Pieza insignia de la cápsula</small></td>
+          <td class="num">$139,900</td><td class="num">285</td><td class="num">$42,709,402</td><td class="num">433</td><td class="num">~12 días</td>
+          <td><span class="badge warning">⚠ vigilar reposición</span></td>
+        </tr>
+        <tr>
+          <td class="prod-name">Abanico Medellín Mi Amor</td>
+          <td class="num">$59,900</td><td class="num">224</td><td class="num">$15,072,601</td><td class="num">1,130</td><td class="num">~40 días</td>
+          <td><span class="badge good">saludable</span></td>
+        </tr>
+        <tr>
+          <td class="prod-name">Un Guarito T-Shirt</td>
+          <td class="num">$129,900</td><td class="num">87</td><td class="num">$12,535,397</td><td class="num">651</td><td class="num">~60 días</td>
+          <td><span class="badge good">saludable</span></td>
+        </tr>
+        <tr>
+          <td class="prod-name">Medellín Mi Amor Primavera Charm<small>Accesorio de edición limitada</small></td>
+          <td class="num">$143,900</td><td class="num">18</td><td class="num">$2,518,250</td><td class="num">12</td><td class="num">~5 días</td>
+          <td><span class="badge critical">◆ stock crítico</span></td>
+        </tr>
+        <tr>
+          <td class="prod-name">Medellín Mi Amor Headkerchief</td>
+          <td class="num">$64,900</td><td class="num">38</td><td class="num">$2,433,750</td><td class="num">112</td><td class="num">~24 días</td>
+          <td><span class="badge good">saludable</span></td>
+        </tr>
+        <tr>
+          <td class="prod-name">Bloom Mesh Shirt</td>
+          <td class="num">$139,900</td><td class="num">25</td><td class="num">$3,357,600</td><td class="num">314</td><td class="num">~100 días</td>
+          <td><span class="badge good">saludable</span></td>
+        </tr>
+        <tr>
+          <td class="prod-name">Eterna Primavera Mesh Shirt</td>
+          <td class="num">$139,900</td><td class="num">19</td><td class="num">$2,658,100</td><td class="num">365</td><td class="num">~154 días</td>
+          <td><span class="badge good">saludable</span></td>
+        </tr>
+        <tr>
+          <td class="prod-name">Eterna Primavera T-Shirt</td>
+          <td class="num">$129,900</td><td class="num">1</td><td class="num">$129,900</td><td class="num">169</td><td class="num">muy lenta</td>
+          <td><span class="badge flat">baja tracción</span></td>
+        </tr>
+        <tr>
+          <td class="prod-name">Kit - Medellín Mi Amor - Mesh<small>Lanzado 22 jul</small></td>
+          <td class="num">$229,900</td><td class="num">0</td><td class="num">$0</td><td class="num">433</td><td class="num">—</td>
+          <td><span class="badge flat">sin ventas</span></td>
+        </tr>
+        <tr>
+          <td class="prod-name">Kit - Medellín Mi Amor - T-Shirt<small>Lanzado 22 jul</small></td>
+          <td class="num">$229,900</td><td class="num">0</td><td class="num">$0</td><td class="num">651</td><td class="num">—</td>
+          <td><span class="badge flat">sin ventas</span></td>
+        </tr>
+        <tr>
+          <td class="prod-name">Kit - Medellín Mi Amor Basic - Mesh<small>Lanzado 28 jul</small></td>
+          <td class="num">$179,900</td><td class="num">0</td><td class="num">$0</td><td class="num">433</td><td class="num">—</td>
+          <td><span class="badge flat">sin ventas</span></td>
+        </tr>
+        <tr>
+          <td class="prod-name">Kit - Medellín Mi Amor Basic - T-Shirt<small>Lanzado 28 jul</small></td>
+          <td class="num">$179,900</td><td class="num">0</td><td class="num">$0</td><td class="num">651</td><td class="num">—</td>
+          <td><span class="badge flat">sin ventas</span></td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+
+  <section>
+    <div class="callout-grid">
+      <div class="callout critical">
+        <div class="dot"></div>
+        <div><b>Charm en riesgo de quiebre</b>Quedan solo 12 unidades del Primavera Charm con ~5 días de cobertura al ritmo actual de venta. Es pieza de edición limitada: decidir si se repone o se comunica como "últimas unidades".</div>
+      </div>
+      <div class="callout info">
+        <div class="dot"></div>
+        <div><b>Los 4 KITs no han vendido unidades</b>Representan inventario alto ($229,900–$179,900 c/u) sin tracción. Vale la pena destacarlos más en la vitrina/anuncios o revisar su propuesta de valor frente a las piezas sueltas.</div>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    Fuente: Shopify Admin API (tienda <strong>mompossina.myshopify.com</strong>) consultada en vivo a través del conector de <strong>Composio</strong>.
+    La campaña se identificó mediante la colección <code>medellin-mi-amor</code> (12 productos, tag <code>MEDELLIN</code>).
+    Ingresos de producto = valor de línea neto de descuentos (<code>discountedTotalSet</code>); se excluyen órdenes de prueba.
+    "Nuevo cliente" = primera orden registrada para ese cliente (<code>numberOfOrders = 1</code>) dentro del histórico de la tienda.
+    La cobertura de inventario asume que el stock actual solo se agota por esta cápsula y no ha sido repuesto desde el lanzamiento.
+    Este archivo es una foto fija; para refrescar los números vuelve a ejecutar la consulta contra el conector de Shopify.
+  </footer>
+
+</div>
+</body>
+</html>
