@@ -16,7 +16,7 @@ defina cómo conectarlos — no se debe inventar ni estimar esa data.
 
 Salidas que mantiene sincronizadas:
 - **Artifact privado**: (pegar aquí la URL la primera vez que se publique con la herramienta Artifact, y reusarla en corridas siguientes con `url:` para actualizar el mismo link en vez de crear uno nuevo)
-- **Web pública (GitHub Pages)**: pendiente de decidir rama/repo — ver nota abajo.
+- **Web pública (GitHub Pages)**: `index.html` en la raíz de la rama por defecto de `mtrujillo45/ventas-fla` → `https://mtrujillo45.github.io/Ventas-FLA/` (a diferencia de `monitor-medellin`, que publica en un repo externo llamado "Web" al que esta sesión no tiene acceso; este skill vive y publica dentro del mismo repo `ventas-fla`).
 
 ## Principio de diseño (leer antes de modificar)
 
@@ -139,18 +139,33 @@ entrada antes de tocar `compute.py`.
   SKILL.md en la sección "Qué hace" para reusarla en corridas futuras)
 - `favicon`: 🧾 · `title`: `Mompossina — Cierre Mensual de Ventas`
 
-**6. Publicar como página pública (GitHub Pages).** Esto quedó pendiente de
-confirmar con el usuario: a diferencia de `monitor-medellin` (que publica en
-un repo/rama externos llamados "Web"), este skill vive en el repo
-`mtrujillo45/ventas-fla`, que es el único al que esta sesión tiene acceso.
-Antes de hacer push, confirmar con el usuario:
-  - ¿En qué rama de este repo se publica (o se crea una rama `gh-pages` /
-    `docs`)?
-  - ¿GitHub Pages ya está habilitado en este repo, o hay que activarlo
-    (Settings → Pages) — eso lo debe hacer el usuario, no esta sesión?
-Una vez confirmado, documentar aquí la rama y la URL final, siguiendo el
-mismo patrón de `monitor-medellin` (archivo `index.html` con el head
-envolvente + `dashboard/cierre-mensual.html` como fuente).
+**6. Publicar como página pública (GitHub Pages), dentro de `ventas-fla`.**
+Confirmado con el usuario: a diferencia de `monitor-medellin` (que publica en
+un repo/rama externos llamados "Web", fuera del alcance de esta sesión), este
+skill publica dentro del mismo repo `mtrujillo45/ventas-fla`.
+
+`dashboard/cierre-mensual.html` ya es un documento HTML completo (no
+body-only), así que no hace falta envolverlo — `index.html` es una copia
+exacta:
+```
+cp dashboard/cierre-mensual.html index.html
+git add dashboard/cierre-mensual.html index.html
+git -c user.name="Claude" -c user.email="noreply@anthropic.com" commit -m "Actualizar cierre mensual (<mes/año>)"
+git push origin <rama de trabajo>   # reintenta con backoff si falla
+```
+Si el trabajo se hizo en una rama distinta a la rama por defecto del repo,
+abrir un Pull Request hacia la rama por defecto y fusionarlo — una sesión
+nueva parte de la rama por defecto, así que el informe solo queda "vivo" ahí
+una vez fusionado.
+
+URL pública esperada: `https://mtrujillo45.github.io/Ventas-FLA/` (GitHub
+Pages sirve `index.html` de la raíz de la rama por defecto). **Nota:** no hay
+herramienta disponible en esta sesión para confirmar ni activar GitHub Pages
+desde la configuración del repo — si la URL no carga, pedirle al usuario que
+verifique en Settings → Pages de `ventas-fla` que el Source esté en la rama
+por defecto / raíz (`/`), y que lo active si aparece como "not enabled". Esto
+es un paso manual de una sola vez, no algo que este skill deba repetir cada
+corrida.
 
 **7. Reportar** en el chat: ventas totales, subtotal, IVA, envío, pedidos,
 unidades, producto #1 del ranking, y recordar el estado pendiente de

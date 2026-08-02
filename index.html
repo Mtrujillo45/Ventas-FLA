@@ -1,0 +1,235 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Mompossina — Cierre Mensual de Ventas</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🧾</text></svg>">
+<style>
+  :root {
+    color-scheme: light;
+    --surface-1:      #fcfcfb;
+    --page:           #f9f9f7;
+    --text-primary:   #0b0b0b;
+    --text-secondary: #52514e;
+    --text-muted:     #898781;
+    --grid:           #e1e0d9;
+    --border:         rgba(11,11,11,0.10);
+    --series-1:       #2a78d6;
+    --series-2:       #eb6834;
+    --good:           #0ca30c;
+    --warning:        #fab219;
+    --critical:       #d03b3b;
+    --good-bg:        #eaf7ea;
+    --warning-bg:     #fff6e2;
+    --critical-bg:    #fbe9e9;
+    --pending-border: #d99a4e;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:where(:not([data-theme="light"])) {
+      color-scheme: dark;
+      --surface-1:      #1a1a19;
+      --page:           #0d0d0d;
+      --text-primary:   #ffffff;
+      --text-secondary: #c3c2b7;
+      --text-muted:     #898781;
+      --grid:           #2c2c2a;
+      --border:         rgba(255,255,255,0.10);
+      --series-1:       #3987e5;
+      --series-2:       #d95926;
+      --good:           #0ca30c;
+      --warning:        #fab219;
+      --critical:       #e66767;
+      --good-bg:        rgba(12,163,12,0.14);
+      --warning-bg:     rgba(250,178,25,0.14);
+      --critical-bg:    rgba(230,103,103,0.14);
+      --pending-border: #b3823f;
+    }
+  }
+  :root[data-theme="dark"] {
+    color-scheme: dark;
+    --surface-1:      #1a1a19;
+    --page:           #0d0d0d;
+    --text-primary:   #ffffff;
+    --text-secondary: #c3c2b7;
+    --text-muted:     #898781;
+    --grid:           #2c2c2a;
+    --border:         rgba(255,255,255,0.10);
+    --series-1:       #3987e5;
+    --series-2:       #d95926;
+    --good:           #0ca30c;
+    --warning:        #fab219;
+    --critical:       #e66767;
+    --good-bg:        rgba(12,163,12,0.14);
+    --warning-bg:     rgba(250,178,25,0.14);
+    --critical-bg:    rgba(230,103,103,0.14);
+    --pending-border: #b3823f;
+  }
+
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--page);
+    color: var(--text-primary);
+    font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+  .wrap { max-width: 1180px; margin: 0 auto; padding: 28px 20px 64px; }
+
+  header.top { margin-bottom: 24px; }
+  .eyebrow {
+    display: inline-flex; align-items: center; gap: 8px;
+    font-size: 12px; font-weight: 600; letter-spacing: .04em; text-transform: uppercase;
+    color: var(--series-1);
+    background: color-mix(in srgb, var(--series-1) 12%, transparent);
+    padding: 4px 10px; border-radius: 999px; margin-bottom: 10px;
+  }
+  h1 { font-size: 28px; font-weight: 700; margin: 0 0 6px; letter-spacing: -0.01em; text-wrap: balance; }
+  .subtitle { font-size: 14px; color: var(--text-secondary); margin: 0 0 4px; }
+  .meta { font-size: 12.5px; color: var(--text-muted); }
+  .meta code { background: var(--grid); padding: 1px 5px; border-radius: 4px; font-size: 11.5px; }
+
+  .card {
+    background: var(--surface-1);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 20px 22px;
+  }
+  section { margin-top: 22px; }
+  h2 { font-size: 15px; font-weight: 700; margin: 0 0 4px; }
+  .section-sub { font-size: 12.5px; color: var(--text-muted); margin: 0 0 16px; }
+
+  /* KPI tiles */
+  .kpi-grid {
+    display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px;
+  }
+  .kpi {
+    background: var(--surface-1); border: 1px solid var(--border); border-radius: 14px;
+    padding: 16px 16px 14px;
+  }
+  .kpi .label { font-size: 12px; color: var(--text-secondary); font-weight: 600; margin-bottom: 8px; }
+  .kpi .value { font-size: 23px; font-weight: 700; letter-spacing: -0.01em; font-variant-numeric: tabular-nums; }
+  .kpi .sub { font-size: 11.5px; color: var(--text-muted); margin-top: 5px; line-height: 1.4; }
+
+  /* daily line chart (SVG, generado por compute.py) */
+  .chart-card { overflow-x: auto; }
+  .daily-chart { width: 100%; height: auto; min-width: 560px; display: block; }
+  .chart-grid { stroke: var(--grid); stroke-width: 1; }
+  .chart-line { stroke: var(--series-1); stroke-width: 2.5; stroke-linejoin: round; stroke-linecap: round; }
+  .chart-dot { fill: var(--series-1); stroke: var(--surface-1); stroke-width: 2; }
+  .chart-dot-peak { fill: var(--series-2); }
+  .chart-point-label { font-size: 11px; fill: var(--text-secondary); font-variant-numeric: tabular-nums; }
+  .chart-point-label-peak { fill: var(--series-2); font-weight: 600; }
+  .chart-axis { font-size: 10.5px; fill: var(--text-muted); text-anchor: middle; }
+
+  /* ranked horizontal bars (top productos) */
+  .hbar-list { display: flex; flex-direction: column; }
+  .hbar-row { display: grid; grid-template-columns: 26px 1fr 200px 150px; align-items: center; gap: 12px; padding: 7px 0; }
+  .hbar-row + .hbar-row { border-top: 1px solid var(--grid); }
+  .hbar-rank { font-size: 12px; color: var(--text-muted); font-variant-numeric: tabular-nums; text-align: right; }
+  .hbar-name { font-size: 13px; color: var(--text-primary); }
+  .hbar-track { position: relative; height: 14px; background: var(--grid); border-radius: 4px; overflow: hidden; }
+  .hbar-fill { position: absolute; inset: 0 auto 0 0; background: var(--series-1); border-radius: 4px; }
+  .hbar-value { font-size: 12.5px; text-align: right; font-variant-numeric: tabular-nums; color: var(--text-secondary); }
+  .hbar-value .units { color: var(--text-muted); font-size: 11.5px; display: block; }
+
+  /* pending chapters (Mayorista, World Office) */
+  .pending-card {
+    border: 1px dashed var(--pending-border);
+    border-radius: 14px;
+    padding: 18px 20px;
+    background: color-mix(in srgb, var(--warning) 7%, var(--surface-1));
+  }
+  .pending-badge {
+    display: inline-flex; align-items: center; gap: 6px;
+    font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .04em;
+    color: color-mix(in srgb, var(--warning) 55%, var(--text-primary));
+    margin-bottom: 8px;
+  }
+  .pending-badge::before { content: ""; width: 7px; height: 7px; border-radius: 50%; background: var(--pending-border); }
+  .pending-card p { margin: 0 0 8px; font-size: 13.5px; color: var(--text-secondary); line-height: 1.55; }
+  .pending-card p:last-child { margin-bottom: 0; }
+  .two-col-pending { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+
+  footer { margin-top: 28px; font-size: 11.5px; color: var(--text-muted); line-height: 1.6; }
+
+  @media (max-width: 900px) {
+    .kpi-grid { grid-template-columns: repeat(2, 1fr); }
+    .two-col-pending { grid-template-columns: 1fr; }
+    .hbar-row { grid-template-columns: 20px 1fr 120px 100px; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="top">
+    <div class="eyebrow">● Cierre mensual · Shopify (mompossina.myshopify.com)</div>
+    <h1>Mompossina Swimwear — Cierre Mensual de Ventas</h1>
+    <p class="subtitle">Consolidado financiero del mes: venta real, sin proyección</p>
+    <p class="meta">
+      Periodo: <code id="period-label">PENDIENTE</code> ·
+      Generado: <code id="generated-at">PENDIENTE</code> hora Bogotá
+    </p>
+  </header>
+
+  <section>
+    <h2>Resumen financiero del mes</h2>
+    <p class="section-sub">Todos los canales de Shopify combinados (tienda online + pedidos manuales/showroom vía app y POS)</p>
+    <!-- KPIS_START -->
+    PENDIENTE — se llena al correr compute.py
+    <!-- KPIS_END -->
+  </section>
+
+  <section class="card chart-card">
+    <h2>Ventas totales por día</h2>
+    <p class="section-sub">Venta total (con IVA y envío) por fecha de pedido, en el periodo del cierre</p>
+    <!-- CHART_START -->
+    PENDIENTE — se llena al correr compute.py
+    <!-- CHART_END -->
+  </section>
+
+  <section class="card">
+    <h2>Top 20 productos por venta bruta</h2>
+    <p class="section-sub">Ordenado de mayor a menor venta bruta del mes · incluye todos los canales de Shopify</p>
+    <!-- PRODUCTS_START -->
+    PENDIENTE — se llena al correr compute.py
+    <!-- PRODUCTS_END -->
+  </section>
+
+  <section>
+    <div class="two-col-pending">
+      <div class="pending-card">
+        <div class="pending-badge">Capítulo pendiente</div>
+        <p><strong>Canal mayorista.</strong> Aún no está conectado a este informe. Falta definir el método de extracción: credenciales de acceso directo al sistema donde se registra, o archivo CSV de carga manual.</p>
+        <p>En cuanto se defina la conexión, este canal se suma al consolidado con su propio desglose de ventas y unidades.</p>
+      </div>
+      <div class="pending-card">
+        <div class="pending-badge">Capítulo pendiente</div>
+        <p><strong>World Office (contabilidad).</strong> No hay conector, API ni credenciales configuradas todavía hacia World Office en este entorno.</p>
+        <p>Métodos posibles a definir: exportación manual (CSV/Excel) a una carpeta fija, integración directa por API/webhook, o reenvío del reporte por correo a una dirección designada.</p>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    Fuente: Shopify Admin API / ShopifyQL (tienda <strong>mompossina.myshopify.com</strong>), consultada vía el conector de Shopify en Claude.
+    "Subtotal" = venta neta de descuentos y devoluciones, sin IVA. "IVA" y "Envío" se reportan aparte, tal como los separa ShopifyQL — no se calculan con ningún factor manual.
+    Solo se cuenta venta real del periodo; este informe no incluye proyección ni forecast.
+    "Unidades vendidas" proviene de <code>inventory_units_sold</code> del mismo periodo.
+    Canal mayorista y World Office se muestran como capítulos pendientes hasta definir su método de conexión.
+    Este archivo es una foto fija del cierre; para un mes nuevo se vuelve a correr el skill <code>cierre-mensual</code>.
+  </footer>
+
+</div>
+<script>
+  const GENERATED_AT = "PENDIENTE";
+  const PERIOD_LABEL = "PENDIENTE";
+  document.addEventListener('DOMContentLoaded', () => {
+    var pl = document.getElementById('period-label'); if (pl) pl.textContent = PERIOD_LABEL;
+    var ga = document.getElementById('generated-at'); if (ga) ga.textContent = GENERATED_AT;
+  });
+</script>
+</body>
+</html>
