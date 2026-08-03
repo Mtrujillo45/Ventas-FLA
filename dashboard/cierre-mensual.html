@@ -178,24 +178,67 @@
     <h2>Resumen financiero del mes</h2>
     <p class="section-sub">Todos los canales de Shopify combinados (tienda online + pedidos manuales/showroom vía app y POS)</p>
     <!-- KPIS_START -->
-    PENDIENTE — se llena al correr compute.py
-    <!-- KPIS_END -->
+  <section class="kpi-grid">
+    <div class="kpi"><div class="label">Ventas totales</div><div class="value">$281,249,403</div><div class="sub">Lo cobrado al cliente: subtotal + IVA + envío</div></div>
+    <div class="kpi"><div class="label">Subtotal (sin IVA)</div><div class="value">$221,243,142</div><div class="sub">Venta neta de descuentos y devoluciones, antes de IVA</div></div>
+    <div class="kpi"><div class="label">IVA</div><div class="value">$41,990,957</div><div class="sub">Impuesto cobrado, aparte del subtotal y el envío</div></div>
+    <div class="kpi"><div class="label">Envío</div><div class="value">$18,015,304</div><div class="sub">Cargos de envío cobrados a los clientes</div></div>
+    <div class="kpi"><div class="label">Ventas brutas</div><div class="value">$229,056,353</div><div class="sub">Venta de catálogo antes de descuentos y devoluciones</div></div>
+    <div class="kpi"><div class="label">Descuentos</div><div class="value">−$4,944,025</div><div class="sub">Descuentos aplicados durante el mes</div></div>
+    <div class="kpi"><div class="label">Devoluciones</div><div class="value">−$2,869,186</div><div class="sub">Valor de productos devueltos en el mes</div></div>
+    <div class="kpi"><div class="label">Pedidos pagados</div><div class="value">1,352</div><div class="sub">Número de pedidos con pago confirmado</div></div>
+    <div class="kpi"><div class="label">Unidades vendidas</div><div class="value">2,552</div><div class="sub">Unidades de producto despachadas en el mes</div></div>
+  </section>
+  <!-- KPIS_END -->
   </section>
 
   <section class="card chart-card">
     <h2>Ventas totales por día</h2>
     <p class="section-sub">Venta total (con IVA y envío) por fecha de pedido, en el periodo del cierre</p>
     <!-- CHART_START -->
-    PENDIENTE — se llena al correr compute.py
-    <!-- CHART_END -->
+  <svg viewBox="0 0 880 230" class="daily-chart" role="img" aria-label="Ventas totales por día del mes">
+    <defs>
+      <linearGradient id="areaFill" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0%" stop-color="var(--series-1)" stop-opacity="0.28"/>
+        <stop offset="100%" stop-color="var(--series-1)" stop-opacity="0"/>
+      </linearGradient>
+    </defs>
+    <line x1="46" y1="22.0" x2="864" y2="22.0" class="chart-grid"/><line x1="46" y1="80.0" x2="864" y2="80.0" class="chart-grid"/><line x1="46" y1="138.0" x2="864" y2="138.0" class="chart-grid"/><line x1="46" y1="196.0" x2="864" y2="196.0" class="chart-grid"/>
+    <path d="M 46.0,110.8 L 73.3,152.6 L 100.5,96.9 L 127.8,91.0 L 155.1,131.6 L 182.3,154.0 L 209.6,154.0 L 236.9,178.9 L 264.1,154.8 L 291.4,173.2 L 318.7,163.5 L 345.9,164.3 L 373.2,162.8 L 400.5,182.8 L 427.7,172.4 L 455.0,155.9 L 482.3,150.3 L 509.5,175.5 L 536.8,161.8 L 564.1,149.3 L 591.3,177.0 L 618.6,167.2 L 645.9,169.9 L 673.1,65.5 L 700.4,44.7 L 727.7,90.6 L 754.9,93.3 L 782.2,108.1 L 809.5,112.6 L 836.7,115.8 L 864.0,100.6 L 864.0,196.0 L 46.0,196.0 Z" fill="url(#areaFill)" stroke="none"/>
+    <path d="M 46.0,110.8 L 73.3,152.6 L 100.5,96.9 L 127.8,91.0 L 155.1,131.6 L 182.3,154.0 L 209.6,154.0 L 236.9,178.9 L 264.1,154.8 L 291.4,173.2 L 318.7,163.5 L 345.9,164.3 L 373.2,162.8 L 400.5,182.8 L 427.7,172.4 L 455.0,155.9 L 482.3,150.3 L 509.5,175.5 L 536.8,161.8 L 564.1,149.3 L 591.3,177.0 L 618.6,167.2 L 645.9,169.9 L 673.1,65.5 L 700.4,44.7 L 727.7,90.6 L 754.9,93.3 L 782.2,108.1 L 809.5,112.6 L 836.7,115.8 L 864.0,100.6" fill="none" class="chart-line"/>
+    <circle cx="700.4" cy="44.7" r="3.5" class="chart-dot chart-dot-peak"/><text x="700.4" y="34.7" class="chart-point-label chart-point-label-peak">$23.7M</text><circle cx="864.0" cy="100.6" r="3.5" class="chart-dot"/><text x="864.0" y="90.6" class="chart-point-label" text-anchor="end">$14.9M</text>
+    <text x="46.0" y="220" class="chart-axis">1</text><text x="182.3" y="220" class="chart-axis">6</text><text x="318.7" y="220" class="chart-axis">11</text><text x="455.0" y="220" class="chart-axis">16</text><text x="591.3" y="220" class="chart-axis">21</text><text x="727.7" y="220" class="chart-axis">26</text><text x="864.0" y="220" class="chart-axis">31</text>
+  </svg>
+  <!-- CHART_END -->
   </section>
 
   <section class="card">
     <h2>Top 20 productos por venta bruta</h2>
     <p class="section-sub">Ordenado de mayor a menor venta bruta del mes · incluye todos los canales de Shopify</p>
     <!-- PRODUCTS_START -->
-    PENDIENTE — se llena al correr compute.py
-    <!-- PRODUCTS_END -->
+  <div class="hbar-list">
+    <div class="hbar-row"><div class="hbar-rank">1</div><div class="hbar-name">COLOMBIA MESH SHIRT</div><div class="hbar-track"><div class="hbar-fill" style="width:100.0%"></div></div><div class="hbar-value">$72,371,345<span class="units">581 pedidos · 31.6%</span></div></div>
+    <div class="hbar-row"><div class="hbar-rank">2</div><div class="hbar-name">MEDELLÍN MI AMOR MESH SHIRT</div><div class="hbar-track"><div class="hbar-fill" style="width:62.2%"></div></div><div class="hbar-value">$44,992,773<span class="units">312 pedidos · 19.6%</span></div></div>
+    <div class="hbar-row"><div class="hbar-rank">3</div><div class="hbar-name">ABANICO MEDELLÍN MI AMOR</div><div class="hbar-track"><div class="hbar-fill" style="width:22.0%"></div></div><div class="hbar-value">$15,921,242<span class="units">233 pedidos · 7.0%</span></div></div>
+    <div class="hbar-row"><div class="hbar-rank">4</div><div class="hbar-name">UN GUARITO T-SHIRT</div><div class="hbar-track"><div class="hbar-fill" style="width:19.2%"></div></div><div class="hbar-value">$13,888,170<span class="units">99 pedidos · 6.1%</span></div></div>
+    <div class="hbar-row"><div class="hbar-rank">5</div><div class="hbar-name">COLOMBIA T-SHIRT</div><div class="hbar-track"><div class="hbar-fill" style="width:12.0%"></div></div><div class="hbar-value">$8,666,555<span class="units">77 pedidos · 3.8%</span></div></div>
+    <div class="hbar-row"><div class="hbar-rank">6</div><div class="hbar-name">SOLAR MESH SHIRT</div><div class="hbar-track"><div class="hbar-fill" style="width:11.3%"></div></div><div class="hbar-value">$8,186,975<span class="units">73 pedidos · 3.6%</span></div></div>
+    <div class="hbar-row"><div class="hbar-rank">7</div><div class="hbar-name">BLOOM MESH SHIRT</div><div class="hbar-track"><div class="hbar-fill" style="width:5.8%"></div></div><div class="hbar-value">$4,232,269<span class="units">34 pedidos · 1.8%</span></div></div>
+    <div class="hbar-row"><div class="hbar-rank">8</div><div class="hbar-name">ANCIENT MESH SHIRT</div><div class="hbar-track"><div class="hbar-fill" style="width:4.1%"></div></div><div class="hbar-value">$2,947,311<span class="units">27 pedidos · 1.3%</span></div></div>
+    <div class="hbar-row"><div class="hbar-rank">9</div><div class="hbar-name">FUNGI MESH SHIRT</div><div class="hbar-track"><div class="hbar-fill" style="width:3.9%"></div></div><div class="hbar-value">$2,838,151<span class="units">26 pedidos · 1.2%</span></div></div>
+    <div class="hbar-row"><div class="hbar-rank">10</div><div class="hbar-name">ETERNA PRIMAVERA MESH SHIRT</div><div class="hbar-track"><div class="hbar-fill" style="width:3.9%"></div></div><div class="hbar-value">$2,821,513<span class="units">23 pedidos · 1.2%</span></div></div>
+    <div class="hbar-row"><div class="hbar-rank">11</div><div class="hbar-name">MEDELLÍN MI AMOR HEADKERCHIEF</div><div class="hbar-track"><div class="hbar-fill" style="width:3.8%"></div></div><div class="hbar-value">$2,726,891<span class="units">48 pedidos · 1.2%</span></div></div>
+    <div class="hbar-row"><div class="hbar-rank">12</div><div class="hbar-name">MEDELLÍN MI AMOR PRIMAVERA CHARM</div><div class="hbar-track"><div class="hbar-fill" style="width:3.5%"></div></div><div class="hbar-value">$2,539,412<span class="units">20 pedidos · 1.1%</span></div></div>
+    <div class="hbar-row"><div class="hbar-rank">13</div><div class="hbar-name">SOLAR ONE SHOULDER ONE PIECE</div><div class="hbar-track"><div class="hbar-fill" style="width:3.5%"></div></div><div class="hbar-value">$2,519,748<span class="units">15 pedidos · 1.1%</span></div></div>
+    <div class="hbar-row"><div class="hbar-rank">14</div><div class="hbar-name">SOLAR MESH LONG SHIRT</div><div class="hbar-track"><div class="hbar-fill" style="width:3.2%"></div></div><div class="hbar-value">$2,317,395<span class="units">20 pedidos · 1.0%</span></div></div>
+    <div class="hbar-row"><div class="hbar-rank">15</div><div class="hbar-name">PRISMA MESH SHIRT</div><div class="hbar-track"><div class="hbar-fill" style="width:2.9%"></div></div><div class="hbar-value">$2,074,034<span class="units">18 pedidos · 0.9%</span></div></div>
+    <div class="hbar-row"><div class="hbar-rank">16</div><div class="hbar-name">SOLAR T-SHIRT</div><div class="hbar-track"><div class="hbar-fill" style="width:2.6%"></div></div><div class="hbar-value">$1,881,008<span class="units">16 pedidos · 0.8%</span></div></div>
+    <div class="hbar-row"><div class="hbar-rank">17</div><div class="hbar-name">MÉXICO MESH SHIRT</div><div class="hbar-track"><div class="hbar-fill" style="width:2.6%"></div></div><div class="hbar-value">$1,855,714<span class="units">15 pedidos · 0.8%</span></div></div>
+    <div class="hbar-row"><div class="hbar-rank">18</div><div class="hbar-name">ANCIENT CARGO PANTS</div><div class="hbar-track"><div class="hbar-fill" style="width:2.2%"></div></div><div class="hbar-value">$1,587,479<span class="units">9 pedidos · 0.7%</span></div></div>
+    <div class="hbar-row"><div class="hbar-rank">19</div><div class="hbar-name">ABANICO THIS IS COLOMBIA</div><div class="hbar-track"><div class="hbar-fill" style="width:2.1%"></div></div><div class="hbar-value">$1,510,084<span class="units">18 pedidos · 0.7%</span></div></div>
+    <div class="hbar-row"><div class="hbar-rank">20</div><div class="hbar-name">PRISMA MESH CLASSIC LONG SHIRT</div><div class="hbar-track"><div class="hbar-fill" style="width:2.0%"></div></div><div class="hbar-value">$1,478,067<span class="units">10 pedidos · 0.6%</span></div></div>
+  </div>
+  <!-- PRODUCTS_END -->
   </section>
 
   <section>
@@ -214,18 +257,18 @@
   </section>
 
   <footer>
-    Fuente: Shopify Admin API / ShopifyQL (tienda <strong>mompossina.myshopify.com</strong>), consultada vía el conector de Shopify en Claude.
-    "Subtotal" = venta neta de descuentos y devoluciones, sin IVA. "IVA" y "Envío" se reportan aparte, tal como los separa ShopifyQL — no se calculan con ningún factor manual.
+    Fuente: Shopify Admin API — Orders (GraphQL), tienda <strong>mompossina.myshopify.com</strong>, consultada vía el conector de Shopify en Claude.
+    <strong>Nota de método (Julio 2026):</strong> la app conectada aún no tenía el scope <code>read_reports</code> / acceso a datos protegidos habilitado para usar ShopifyQL, así que este cierre se calculó agregando pedidos individuales (estado de pago confirmado, sin pedidos de prueba). La tienda maneja precios con IVA incluido, así que "Ventas brutas" y "Descuentos" se ajustan dividiendo por 1.19 (mismo factor que usa el dashboard de Medellín) para dejarlos sin IVA; "Subtotal", "IVA", "Envío" y "Ventas totales" salen directo de los totales del pedido (ya netos de devoluciones) sin necesidad de ese ajuste. Cuando ShopifyQL esté disponible, los próximos cierres volverán al método exacto sin este factor.
     Solo se cuenta venta real del periodo; este informe no incluye proyección ni forecast.
-    "Unidades vendidas" proviene de <code>inventory_units_sold</code> del mismo periodo.
+    "Unidades vendidas" = unidades netas de devoluciones despachadas en pedidos del periodo.
     Canal mayorista y World Office se muestran como capítulos pendientes hasta definir su método de conexión.
     Este archivo es una foto fija del cierre; para un mes nuevo se vuelve a correr el skill <code>cierre-mensual</code>.
   </footer>
 
 </div>
 <script>
-  const GENERATED_AT = "PENDIENTE";
-  const PERIOD_LABEL = "PENDIENTE";
+  const GENERATED_AT = "2026-08-02T08:54:23-05:00";
+  const PERIOD_LABEL = "Julio 2026";
   document.addEventListener('DOMContentLoaded', () => {
     var pl = document.getElementById('period-label'); if (pl) pl.textContent = PERIOD_LABEL;
     var ga = document.getElementById('generated-at'); if (ga) ga.textContent = GENERATED_AT;
