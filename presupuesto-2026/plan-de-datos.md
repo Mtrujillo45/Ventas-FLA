@@ -106,23 +106,50 @@ indirecto viene inflado por una doble imputación**. Se consolidaron en
 - Sigue sin aparecer nada de **costos fijos de la empresa** (arriendo,
   nómina, servicios) — este archivo cubre costo de producto y costeo por
   colección, no el P&L completo. Sigue siendo indispensable para el punto de
-  equilibrio (ver 5.3).
+  equilibrio (ver 6.3).
 
-## 5. Checklist de información por tarea
+## 5. Línea base real 2025 (Shopify) — Digital y Punto de venta
 
-### 5.1 Presupuesto en $ y unidades — consolidado y por canal
+Se extrajeron los 7,142 pedidos de 2025 directamente de Shopify (bulk GraphQL
+vía Composio, zona horaria Bogotá, excluyendo pedidos de prueba y quedándose
+solo con estados PAID/PARTIALLY_PAID/PARTIALLY_REFUNDED/REFUNDED) y se
+consolidaron mes a mes en
+[`presupuesto-2026/real-2025-shopify.xlsx`](real-2025-shopify.xlsx). Es la
+primera línea base real (no supuesta) para dos de los cuatro canales:
+
+| Canal | Ventas 2025 (sin IVA) | Unidades 2025 | Precio promedio |
+|---|---|---|---|
+| Digital | $943.840.747 | 10.988 | $85.897 |
+| Punto de venta | $240.291.611 | 3.337 | $72.008 |
+| **Total (solo estos 2 canales)** | **$1.184.132.358** | **14.325** | **$82.662** |
+
+El archivo trae el detalle mes a mes (Ene–Dic 2025) y precio promedio por mes,
+con fórmulas vivas. Sirve como punto de partida directo para proyectar el
+2026 de estos dos canales en cuanto se defina la meta de crecimiento (sección
+6.1) — todavía falta el mismo ejercicio para Nacional e Internacional, que
+no están en Shopify (ver sección 3).
+
+**Nota:** esto es la línea base de *ventas*, no de *presupuesto*. No se
+escribió nada todavía en la pestaña "Presupuesto de ventas" del Google
+Sheet compartido con el asesor — eso implicaría decidir una meta de
+crecimiento 2026 sobre esta base, algo que corresponde definir junto con
+Natalia y el asesor, no asumirlo unilateralmente.
+
+## 6. Checklist de información por tarea
+
+### 6.1 Presupuesto en $ y unidades — consolidado y por canal
 
 | Dato necesario | Fuente | Responsable | Estado |
 |---|---|---|---|
-| Ventas y unidades reales 2025, mensual — Digital | Shopify (online) | Yo lo extraigo | Disponible ahora |
-| Ventas y unidades reales 2025, mensual — Punto de venta | Shopify (draft orders/showroom) | Yo lo extraigo | Disponible ahora (aproximado) |
+| Ventas y unidades reales 2025, mensual — Digital | Shopify (online) | Yo lo extraigo | **Disponible** — ver sección 5 y `real-2025-shopify.xlsx` |
+| Ventas y unidades reales 2025, mensual — Punto de venta | Shopify (draft orders/showroom) | Yo lo extraigo | **Disponible** (aproximado) — ver sección 5 |
 | Ventas y unidades reales 2025, mensual — Nacional | ¿World Office / Excel / facturación mayorista? | Natalia / contabilidad | **Pendiente, en camino** |
 | Ventas y unidades reales 2025, mensual — Internacional | ¿World Office / Excel / registros de exportación? | Natalia / contabilidad | **Pendiente, en camino** |
 | Meta de crecimiento 2026 por canal (%, o cifra objetivo) | Decisión estratégica | Natalia + asesor | Pendiente de definir |
-| Estacionalidad esperada (curva mensual) | Se deriva del histórico por canal | Yo la calculo una vez haya histórico | Depende de lo anterior |
+| Estacionalidad esperada (curva mensual) | Se deriva del histórico por canal | Ya calculada para Digital/PDV en `real-2025-shopify.xlsx`; falta Nacional/Internacional | Parcial |
 | Capacidad de producción / restricciones de oferta 2026 | Producción | Natalia | Pendiente |
 
-### 5.2 Conexión $ ↔ unidades ↔ precio ↔ costo ↔ margen ↔ rotación
+### 6.2 Conexión $ ↔ unidades ↔ precio ↔ costo ↔ margen ↔ rotación
 
 | Dato necesario | Fuente | Responsable | Estado |
 |---|---|---|---|
@@ -132,7 +159,7 @@ indirecto viene inflado por una doble imputación**. Se consolidaron en
 | Inventario y rotación por referencia/talla | Shopify (niveles de inventario) | Yo lo extraigo | Parcialmente disponible (ya lo usa el skill `reposicion-estrellas`) |
 | Margen bruto por canal/categoría | Precio promedio − costo de producción | Yo lo calculo | Ya calculado por SKU en los archivos originales; falta validar con el costo indirecto corregido |
 
-### 5.3 Puntos de equilibrio (por canal y consolidado)
+### 6.3 Puntos de equilibrio (por canal y consolidado)
 
 | Dato necesario | Fuente | Responsable | Estado |
 |---|---|---|---|
@@ -147,15 +174,15 @@ Con eso: punto de equilibrio en $ = costos fijos ÷ % margen de contribución;
 en unidades = costos fijos ÷ margen de contribución por unidad. Se calcula
 igual para cada canal y para la empresa consolidada.
 
-### 5.4 Cuadro de control (seguimiento mensual)
+### 6.4 Cuadro de control (seguimiento mensual)
 
 | Dato necesario | Fuente | Responsable | Estado |
 |---|---|---|---|
-| Real mensual $ y unidades — Digital y Punto de venta | Shopify | Yo lo automatizo | Se puede montar ya (extensión del skill `cierre-mensual`, separando por canal y agregando unidades) |
-| Real mensual $ y unidades — Nacional e Internacional | Fuente por definir (ver 5.1) | Natalia | Pendiente |
+| Real mensual $ y unidades — Digital y Punto de venta | Shopify | Yo lo automatizo | **Ya extraído para 2025** (`real-2025-shopify.xlsx`); falta automatizar el refresco mensual (extensión del skill `cierre-mensual`) |
+| Real mensual $ y unidades — Nacional e Internacional | Fuente por definir (ver 6.1) | Natalia | Pendiente |
 | Costos reales mensuales (para margen real vs. presupuestado) | Contabilidad | Natalia | Pendiente |
 
-## 6. Preguntas para resolver con el asesor / con Natalia
+## 7. Preguntas para resolver con el asesor / con Natalia
 
 1. ¿Cómo se define exactamente cada canal, en especial **Nacional** e
    **Internacional**? ¿Coincide con mayorista nacional / exportación, o es
@@ -182,16 +209,15 @@ igual para cada canal y para la empresa consolidada.
    aproximación por tipo de pedido (online vs. manual/showroom) que ya usa
    `cierre-mensual`?
 
-## 7. Próximos pasos propuestos
+## 8. Próximos pasos propuestos
 
-1. **Natalia** confirma la doble imputación del costo indirecto (pregunta 3)
-   — bloquea usar la base de costos para cualquier margen o punto de
-   equilibrio real.
+1. **Natalia** confirma la doble imputación del costo indirecto (pregunta 3
+   de la sección 7) — bloquea usar la base de costos para cualquier margen o
+   punto de equilibrio real.
 2. **Natalia / asesor** resuelven la definición de Nacional/Internacional y
-   el mapeo de columnas de precio (preguntas 1, 2 y 4).
-3. **Yo** extraigo de Shopify el histórico mensual 2025 (y lo corrido de
-   2026) de Digital y Punto de venta — $ y unidades — como primer borrador de
-   línea base.
+   el mapeo de columnas de precio (preguntas 1, 2 y 4 de la sección 7).
+3. ~~Yo extraigo de Shopify el histórico mensual 2025 de Digital y Punto de
+   venta~~ — **hecho**, ver sección 5.
 4. **Natalia / contabilidad** entregan costos fijos de la empresa y
    cualquier histórico de ventas de Nacional/Internacional.
 5. Con esos insumos, armamos juntos el presupuesto 2026 mensualizado y los
