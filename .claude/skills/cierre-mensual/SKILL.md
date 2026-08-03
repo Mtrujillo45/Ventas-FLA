@@ -15,7 +15,7 @@ son capítulos aparte marcados como *pendientes* en el dashboard hasta que se
 defina cómo conectarlos — no se debe inventar ni estimar esa data.
 
 Salidas que mantiene sincronizadas:
-- **Artifact privado**: (pegar aquí la URL la primera vez que se publique con la herramienta Artifact, y reusarla en corridas siguientes con `url:` para actualizar el mismo link en vez de crear uno nuevo)
+- **Artifact privado**: https://claude.ai/code/artifact/51b2388f-4d91-43e8-b3be-a2a3fbe14f98 (reusar esta URL en corridas siguientes con `url:` para actualizar el mismo link en vez de crear uno nuevo)
 - **Web pública (GitHub Pages)**: `index.html` en la raíz de la rama por defecto de `mtrujillo45/ventas-fla` → `https://mtrujillo45.github.io/Ventas-FLA/` (a diferencia de `monitor-medellin`, que publica en un repo externo llamado "Web" al que esta sesión no tiene acceso; este skill vive y publica dentro del mismo repo `ventas-fla`).
 
 ## Principio de diseño (leer antes de modificar)
@@ -183,3 +183,26 @@ mayorista y World Office.
 - **Refresco automático:** desactivado por defecto. Para correr cada cierre
   de mes automáticamente, crear un cron/routine que invoque este skill al
   inicio del mes siguiente.
+- **Fallback si `shopifyqlQuery` da `ACCESS_DENIED` (falta `read_reports` /
+  nivel 2 de datos protegidos):** el cierre de Julio 2026 se calculó así —
+  paginar `orders` por GraphQL (campos `currentSubtotalPriceSet`,
+  `currentTotalTaxSet`, `currentShippingPriceSet`, `currentTotalPriceSet`,
+  `totalDiscountsSet`, `lineItems.originalTotalSet`), filtrando a pedidos con
+  `displayFinancialStatus` en PAID/PARTIALLY_PAID/PARTIALLY_REFUNDED/REFUNDED
+  y excluyendo `test`. Ojo con el borde de mes: el filtro `created_at` de
+  Shopify no respeta consistentemente la medianoche de Bogotá en el resolver
+  `orders` (aunque sí en `ordersCount`) — hay que pedir un rango más amplio
+  del lado del servidor y filtrar en cliente por la fecha local de Bogotá
+  (`createdAt` UTC − 5h) antes de acumular, o los totales quedan inflados o
+  cortados por pedidos del día anterior/siguiente. La tienda tiene
+  `taxesIncluded: true`, así que `gross_sales` (suma de `originalTotalSet` de
+  línea) y `discounts` vienen con IVA embebido — hay que dividirlos por 1.19
+  (tasa implícita verificada: ~18.98%) para dejarlos sin IVA, igual que hace
+  `monitor-medellin`. En cambio `net_sales` = `currentSubtotalPriceSet` −
+  `currentTotalTaxSet`, y `total_sales` = `net_sales` + `taxes` + `shipping`
+  cuadran exactos sin necesidad de ese factor. Usar
+  `mcp__Composio__COMPOSIO_REMOTE_WORKBENCH` para paginar (puede ser >1,000
+  pedidos/mes) — el fetch completo de Julio 2026 tomó ~30s en dos corridas de
+  ~30 páginas cada una. Preferir siempre el método ShopifyQL exacto si el
+  scope está disponible; este fallback es una aproximación razonable, no el
+  método definitivo.
