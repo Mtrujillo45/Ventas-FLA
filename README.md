@@ -12,3 +12,4 @@ Cada dashboard es una página HTML autocontenida (sin dependencias externas) que
 ## Presupuesto de ventas 2026
 
 - [`presupuesto-2026/plan-de-datos.md`](presupuesto-2026/plan-de-datos.md) — checklist de la información necesaria para construir el presupuesto de ventas 2026 (en $ y unidades, por canal: Punto de venta, Digital, Internacional, Nacional), los puntos de equilibrio y el cuadro de control de seguimiento mensual, incluyendo qué se puede alimentar desde Shopify y qué falta pedir a contabilidad/producción.
+- [`presupuesto-2026/base-costos-precios.xlsx`](presupuesto-2026/base-costos-precios.xlsx) — costeo consolidado de 433 SKUs de 3 colecciones (Ancient, La Emperatriz, Secret Garden): costo directo, costo indirecto por prenda (⚠ pendiente de depurar una doble imputación) y precio/margen por canal (Multimarca, Página Web, Internacional, Distribuidor, Retail).
