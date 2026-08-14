@@ -490,7 +490,13 @@ def build_alerts_html(alerts):
 
 
 def build_bar_chart(labels, values, target=None, value_fmt=money_short):
-    vmax = max([abs(v) for v in values] + [target or 0, 1])
+    # Headroom (12%) arriba del valor más alto: antes la barra más alta
+    # tocaba el 100% exacto del contenedor, así que valores parecidos
+    # (p.ej. varias semanas entre $21M y $27M) se veían con casi la misma
+    # altura — con margen arriba, cada valor tiene más rango vertical real
+    # para diferenciarse.
+    raw_max = max([abs(v) for v in values] + [target or 0, 1])
+    vmax = raw_max * 1.12
     cols = []
     for lab, v in zip(labels, values):
         h = max(2, round(abs(v) / vmax * 100))
@@ -502,11 +508,30 @@ def build_bar_chart(labels, values, target=None, value_fmt=money_short):
             f'<div class="bar-shape{empty}{below}" style="height:{h}%"></div>'
             f'<div class="bar-label">{esc(lab)}</div></div>'
         )
+    # Las barras escalan contra la altura de .bar-col, que es la caja de
+    # .barchart SIN su padding-top (20px reservados arriba para que la
+    # etiqueta de la barra más alta no se corte). La línea de meta y las
+    # guías, en cambio, se posicionan con "bottom" contra .barchart-wrap
+    # completo (con ese padding incluido) — por eso NO alcanza con usar el
+    # mismo % que las barras: hay que restar esos 20px fijos con calc()
+    # antes de aplicar la fracción, o la línea de meta queda desalineada
+    # respecto a una barra que valga justo lo mismo.
+    def bottom_calc(frac):
+        return f"calc((100% - 20px) * {frac:.5f})"
+
     target_line = ""
     if target:
-        target_pct = min(100, round(target / vmax * 100))
-        target_line = f'<div class="target-line" style="bottom:{target_pct}%"><span>meta {value_fmt(target)}</span></div>'
-    return f'<div class="barchart-wrap"><div class="barchart" role="img">{"".join(cols)}</div>{target_line}</div>'
+        target_frac = min(1.0, target / vmax)
+        target_line = f'<div class="target-line" style="bottom:{bottom_calc(target_frac)}"><span>meta {value_fmt(target)}</span></div>'
+    # líneas guía horizontales (sin etiqueta, para no chocar con el valor
+    # que ya va impreso encima de cada barra) — sirven de regla visual para
+    # comparar alturas parecidas de un vistazo.
+    gridlines = "".join(
+        f'<div class="grid-line" style="bottom:{bottom_calc(frac)}"></div>'
+        for frac in (0.25, 0.5, 0.75)
+    )
+    return (f'<div class="barchart-wrap">{gridlines}'
+            f'<div class="barchart" role="img">{"".join(cols)}</div>{target_line}</div>')
 
 
 def build_grouped_bar_chart(labels, series_a, series_b, label_a, label_b, color_a="var(--series-1)", color_b="var(--series-2)"):
@@ -849,14 +874,15 @@ h2 { font-size:15px; font-weight:800; margin:0 0 4px; }
 .callout.good .dot { background:var(--good); }
 .callout b { display:block; margin-bottom:2px; }
 .barchart-wrap { position:relative; }
-.barchart { display:flex; align-items:flex-end; gap:8px; height:190px; padding-top:20px; }
+.barchart { position:relative; z-index:1; display:flex; align-items:flex-end; gap:8px; height:280px; padding-top:20px; }
 .bar-col { flex:1; display:flex; flex-direction:column; align-items:center; justify-content:flex-end; height:100%; }
 .bar-value { font-size:10.5px; color:var(--text-secondary); margin-bottom:6px; white-space:nowrap; font-variant-numeric:tabular-nums; }
-.bar-shape { width:100%; max-width:34px; background:var(--series-1); border-radius:4px 4px 0 0; }
+.bar-shape { width:100%; max-width:42px; background:var(--series-1); border-radius:4px 4px 0 0; transition:height .15s ease; }
 .bar-shape.below-target { background:var(--series-2); }
 .bar-shape.empty { background:var(--grid); }
 .bar-label { margin-top:8px; font-size:10.5px; color:var(--text-muted); text-align:center; line-height:1.25; }
-.target-line { position:absolute; left:0; right:0; border-top:2px dashed var(--series-3); }
+.grid-line { position:absolute; left:0; right:0; border-top:1px dashed var(--grid); z-index:0; }
+.target-line { position:absolute; left:0; right:0; border-top:2px dashed var(--series-3); z-index:1; }
 .target-line span { position:absolute; right:0; top:-18px; font-size:10.5px; color:var(--text-secondary); background:var(--surface-1); padding:0 4px; }
 .gbarchart { display:flex; align-items:flex-end; gap:6px; height:170px; padding-top:10px; overflow-x:auto; }
 .gbar-col { flex:0 0 auto; width:38px; display:flex; flex-direction:column; align-items:center; justify-content:flex-end; height:100%; }
@@ -970,17 +996,16 @@ def build_html(ctx):
     {daily_svg}
   </section>
 
-  <section class="two-col">
-    <div class="card">
-      <h2>Ventas por semana</h2>
-      <p class="section-sub">Semana lunes–domingo · línea punteada: meta semanal aproximada de punto de equilibrio</p>
-      {weekly_chart}
-    </div>
-    <div class="card">
-      <h2>Ventas por mes (2026)</h2>
-      <p class="section-sub">Línea punteada: meta mensual de punto de equilibrio ({money_short(ctx["breakeven"]["venta_min_mes"])})</p>
-      {monthly_chart}
-    </div>
+  <section class="card">
+    <h2>Ventas por semana</h2>
+    <p class="section-sub">Semana lunes–domingo · línea punteada: meta semanal aproximada de punto de equilibrio</p>
+    {weekly_chart}
+  </section>
+
+  <section class="card">
+    <h2>Ventas por mes (2026)</h2>
+    <p class="section-sub">Línea punteada: meta mensual de punto de equilibrio ({money_short(ctx["breakeven"]["venta_min_mes"])})</p>
+    {monthly_chart}
   </section>
 
   <section class="card">
