@@ -489,7 +489,7 @@ def build_alerts_html(alerts):
     return "\n".join(out)
 
 
-def build_bar_chart(labels, values, target=None, value_fmt=money_short):
+def build_bar_chart(labels, values, target=None, value_fmt=money_short, scrollable=False, min_bar_width=46):
     # Headroom (12%) arriba del valor más alto: antes la barra más alta
     # tocaba el 100% exacto del contenedor, así que valores parecidos
     # (p.ej. varias semanas entre $21M y $27M) se veían con casi la misma
@@ -497,13 +497,14 @@ def build_bar_chart(labels, values, target=None, value_fmt=money_short):
     # para diferenciarse.
     raw_max = max([abs(v) for v in values] + [target or 0, 1])
     vmax = raw_max * 1.12
+    col_style = f' style="flex:0 0 {min_bar_width}px"' if scrollable else ""
     cols = []
     for lab, v in zip(labels, values):
         h = max(2, round(abs(v) / vmax * 100))
         empty = " empty" if v == 0 else ""
         below = " below-target" if (target and v < target) else ""
         cols.append(
-            '<div class="bar-col">'
+            f'<div class="bar-col"{col_style}>'
             f'<div class="bar-value">{value_fmt(v)}</div>'
             f'<div class="bar-shape{empty}{below}" style="height:{h}%"></div>'
             f'<div class="bar-label">{esc(lab)}</div></div>'
@@ -511,7 +512,7 @@ def build_bar_chart(labels, values, target=None, value_fmt=money_short):
     # Las barras escalan contra la altura de .bar-col, que es la caja de
     # .barchart SIN su padding-top (20px reservados arriba para que la
     # etiqueta de la barra más alta no se corte). La línea de meta y las
-    # guías, en cambio, se posicionan con "bottom" contra .barchart-wrap
+    # guías, en cambio, se posicionan con "bottom" contra el contenedor
     # completo (con ese padding incluido) — por eso NO alcanza con usar el
     # mismo % que las barras: hay que restar esos 20px fijos con calc()
     # antes de aplicar la fracción, o la línea de meta queda desalineada
@@ -530,8 +531,24 @@ def build_bar_chart(labels, values, target=None, value_fmt=money_short):
         f'<div class="grid-line" style="bottom:{bottom_calc(frac)}"></div>'
         for frac in (0.25, 0.5, 0.75)
     )
-    return (f'<div class="barchart-wrap">{gridlines}'
-            f'<div class="barchart" role="img">{"".join(cols)}</div>{target_line}</div>')
+    barchart = f'<div class="barchart{" scrollable" if scrollable else ""}" role="img">{"".join(cols)}</div>'
+
+    if not scrollable:
+        return f'<div class="barchart-wrap">{gridlines}{barchart}{target_line}</div>'
+
+    # Cuando hay más semanas de las que caben legibles en el ancho de la
+    # tarjeta, el contenedor se desplaza horizontalmente en vez de seguir
+    # angostando cada barra. El scrollbar nativo del navegador no es
+    # confiable como señal visual (en varios navegadores/SO viene oculto u
+    # "overlay", solo aparece al pasar el mouse) así que se reemplaza por
+    # una barra de desplazamiento propia, siempre visible y arrastrable,
+    # sincronizada por JS al final de la página (ver <script> en build_html).
+    return (
+        '<div class="barchart-wrap barchart-wrap-scroll">'
+        f'<div class="barchart-scroll-inner">{gridlines}{barchart}{target_line}</div>'
+        '</div>'
+        '<div class="scrollbar-ui"><div class="scrollbar-track"><div class="scrollbar-thumb"></div></div></div>'
+    )
 
 
 def build_grouped_bar_chart(labels, series_a, series_b, label_a, label_b, color_a="var(--series-1)", color_b="var(--series-2)"):
@@ -874,7 +891,19 @@ h2 { font-size:15px; font-weight:800; margin:0 0 4px; }
 .callout.good .dot { background:var(--good); }
 .callout b { display:block; margin-bottom:2px; }
 .barchart-wrap { position:relative; }
+.barchart-wrap-scroll {
+  overflow-x:auto; overflow-y:hidden;
+  scrollbar-width:none; -ms-overflow-style:none;
+}
+.barchart-wrap-scroll::-webkit-scrollbar { display:none; height:0; }
+.barchart-scroll-inner { position:relative; width:max-content; min-width:100%; }
+.scrollbar-ui { margin-top:10px; }
+.scrollbar-track { position:relative; height:8px; background:var(--grid); border-radius:999px; cursor:pointer; }
+.scrollbar-thumb { position:absolute; top:0; left:0; height:100%; min-width:24px; background:var(--series-1); border-radius:999px; cursor:grab; touch-action:none; }
+.scrollbar-thumb:hover { background:var(--series-2); }
+.scrollbar-thumb:active { cursor:grabbing; background:var(--series-2); }
 .barchart { position:relative; z-index:1; display:flex; align-items:flex-end; gap:8px; height:280px; padding-top:20px; }
+.barchart.scrollable { width:max-content; }
 .bar-col { flex:1; display:flex; flex-direction:column; align-items:center; justify-content:flex-end; height:100%; }
 .bar-value { font-size:10.5px; color:var(--text-secondary); margin-bottom:6px; white-space:nowrap; font-variant-numeric:tabular-nums; }
 .bar-shape { width:100%; max-width:42px; background:var(--series-1); border-radius:4px 4px 0 0; transition:height .15s ease; }
@@ -944,7 +973,7 @@ def build_html(ctx):
     weeks_sorted = sorted(ctx["agg"]["weekly"].keys())
     week_labels = [ctx["agg"]["weekly_range"][wk][0].strftime("%d/%m") for wk in weeks_sorted]
     week_vals = [ctx["agg"]["weekly"][wk] for wk in weeks_sorted]
-    weekly_chart = build_bar_chart(week_labels, week_vals, target=ctx["breakeven"]["venta_min_semana"])
+    weekly_chart = build_bar_chart(week_labels, week_vals, target=ctx["breakeven"]["venta_min_semana"], scrollable=True)
 
     daily_svg = build_daily_svg(ctx["agg"]["daily"], ctx["breakeven"]["venta_min_dia"])
 
@@ -1038,6 +1067,60 @@ def build_html(ctx):
     generación — para actualizarla, pide de nuevo que se corra el dashboard.
   </footer>
 </div>
+<script>
+  // Barra de desplazamiento propia para los gráficos de barras que se
+  // desplazan horizontalmente (ej. Ventas por semana): el scrollbar nativo
+  // del navegador no es una señal confiable (varios navegadores/SO lo
+  // ocultan por defecto), así que esta barra siempre visible lo reemplaza
+  // — se sincroniza con el scroll nativo (trackpad, touch, teclado) y
+  // además se puede arrastrar o hacer clic para saltar.
+  document.querySelectorAll('.barchart-wrap-scroll').forEach(function (scrollEl) {{
+    var ui = scrollEl.nextElementSibling;
+    if (!ui || !ui.classList.contains('scrollbar-ui')) return;
+    var track = ui.querySelector('.scrollbar-track');
+    var thumb = ui.querySelector('.scrollbar-thumb');
+
+    function sync() {{
+      var maxScroll = scrollEl.scrollWidth - scrollEl.clientWidth;
+      if (maxScroll <= 1) {{ ui.style.display = 'none'; return; }}
+      ui.style.display = '';
+      var thumbPct = Math.max(scrollEl.clientWidth / scrollEl.scrollWidth * 100, 8);
+      thumb.style.width = thumbPct + '%';
+      var travel = track.clientWidth - thumb.offsetWidth;
+      var pos = travel > 0 ? (scrollEl.scrollLeft / maxScroll) * travel : 0;
+      thumb.style.transform = 'translateX(' + pos + 'px)';
+    }}
+
+    function scrollToClientX(clientX) {{
+      var rect = track.getBoundingClientRect();
+      var travel = rect.width - thumb.offsetWidth;
+      var pct = travel > 0 ? (clientX - rect.left - thumb.offsetWidth / 2) / travel : 0;
+      pct = Math.min(1, Math.max(0, pct));
+      scrollEl.scrollLeft = pct * (scrollEl.scrollWidth - scrollEl.clientWidth);
+    }}
+
+    scrollEl.addEventListener('scroll', sync);
+    window.addEventListener('resize', sync);
+
+    var dragging = false;
+    thumb.addEventListener('pointerdown', function (e) {{
+      dragging = true;
+      thumb.setPointerCapture(e.pointerId);
+      e.preventDefault();
+    }});
+    thumb.addEventListener('pointermove', function (e) {{
+      if (dragging) scrollToClientX(e.clientX);
+    }});
+    thumb.addEventListener('pointerup', function () {{ dragging = false; }});
+    track.addEventListener('pointerdown', function (e) {{
+      if (e.target === thumb) return;
+      scrollToClientX(e.clientX);
+    }});
+
+    scrollEl.scrollLeft = scrollEl.scrollWidth; // arranca mostrando lo más reciente
+    sync();
+  }});
+</script>
 </body>
 </html>'''
 
