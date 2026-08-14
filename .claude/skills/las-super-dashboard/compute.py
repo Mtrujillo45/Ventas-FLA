@@ -723,7 +723,7 @@ def build_er_table(er_rows):
     )
 
 
-def build_historico_html(ventas_hist, utilidad_hist, monthly_2026, current_month):
+def build_historico_html(ventas_hist, utilidad_hist, monthly_2026, current_month, socios_monthly_2026):
     years = sorted(ventas_hist.keys())
     ventas_totales = {}
     for y in years:
@@ -772,8 +772,17 @@ def build_historico_html(ventas_hist, utilidad_hist, monthly_2026, current_month
 
     utilidad_totales = {}
     for y in years:
-        vals = utilidad_hist.get(y, [None] * 12)
-        utilidad_totales[y] = sum(v for v in vals if v)
+        if y == "2026":
+            # La hoja "Venta Mensual" solo tiene enero-marzo cargados en su
+            # columna 2026 de "UTILIDAD SOCIOS" (quedó desactualizada, igual
+            # que pasaba con su columna de ventas) — para 2026 se usa el
+            # mismo libro diario de caja (Centro Costos "socios") que ya usan
+            # el KPI "Retiros de socios" y la fila "RETIROS SOCIOS" del
+            # Estado de Resultados, para que las tres cifras coincidan.
+            utilidad_totales[y] = sum(socios_monthly_2026.values())
+        else:
+            vals = utilidad_hist.get(y, [None] * 12)
+            utilidad_totales[y] = sum(v for v in vals if v)
     max_u = max(utilidad_totales.values()) or 1
     rows_u = []
     prev = None
@@ -990,7 +999,8 @@ def build_html(ctx):
     total_emp = total_yaneth + total_lina or 1
 
     er_table = build_er_table(ctx["er_rows"])
-    historico = build_historico_html(ctx["ventas_hist"], ctx["utilidad_hist"], ctx["agg"]["monthly"], ctx["current_month"])
+    socios_monthly_2026 = {r["mes"]: abs(r["socios"]) for r in ctx["er_rows"]}
+    historico = build_historico_html(ctx["ventas_hist"], ctx["utilidad_hist"], ctx["agg"]["monthly"], ctx["current_month"], socios_monthly_2026)
 
     ultimo_dia = sorted(ctx["agg"]["daily"].keys())[-1]
 

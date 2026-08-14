@@ -70,7 +70,14 @@ confirmación):**
 - **"Utilidad" histórica** = Utilidad de Socios (retiros/reparto a socios),
   confirmado con el usuario como proxy porque es la única cifra de
   rentabilidad con histórico completo 2020-2025 en el archivo. No es Utilidad
-  Neta contable.
+  Neta contable. **Igual que con ventas, para el año 2026 esta cifra NO sale
+  de la columna 2026 de "Venta Mensual"** (solo tiene enero-marzo cargados,
+  quedó desactualizada) **sino del libro diario de caja** (Centro Costos
+  "socios", `socios_monthly_2026` en `build_html()`) — la misma fuente que ya
+  usan el KPI "Retiros de socios" y la fila "RETIROS SOCIOS" del Estado de
+  Resultados. Las tres cifras deben coincidir siempre; si alguna vez no
+  coinciden, es señal de que alguna quedó apuntando de nuevo a la hoja
+  "Venta Mensual" en vez de a "Caja".
 - **Comparativo por año**: se muestran DOS vistas — total anual (2026 marcado
   como parcial, sin badge de crecimiento porque compararía un año completo
   contra unos pocos meses) y "mismo período" (enero–mes actual, para todos los
