@@ -259,7 +259,9 @@ def main():
         print(f"Producto #1: {top[0]} — {money(float(top[1]))} ({pct(float(top[1]), totals['gross']):.1f}% de la venta bruta)")
 
     if args.html:
-        patch_html(args.html, {"KPIS": kpi_block, "CHART": chart_block, "PRODUCTS": products_block}, args.now, args.label)
+        # El dashboard ya no tiene sección de Top 20 productos (removida a pedido
+        # del usuario) -> no se parchea el marcador PRODUCTS, solo KPIS y CHART.
+        patch_html(args.html, {"KPIS": kpi_block, "CHART": chart_block}, args.now, args.label)
         print(f"HTML actualizado: {args.html}")
     else:
         print("\n--- KPIs ---\n" + kpi_block)

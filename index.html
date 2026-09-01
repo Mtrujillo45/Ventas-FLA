@@ -182,7 +182,10 @@
   .partner-category:first-child { margin-top: 0; border-top: none; padding-top: 0; }
   .partner-block { border-top: 1px solid var(--grid); padding-top: 10px; }
   .partner-category + .partner-block { border-top: none; padding-top: 8px; }
-  .partner-block .hbar-row { grid-template-columns: 220px 1fr 230px; }
+  .partner-summary { display: flex; justify-content: space-between; align-items: baseline; gap: 16px; }
+  .partner-name { font-size: 13px; font-weight: 600; color: var(--text-primary); }
+  .partner-figures { text-align: right; font-size: 12.5px; font-variant-numeric: tabular-nums; color: var(--text-secondary); white-space: nowrap; }
+  .partner-figures .units { display: block; color: var(--text-muted); font-size: 11.5px; font-weight: 400; white-space: normal; }
   .partner-name { font-weight: 600; }
   .doc-list { margin-top: 6px; display: flex; flex-direction: column; }
   .doc-row {
@@ -210,11 +213,8 @@
     .hbar-row { grid-template-columns: 20px 1fr 120px 100px; }
     .channel-grid { grid-template-columns: 1fr; }
     .channel-kpis-4 { grid-template-columns: repeat(2, 1fr); }
-    .partner-block .hbar-row { grid-template-columns: 1fr; row-gap: 6px; }
-    .partner-block .hbar-value { text-align: left; }
-    .doc-row { grid-template-columns: 1fr; row-gap: 2px; padding: 6px 0; }
-    .doc-row + .doc-row { border-top: 1px solid var(--grid); }
-    .doc-amount { text-align: left; }
+    .partner-summary { flex-direction: column; align-items: flex-start; gap: 2px; }
+    .partner-figures { text-align: left; }
   }
 </style>
 </head>
@@ -269,34 +269,6 @@
   <!-- CHART_END -->
   </section>
 
-  <section class="card">
-    <h2>Top 20 productos por venta bruta</h2>
-    <p class="section-sub">Ordenado de mayor a menor venta bruta del mes · incluye todos los canales de Shopify</p>
-    <!-- PRODUCTS_START -->
-  <div class="hbar-list">
-    <div class="hbar-row"><div class="hbar-rank">1</div><div class="hbar-name">COLOMBIA MESH SHIRT</div><div class="hbar-track"><div class="hbar-fill" style="width:100.0%"></div></div><div class="hbar-value">$35,826,202<span class="units">309 pedidos · 15.0%</span></div></div>
-    <div class="hbar-row"><div class="hbar-rank">2</div><div class="hbar-name">MEDELLÍN MI AMOR MESH SHIRT</div><div class="hbar-track"><div class="hbar-fill" style="width:91.4%"></div></div><div class="hbar-value">$32,761,438<span class="units">229 pedidos · 13.7%</span></div></div>
-    <div class="hbar-row"><div class="hbar-rank">3</div><div class="hbar-name">UN GUARITO T-SHIRT</div><div class="hbar-track"><div class="hbar-fill" style="width:45.5%"></div></div><div class="hbar-value">$16,292,579<span class="units">118 pedidos · 6.8%</span></div></div>
-    <div class="hbar-row"><div class="hbar-rank">4</div><div class="hbar-name">ABANICO MEDELLÍN MI AMOR</div><div class="hbar-track"><div class="hbar-fill" style="width:35.9%"></div></div><div class="hbar-value">$12,873,664<span class="units">188 pedidos · 5.4%</span></div></div>
-    <div class="hbar-row"><div class="hbar-rank">5</div><div class="hbar-name">BLOOM MESH SHIRT</div><div class="hbar-track"><div class="hbar-fill" style="width:31.5%"></div></div><div class="hbar-value">$11,297,874<span class="units">91 pedidos · 4.7%</span></div></div>
-    <div class="hbar-row"><div class="hbar-rank">6</div><div class="hbar-name">COLOMBIA T-SHIRT</div><div class="hbar-track"><div class="hbar-fill" style="width:28.8%"></div></div><div class="hbar-value">$10,326,504<span class="units">92 pedidos · 4.3%</span></div></div>
-    <div class="hbar-row"><div class="hbar-rank">7</div><div class="hbar-name">ETERNA PRIMAVERA MESH SHIRT</div><div class="hbar-track"><div class="hbar-fill" style="width:26.2%"></div></div><div class="hbar-value">$9,381,529<span class="units">83 pedidos · 3.9%</span></div></div>
-    <div class="hbar-row"><div class="hbar-rank">8</div><div class="hbar-name">SOLAR MESH SHIRT</div><div class="hbar-track"><div class="hbar-fill" style="width:23.6%"></div></div><div class="hbar-value">$8,470,790<span class="units">82 pedidos · 3.6%</span></div></div>
-    <div class="hbar-row"><div class="hbar-rank">9</div><div class="hbar-name">FUNGI MESH SHIRT</div><div class="hbar-track"><div class="hbar-fill" style="width:20.5%"></div></div><div class="hbar-value">$7,346,445<span class="units">85 pedidos · 3.1%</span></div></div>
-    <div class="hbar-row"><div class="hbar-rank">10</div><div class="hbar-name">PRISMA MESH SHIRT</div><div class="hbar-track"><div class="hbar-fill" style="width:15.0%"></div></div><div class="hbar-value">$5,370,655<span class="units">65 pedidos · 2.3%</span></div></div>
-    <div class="hbar-row"><div class="hbar-rank">11</div><div class="hbar-name">RENACER MESH DRESS</div><div class="hbar-track"><div class="hbar-fill" style="width:12.8%"></div></div><div class="hbar-value">$4,583,017<span class="units">102 pedidos · 1.9%</span></div></div>
-    <div class="hbar-row"><div class="hbar-rank">12</div><div class="hbar-name">MEDELLÍN MI AMOR HEADKERCHIEF</div><div class="hbar-track"><div class="hbar-fill" style="width:12.5%"></div></div><div class="hbar-value">$4,493,916<span class="units">79 pedidos · 1.9%</span></div></div>
-    <div class="hbar-row"><div class="hbar-rank">13</div><div class="hbar-name">RENACER MESH LONG DRESS</div><div class="hbar-track"><div class="hbar-fill" style="width:11.6%"></div></div><div class="hbar-value">$4,168,975<span class="units">85 pedidos · 1.7%</span></div></div>
-    <div class="hbar-row"><div class="hbar-rank">14</div><div class="hbar-name">MEDELLÍN MI AMOR PRIMAVERA CHARM</div><div class="hbar-track"><div class="hbar-fill" style="width:11.1%"></div></div><div class="hbar-value">$3,966,319<span class="units">32 pedidos · 1.7%</span></div></div>
-    <div class="hbar-row"><div class="hbar-rank">15</div><div class="hbar-name">GALAXIA MESH DRESS</div><div class="hbar-track"><div class="hbar-fill" style="width:10.4%"></div></div><div class="hbar-value">$3,726,378<span class="units">77 pedidos · 1.6%</span></div></div>
-    <div class="hbar-row"><div class="hbar-rank">16</div><div class="hbar-name">ANCIENT MESH SHIRT</div><div class="hbar-track"><div class="hbar-fill" style="width:9.8%"></div></div><div class="hbar-value">$3,514,941<span class="units">39 pedidos · 1.5%</span></div></div>
-    <div class="hbar-row"><div class="hbar-rank">17</div><div class="hbar-name">SOLAR MESH LONG SHIRT</div><div class="hbar-track"><div class="hbar-fill" style="width:8.1%"></div></div><div class="hbar-value">$2,901,782<span class="units">32 pedidos · 1.2%</span></div></div>
-    <div class="hbar-row"><div class="hbar-rank">18</div><div class="hbar-name">MÉXICO MESH SHIRT</div><div class="hbar-track"><div class="hbar-fill" style="width:7.3%"></div></div><div class="hbar-value">$2,619,832<span class="units">35 pedidos · 1.1%</span></div></div>
-    <div class="hbar-row"><div class="hbar-rank">19</div><div class="hbar-name">ETERNA PRIMAVERA T-SHIRT</div><div class="hbar-track"><div class="hbar-fill" style="width:6.2%"></div></div><div class="hbar-value">$2,226,857<span class="units">30 pedidos · 0.9%</span></div></div>
-    <div class="hbar-row"><div class="hbar-rank">20</div><div class="hbar-name">SOLAR ONE SHOULDER ONE PIECE</div><div class="hbar-track"><div class="hbar-fill" style="width:6.1%"></div></div><div class="hbar-value">$2,183,782<span class="units">14 pedidos · 0.9%</span></div></div>
-  </div>
-  <!-- PRODUCTS_END -->
-  </section>
 
 <!-- MANUAL_CHANNELS_START -->
   <section>
@@ -328,71 +300,57 @@
         <h3>Socios comerciales</h3>
         <p class="channel-desc">Facturas/proformas de mayoristas, retail y exportación, fuera de Shopify (sistema World Office). Cargadas manualmente para este cierre a partir de los documentos adjuntos por el usuario — <strong>no es todavía una conexión automática</strong>; falta definir cómo conectar este canal mes a mes.</p>
         <div class="channel-kpis channel-kpis-4">
-          <div><span class="ck-label">Documentos</span><span class="ck-value">19</span></div>
-          <div><span class="ck-label">Unidades</span><span class="ck-value">1,349</span></div>
-          <div><span class="ck-label">Venta neta (sin IVA)</span><span class="ck-value">$147,270,196</span></div>
+          <div><span class="ck-label">Documentos</span><span class="ck-value">22</span></div>
+          <div><span class="ck-label">Unidades</span><span class="ck-value">1,808</span></div>
+          <div><span class="ck-label">Venta neta (sin IVA)</span><span class="ck-value">$157,328,492</span></div>
           <div><span class="ck-label">IVA</span><span class="ck-value">$14,250,556</span></div>
-          <div><span class="ck-label">Envío</span><span class="ck-value">$374,217</span></div>
+          <div><span class="ck-label">Envío</span><span class="ck-value">$1,070,499</span></div>
         </div>
         <div class="partner-list"><div class="partner-category">Mayoristas y retail — Colombia</div>
     <div class="partner-block">
-      <div class="hbar-row">
-        <div class="hbar-name partner-name">Wanitta (Creemos que todo es posible S.A.S)</div>
-        <div class="hbar-track"><div class="hbar-fill" style="width:55.8%"></div></div>
-        <div class="hbar-value">$31,978,252<span class="units">517 uds · 4 docs · IVA $6,075,868</span></div>
+      <div class="partner-summary">
+        <span class="partner-name">Wanitta (Creemos que todo es posible S.A.S)</span>
+        <span class="partner-figures">$31,978,252<span class="units">517 uds · 4 docs · IVA $6,075,868</span></span>
       </div>
-      <div class="doc-list"><div class="doc-row"><span class="doc-id">RFEL8231</span><span class="doc-date">2026-08-03</span><span class="doc-units">95 uds</span><span class="doc-amount">$6,242,269 <span class="doc-iva">+ $1,186,031 IVA</span></span></div><div class="doc-row"><span class="doc-id">RFEL8237</span><span class="doc-date">2026-08-05</span><span class="doc-units">137 uds</span><span class="doc-amount">$8,870,269 <span class="doc-iva">+ $1,685,351 IVA</span></span></div><div class="doc-row"><span class="doc-id">RFEL8245</span><span class="doc-date">2026-08-10</span><span class="doc-units">173 uds</span><span class="doc-amount">$10,957,496 <span class="doc-iva">+ $2,081,924 IVA</span></span></div><div class="doc-row"><span class="doc-id">s/n</span><span class="doc-date">2026-08-26</span><span class="doc-units">112 uds</span><span class="doc-amount">$5,908,218 <span class="doc-iva">+ $1,122,562 IVA</span></span></div></div>
     </div>
     <div class="partner-block">
-      <div class="hbar-row">
-        <div class="hbar-name partner-name">Casa Viva (18 Razones S.A.S)</div>
-        <div class="hbar-track"><div class="hbar-fill" style="width:57.4%"></div></div>
-        <div class="hbar-value">$32,930,824<span class="units">426 uds · 8 docs · IVA $6,256,856 · Envío $44,997</span></div>
+      <div class="partner-summary">
+        <span class="partner-name">Casa Viva (18 Razones S.A.S)</span>
+        <span class="partner-figures">$32,930,824<span class="units">426 uds · 8 docs · IVA $6,256,856 · Envío $44,997</span></span>
       </div>
-      <div class="doc-list"><div class="doc-row"><span class="doc-id">RFEL8230</span><span class="doc-date">2026-08-03</span><span class="doc-units">108 uds</span><span class="doc-amount">$7,934,824 <span class="doc-iva">+ $1,507,616 IVA</span></span></div><div class="doc-row"><span class="doc-id">RFEL8246</span><span class="doc-date">2026-08-05</span><span class="doc-units">44 uds</span><span class="doc-amount">$4,038,588 <span class="doc-iva">+ $767,332 IVA</span></span></div><div class="doc-row"><span class="doc-id">RFEL8247</span><span class="doc-date">2026-08-08</span><span class="doc-units">148 uds</span><span class="doc-amount">$11,308,941 <span class="doc-iva">+ $2,148,699 IVA</span></span></div><div class="doc-row"><span class="doc-id">RFEL8260</span><span class="doc-date">2026-08-12</span><span class="doc-units">26 uds</span><span class="doc-amount">$1,998,471 <span class="doc-iva">+ $379,709 IVA</span></span></div><div class="doc-row"><span class="doc-id">RFEL8261</span><span class="doc-date">2026-08-18</span><span class="doc-units">24 uds</span><span class="doc-amount">$1,892,706 <span class="doc-iva">+ $359,614 IVA</span></span></div><div class="doc-row"><span class="doc-id">RFEL8267</span><span class="doc-date">2026-08-20</span><span class="doc-units">6 uds</span><span class="doc-amount">$811,412 <span class="doc-iva">+ $154,168 IVA</span> <span class="doc-iva">· envío $44,997</span></span></div><div class="doc-row"><span class="doc-id">RFEL8281</span><span class="doc-date">2026-08-21</span><span class="doc-units">12 uds</span><span class="doc-amount">$705,176 <span class="doc-iva">+ $133,984 IVA</span></span></div><div class="doc-row"><span class="doc-id">RFEL8282</span><span class="doc-date">2026-08-25</span><span class="doc-units">58 uds</span><span class="doc-amount">$4,240,706 <span class="doc-iva">+ $805,734 IVA</span></span></div></div>
     </div>
     <div class="partner-block">
-      <div class="hbar-row">
-        <div class="hbar-name partner-name">Falabella de Colombia S.A.S</div>
-        <div class="hbar-track"><div class="hbar-fill" style="width:15.5%"></div></div>
-        <div class="hbar-value">$8,900,676<span class="units">121 uds · 1 docs · IVA $1,691,128</span></div>
+      <div class="partner-summary">
+        <span class="partner-name">Falabella de Colombia S.A.S</span>
+        <span class="partner-figures">$8,900,676<span class="units">121 uds · 1 docs · IVA $1,691,128</span></span>
       </div>
-      <div class="doc-list"><div class="doc-row"><span class="doc-id">RFEL8257</span><span class="doc-date">2026-08-18</span><span class="doc-units">121 uds</span><span class="doc-amount">$8,900,676 <span class="doc-iva">+ $1,691,128 IVA</span></span></div></div>
     </div>
     <div class="partner-block">
-      <div class="hbar-row">
-        <div class="hbar-name partner-name">Learia (Luz Andrea Ochoa Garcés)</div>
-        <div class="hbar-track"><div class="hbar-fill" style="width:2.1%"></div></div>
-        <div class="hbar-value">$1,193,176<span class="units">16 uds · 1 docs · IVA $226,704</span></div>
+      <div class="partner-summary">
+        <span class="partner-name">Learia (Luz Andrea Ochoa Garcés)</span>
+        <span class="partner-figures">$1,193,176<span class="units">16 uds · 1 docs · IVA $226,704</span></span>
       </div>
-      <div class="doc-list"><div class="doc-row"><span class="doc-id">s/n</span><span class="doc-date">2026-08-05</span><span class="doc-units">16 uds</span><span class="doc-amount">$1,193,176 <span class="doc-iva">+ $226,704 IVA</span></span></div></div>
-    </div><div class="partner-category">Exportaciones (5 de ~8 facturas recibidas — 3 más pendientes)</div>
+    </div><div class="partner-category">Exportaciones</div>
     <div class="partner-block">
-      <div class="hbar-row">
-        <div class="hbar-name partner-name">Shop Greta SRL (exportación · Rep. Dominicana)</div>
-        <div class="hbar-track"><div class="hbar-fill" style="width:2.0%"></div></div>
-        <div class="hbar-value">$1,145,733<span class="units">9 uds · 1 docs · IVA $0 · Envío $22,924</span></div>
+      <div class="partner-summary">
+        <span class="partner-name">Shop Greta SRL (exportación · Rep. Dominicana)</span>
+        <span class="partner-figures">$6,094,356<span class="units">63 uds · 2 docs · IVA $0 · Envío $99,127</span></span>
       </div>
-      <div class="doc-list"><div class="doc-row"><span class="doc-id">RFEL8275</span><span class="doc-date">2026-08-25</span><span class="doc-units">9 uds</span><span class="doc-amount">$1,145,733 <span class="doc-iva">exportación, 0% IVA</span> <span class="doc-iva">· envío $22,924</span></span></div></div>
     </div>
     <div class="partner-block">
-      <div class="hbar-row">
-        <div class="hbar-name partner-name">Cristalina Swimwear (exportación · Miami, EE.UU.)</div>
-        <div class="hbar-track"><div class="hbar-fill" style="width:100.0%"></div></div>
-        <div class="hbar-value">$57,321,692<span class="units">260 uds · 2 docs · IVA $0 · Envío $306,296</span></div>
+      <div class="partner-summary">
+        <span class="partner-name">Cristalina Swimwear (exportación · Miami, EE.UU.)</span>
+        <span class="partner-figures">$62,431,365<span class="units">665 uds · 4 docs · IVA $0 · Envío $926,375</span></span>
       </div>
-      <div class="doc-list"><div class="doc-row"><span class="doc-id">RFEL8269</span><span class="doc-date">2026-08-21</span><span class="doc-units">260 uds</span><span class="doc-amount">$2,755,439 <span class="doc-iva">exportación, 0% IVA</span> <span class="doc-iva">· envío $306,296</span></span></div><div class="doc-row"><span class="doc-id">RFEL8279</span><span class="doc-date">2026-08-26</span><span class="doc-units">servicio</span><span class="doc-amount">$54,566,253 <span class="doc-iva">exportación, 0% IVA</span></span></div></div>
     </div>
     <div class="partner-block">
-      <div class="hbar-row">
-        <div class="hbar-name partner-name">Siete Mares CA (exportación · Valencia, Venezuela)</div>
-        <div class="hbar-track"><div class="hbar-fill" style="width:24.1%"></div></div>
-        <div class="hbar-value">$13,799,843<span class="units">0 uds · 2 docs · IVA $0</span></div>
+      <div class="partner-summary">
+        <span class="partner-name">Siete Mares CA (exportación · Valencia, Venezuela)</span>
+        <span class="partner-figures">$13,799,843<span class="units">0 uds · 2 docs · IVA $0</span></span>
       </div>
-      <div class="doc-list"><div class="doc-row"><span class="doc-id">RFEL8289</span><span class="doc-date">2026-08-26</span><span class="doc-units">servicio</span><span class="doc-amount">$7,731,748 <span class="doc-iva">exportación, 0% IVA</span></span></div><div class="doc-row"><span class="doc-id">RFEL8295</span><span class="doc-date">2026-08-27</span><span class="doc-units">servicio</span><span class="doc-amount">$6,068,095 <span class="doc-iva">exportación, 0% IVA</span></span></div></div>
     </div></div>
         <p class="channel-footnote">Mayoristas/retail nacional: IVA calculado dividiendo el total de cada proforma entre 1.19 (los totales de Wanitta/Casa Viva/Learia ya incluyen IVA, confirmado con el usuario); Falabella es factura electrónica DIAN formal, ya desglosada. La retención en la fuente que aparece en las proformas es informativa (anticipo de renta descontado por el comprador) y no se resta de la venta. Se excluyeron por ser de julio: proforma Ana Mercedes (31 jul) y las proformas Wanitta de julio (Jul25/Jul28/Jul30-31). Se excluyeron por ser pendientes/planeación, no facturas confirmadas: "Eterna Pendientes Julio31" y "Abanicos Pends Ago21" del archivo Wanitta.
-        Exportaciones: facturas electrónicas DIAN en USD, convertidas a COP con la TRM del día que trae cada factura; 0% IVA por ser exportación exenta. Flete y seguro internacional se separan como envío (confirmado con el usuario). Cristalina (RFEL8279), Siete Mares (RFEL8289, RFEL8295) son honorarios de asesoría en diseño/patronaje, no unidades de producto — se suman a la venta neta a pedido del usuario, marcados como "servicio" en vez de unidades. Van 5 de ~8 facturas de exportación; 3 más quedan pendientes de una próxima carga.</p>
+        Exportaciones: facturas electrónicas DIAN en USD, convertidas a COP con la TRM del día que trae cada factura; 0% IVA por ser exportación exenta. Flete y seguro internacional se separan como envío (confirmado con el usuario). Cristalina (RFEL8279), Siete Mares (RFEL8289, RFEL8295) son honorarios de asesoría en diseño/patronaje, no unidades de producto — se suman a la venta neta a pedido del usuario, marcados como "servicio" en vez de unidades.</p>
       </div>
     </div>
   </section>
@@ -403,15 +361,15 @@
     <h2>Consolidado — Agosto 2026</h2>
     <p class="section-sub">Tienda web + Showroom + Socios comerciales. World Office (conciliación contable) sigue pendiente de conectar — no se incluye ni estima aquí.</p>
     <section class="kpi-grid">
-      <div class="kpi kpi-highlight"><div class="label">Unidades totales</div><div class="value">4,331</div><div class="sub">Tienda web + socios comerciales</div></div>
-      <div class="kpi kpi-highlight"><div class="label">Venta neta total (sin IVA)</div><div class="value">$377,151,208</div><div class="sub">Subtotal después de descuentos/devoluciones, antes de IVA y envío</div></div>
+      <div class="kpi kpi-highlight"><div class="label">Unidades totales</div><div class="value">4,790</div><div class="sub">Tienda web + socios comerciales</div></div>
+      <div class="kpi kpi-highlight"><div class="label">Venta neta total (sin IVA)</div><div class="value">$387,209,504</div><div class="sub">Subtotal después de descuentos/devoluciones, antes de IVA y envío</div></div>
       <div class="kpi"><div class="label">IVA total</div><div class="value">$57,723,902</div><div class="sub">Impuesto cobrado en todos los canales</div></div>
-      <div class="kpi"><div class="label">Envío total</div><div class="value">$18,158,043</div><div class="sub">Ingreso de envío, aparte del IVA — debe facturarse</div></div>
-      <div class="kpi"><div class="label">Venta total con IVA y envío</div><div class="value">$453,033,153</div><div class="sub">Lo cobrado a clientes en todos los canales</div></div>
+      <div class="kpi"><div class="label">Envío total</div><div class="value">$18,854,325</div><div class="sub">Ingreso de envío, aparte del IVA — debe facturarse</div></div>
+      <div class="kpi"><div class="label">Venta total con IVA y envío</div><div class="value">$463,787,731</div><div class="sub">Lo cobrado a clientes en todos los canales</div></div>
     </section>
     <div class="consolidado-split">
-      <div class="split-row"><span>Tienda web (Shopify)</span><span>$229,881,012 <span class="split-pct">61.0%</span></span></div>
-      <div class="split-row"><span>Socios comerciales</span><span>$147,270,196 <span class="split-pct">39.0%</span></span></div>
+      <div class="split-row"><span>Tienda web (Shopify)</span><span>$229,881,012 <span class="split-pct">59.4%</span></span></div>
+      <div class="split-row"><span>Socios comerciales</span><span>$157,328,492 <span class="split-pct">40.6%</span></span></div>
       <div class="split-row"><span>Showroom</span><span>$0 <span class="split-pct">0.0%</span></span></div>
     </div>
   </section>

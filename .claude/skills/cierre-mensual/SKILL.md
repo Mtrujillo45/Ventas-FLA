@@ -54,23 +54,32 @@ ese dashboard.
 - Tarjetas KPI con una frase corta debajo de cada valor explicando qué es
   (mismo patrón que las tarjetas de Medellín, pero con la explicación
   agregada — ver `build_kpis()` en `compute.py`).
-- Ranking horizontal de productos (mismo componente visual `.hbar-row` que
-  usa Medellín para su ranking por producto), aquí ampliado a top 20 y
-  ordenado por venta bruta.
 - Paleta, tipografía y tokens de tema claro/oscuro: tomados directamente del
   dashboard de Medellín (`--series-1`, `--series-2`, `--good/warning/critical`,
   etc.) para que ambos dashboards se vean como parte de la misma familia.
+
+**Removido a pedido explícito del usuario (agosto 2026) — no reagregar sin
+que lo pida de nuevo:**
+- La sección "Top 20 productos por venta bruta" (ranking `.hbar-row`/`.hbar-track`).
+  `compute.py` ya NO parchea un marcador `PRODUCTS` en el HTML (solo `KPIS` y
+  `CHART`); sigue calculando `products_block`/imprimiendo el producto #1 en
+  consola por si sirve para narrar, pero no lo escribe en el dashboard.
+- Las barras de progreso (`.hbar-track` azul) bajo cada socio comercial en la
+  sección "Facturación por canal" — el usuario dijo que no le aportaban nada.
+  Cada socio se muestra como una sola línea resumen (`.partner-summary`):
+  nombre a la izquierda, venta neta + unidades/docs/IVA/envío a la derecha —
+  sin desglose por factura individual debajo.
 
 ## Datos de referencia
 
 | Concepto | Valor |
 |---|---|
 | Cobertura | Shopify, todos los canales combinados (online + manual/showroom) |
-| Fuera de alcance (capítulos pendientes) | Canal mayorista, World Office |
-| Ranking de productos | Top 20 por `gross_sales`, todos los canales |
+| Fuera de alcance (capítulo pendiente) | World Office (conciliación contable) |
+| Socios comerciales / Exportaciones | Carga manual (no automatizada) — ver sección abajo |
 | Gráfico diario | `total_sales` por día (con IVA y envío) |
 | Dashboard fuente (doc completo) | `dashboard/cierre-mensual.html` |
-| Script de cómputo | `.claude/skills/cierre-mensual/compute.py` |
+| Script de cómputo (Shopify) | `.claude/skills/cierre-mensual/compute.py` |
 
 ## Procedimiento
 
@@ -170,6 +179,42 @@ corrida.
 **7. Reportar** en el chat: ventas totales, subtotal, IVA, envío, pedidos,
 unidades, producto #1 del ranking, y recordar el estado pendiente de
 mayorista y World Office.
+
+## Socios comerciales / Exportaciones (carga manual, no automatizada)
+
+Desde agosto 2026 el dashboard tiene una sección "Facturación por canal" con
+tres bloques: **Tienda web** (Shopify, ver arriba), **Showroom** (sin fuente
+conectada — se deja en $0 hasta tener datos reales, nunca inventar) y
+**Socios comerciales** (mayoristas/retail nacional + exportaciones), cargada
+a mano a partir de las facturas/proformas (xlsx y PDF de World Office/RFEL)
+que el usuario adjunta en el chat. Esta sección **no tiene conexión
+automática todavía** — solo existe para los meses donde el usuario sube los
+documentos.
+
+Scripts de referencia (`manual_invoices.py`, `build_manual_sections.py` en
+esta misma carpeta): calculan y renderizan esa sección siguiendo las reglas
+confirmadas con el usuario en agosto 2026 —
+- Proformas de mayoristas nacionales (ej. Wanitta, Casa Viva): su `TOTAL` ya
+  incluye IVA -> dividir entre 1.19 para dejar neto sin IVA. La retención en
+  la fuente es informativa, no se resta de la venta.
+- Facturas de exportación (RFEL/World Office, USD): usar el `TOTAL FACTURA
+  COP` de cada factura (ya convertido con la TRM del día) tal cual, IVA 0%
+  (exportación exenta). Flete/seguro internacional se separa como "envío".
+  Honorarios de "asesoría en diseño/patronaje" (facturas de servicio, no
+  producto) se suman a la venta neta pero quedan marcados como "servicio" en
+  vez de unidades.
+- Cada socio se muestra como una sola línea resumen (`.partner-summary`,
+  sin barra de progreso ni desglose por factura individual — el usuario pidió
+  quitar ambas cosas).
+
+**Importante para la próxima corrida:** estos dos scripts traen hardcodeados
+los datos de las facturas de agosto 2026 y una ruta de scratchpad de esta
+sesión (`SCRATCH = ".../scratchpad/cierre-agosto"`) que no existe en sesiones
+nuevas. No se pueden correr tal cual para un mes distinto — hay que releerlos
+como referencia de la lógica/reglas y reconstruir `manual_invoices.py` con
+los documentos que el usuario adjunte ese mes (o pedirle que los vuelva a
+adjuntar si no quedaron en el chat), y correr `build_manual_sections.py`
+apuntando a un scratchpad válido de la sesión actual.
 
 ## Notas
 
