@@ -175,7 +175,13 @@
   .channel-footnote { font-size: 11px; color: var(--text-muted); line-height: 1.55; margin: 14px 0 0; }
 
   .partner-list { margin-top: 16px; display: flex; flex-direction: column; gap: 10px; }
+  .partner-category {
+    font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .04em;
+    color: var(--text-muted); margin-top: 14px; padding-top: 10px; border-top: 1px solid var(--grid);
+  }
+  .partner-category:first-child { margin-top: 0; border-top: none; padding-top: 0; }
   .partner-block { border-top: 1px solid var(--grid); padding-top: 10px; }
+  .partner-category + .partner-block { border-top: none; padding-top: 8px; }
   .partner-block .hbar-row { grid-template-columns: 220px 1fr 230px; }
   .partner-name { font-weight: 600; }
   .doc-list { margin-top: 6px; display: flex; flex-direction: column; }
@@ -320,19 +326,19 @@
       <div class="card channel-card channel-card-wide">
         <div class="channel-badge channel-badge-manual">◐ Carga manual (agosto)</div>
         <h3>Socios comerciales</h3>
-        <p class="channel-desc">Proformas/facturas de mayoristas y retail, fuera de Shopify (sistema World Office). Cargadas manualmente para este cierre a partir de los documentos adjuntos por el usuario — <strong>no es todavía una conexión automática</strong>; falta definir cómo conectar este canal mes a mes.</p>
+        <p class="channel-desc">Facturas/proformas de mayoristas, retail y exportación, fuera de Shopify (sistema World Office). Cargadas manualmente para este cierre a partir de los documentos adjuntos por el usuario — <strong>no es todavía una conexión automática</strong>; falta definir cómo conectar este canal mes a mes.</p>
         <div class="channel-kpis channel-kpis-4">
-          <div><span class="ck-label">Documentos</span><span class="ck-value">14</span></div>
-          <div><span class="ck-label">Unidades</span><span class="ck-value">1,080</span></div>
-          <div><span class="ck-label">Venta neta (sin IVA)</span><span class="ck-value">$75,002,928</span></div>
+          <div><span class="ck-label">Documentos</span><span class="ck-value">19</span></div>
+          <div><span class="ck-label">Unidades</span><span class="ck-value">1,349</span></div>
+          <div><span class="ck-label">Venta neta (sin IVA)</span><span class="ck-value">$147,270,196</span></div>
           <div><span class="ck-label">IVA</span><span class="ck-value">$14,250,556</span></div>
-          <div><span class="ck-label">Envío</span><span class="ck-value">$44,997</span></div>
+          <div><span class="ck-label">Envío</span><span class="ck-value">$374,217</span></div>
         </div>
-        <div class="partner-list">
+        <div class="partner-list"><div class="partner-category">Mayoristas y retail — Colombia</div>
     <div class="partner-block">
       <div class="hbar-row">
         <div class="hbar-name partner-name">Wanitta (Creemos que todo es posible S.A.S)</div>
-        <div class="hbar-track"><div class="hbar-fill" style="width:97.1%"></div></div>
+        <div class="hbar-track"><div class="hbar-fill" style="width:55.8%"></div></div>
         <div class="hbar-value">$31,978,252<span class="units">517 uds · 4 docs · IVA $6,075,868</span></div>
       </div>
       <div class="doc-list"><div class="doc-row"><span class="doc-id">RFEL8231</span><span class="doc-date">2026-08-03</span><span class="doc-units">95 uds</span><span class="doc-amount">$6,242,269 <span class="doc-iva">+ $1,186,031 IVA</span></span></div><div class="doc-row"><span class="doc-id">RFEL8237</span><span class="doc-date">2026-08-05</span><span class="doc-units">137 uds</span><span class="doc-amount">$8,870,269 <span class="doc-iva">+ $1,685,351 IVA</span></span></div><div class="doc-row"><span class="doc-id">RFEL8245</span><span class="doc-date">2026-08-10</span><span class="doc-units">173 uds</span><span class="doc-amount">$10,957,496 <span class="doc-iva">+ $2,081,924 IVA</span></span></div><div class="doc-row"><span class="doc-id">s/n</span><span class="doc-date">2026-08-26</span><span class="doc-units">112 uds</span><span class="doc-amount">$5,908,218 <span class="doc-iva">+ $1,122,562 IVA</span></span></div></div>
@@ -340,15 +346,15 @@
     <div class="partner-block">
       <div class="hbar-row">
         <div class="hbar-name partner-name">Casa Viva (18 Razones S.A.S)</div>
-        <div class="hbar-track"><div class="hbar-fill" style="width:100.0%"></div></div>
+        <div class="hbar-track"><div class="hbar-fill" style="width:57.4%"></div></div>
         <div class="hbar-value">$32,930,824<span class="units">426 uds · 8 docs · IVA $6,256,856 · Envío $44,997</span></div>
       </div>
-      <div class="doc-list"><div class="doc-row"><span class="doc-id">RFEL8230</span><span class="doc-date">2026-08-03</span><span class="doc-units">108 uds</span><span class="doc-amount">$7,934,824 <span class="doc-iva">+ $1,507,616 IVA</span></span></div><div class="doc-row"><span class="doc-id">RFEL8246</span><span class="doc-date">2026-08-05</span><span class="doc-units">44 uds</span><span class="doc-amount">$4,038,588 <span class="doc-iva">+ $767,332 IVA</span></span></div><div class="doc-row"><span class="doc-id">RFEL8247</span><span class="doc-date">2026-08-08</span><span class="doc-units">148 uds</span><span class="doc-amount">$11,308,941 <span class="doc-iva">+ $2,148,699 IVA</span></span></div><div class="doc-row"><span class="doc-id">RFEL8260</span><span class="doc-date">2026-08-12</span><span class="doc-units">26 uds</span><span class="doc-amount">$1,998,471 <span class="doc-iva">+ $379,709 IVA</span></span></div><div class="doc-row"><span class="doc-id">RFEL8261</span><span class="doc-date">2026-08-18</span><span class="doc-units">24 uds</span><span class="doc-amount">$1,892,706 <span class="doc-iva">+ $359,614 IVA</span></span></div><div class="doc-row"><span class="doc-id">RFEL8267</span><span class="doc-date">2026-08-20</span><span class="doc-units">6 uds</span><span class="doc-amount">$811,412 <span class="doc-iva">+ $154,168 IVA</span></span></div><div class="doc-row"><span class="doc-id">RFEL8281</span><span class="doc-date">2026-08-21</span><span class="doc-units">12 uds</span><span class="doc-amount">$705,176 <span class="doc-iva">+ $133,984 IVA</span></span></div><div class="doc-row"><span class="doc-id">RFEL8282</span><span class="doc-date">2026-08-25</span><span class="doc-units">58 uds</span><span class="doc-amount">$4,240,706 <span class="doc-iva">+ $805,734 IVA</span></span></div></div>
+      <div class="doc-list"><div class="doc-row"><span class="doc-id">RFEL8230</span><span class="doc-date">2026-08-03</span><span class="doc-units">108 uds</span><span class="doc-amount">$7,934,824 <span class="doc-iva">+ $1,507,616 IVA</span></span></div><div class="doc-row"><span class="doc-id">RFEL8246</span><span class="doc-date">2026-08-05</span><span class="doc-units">44 uds</span><span class="doc-amount">$4,038,588 <span class="doc-iva">+ $767,332 IVA</span></span></div><div class="doc-row"><span class="doc-id">RFEL8247</span><span class="doc-date">2026-08-08</span><span class="doc-units">148 uds</span><span class="doc-amount">$11,308,941 <span class="doc-iva">+ $2,148,699 IVA</span></span></div><div class="doc-row"><span class="doc-id">RFEL8260</span><span class="doc-date">2026-08-12</span><span class="doc-units">26 uds</span><span class="doc-amount">$1,998,471 <span class="doc-iva">+ $379,709 IVA</span></span></div><div class="doc-row"><span class="doc-id">RFEL8261</span><span class="doc-date">2026-08-18</span><span class="doc-units">24 uds</span><span class="doc-amount">$1,892,706 <span class="doc-iva">+ $359,614 IVA</span></span></div><div class="doc-row"><span class="doc-id">RFEL8267</span><span class="doc-date">2026-08-20</span><span class="doc-units">6 uds</span><span class="doc-amount">$811,412 <span class="doc-iva">+ $154,168 IVA</span> <span class="doc-iva">· envío $44,997</span></span></div><div class="doc-row"><span class="doc-id">RFEL8281</span><span class="doc-date">2026-08-21</span><span class="doc-units">12 uds</span><span class="doc-amount">$705,176 <span class="doc-iva">+ $133,984 IVA</span></span></div><div class="doc-row"><span class="doc-id">RFEL8282</span><span class="doc-date">2026-08-25</span><span class="doc-units">58 uds</span><span class="doc-amount">$4,240,706 <span class="doc-iva">+ $805,734 IVA</span></span></div></div>
     </div>
     <div class="partner-block">
       <div class="hbar-row">
         <div class="hbar-name partner-name">Falabella de Colombia S.A.S</div>
-        <div class="hbar-track"><div class="hbar-fill" style="width:27.0%"></div></div>
+        <div class="hbar-track"><div class="hbar-fill" style="width:15.5%"></div></div>
         <div class="hbar-value">$8,900,676<span class="units">121 uds · 1 docs · IVA $1,691,128</span></div>
       </div>
       <div class="doc-list"><div class="doc-row"><span class="doc-id">RFEL8257</span><span class="doc-date">2026-08-18</span><span class="doc-units">121 uds</span><span class="doc-amount">$8,900,676 <span class="doc-iva">+ $1,691,128 IVA</span></span></div></div>
@@ -356,12 +362,37 @@
     <div class="partner-block">
       <div class="hbar-row">
         <div class="hbar-name partner-name">Learia (Luz Andrea Ochoa Garcés)</div>
-        <div class="hbar-track"><div class="hbar-fill" style="width:3.6%"></div></div>
+        <div class="hbar-track"><div class="hbar-fill" style="width:2.1%"></div></div>
         <div class="hbar-value">$1,193,176<span class="units">16 uds · 1 docs · IVA $226,704</span></div>
       </div>
       <div class="doc-list"><div class="doc-row"><span class="doc-id">s/n</span><span class="doc-date">2026-08-05</span><span class="doc-units">16 uds</span><span class="doc-amount">$1,193,176 <span class="doc-iva">+ $226,704 IVA</span></span></div></div>
+    </div><div class="partner-category">Exportaciones (5 de ~8 facturas recibidas — 3 más pendientes)</div>
+    <div class="partner-block">
+      <div class="hbar-row">
+        <div class="hbar-name partner-name">Shop Greta SRL (exportación · Rep. Dominicana)</div>
+        <div class="hbar-track"><div class="hbar-fill" style="width:2.0%"></div></div>
+        <div class="hbar-value">$1,145,733<span class="units">9 uds · 1 docs · IVA $0 · Envío $22,924</span></div>
+      </div>
+      <div class="doc-list"><div class="doc-row"><span class="doc-id">RFEL8275</span><span class="doc-date">2026-08-25</span><span class="doc-units">9 uds</span><span class="doc-amount">$1,145,733 <span class="doc-iva">exportación, 0% IVA</span> <span class="doc-iva">· envío $22,924</span></span></div></div>
+    </div>
+    <div class="partner-block">
+      <div class="hbar-row">
+        <div class="hbar-name partner-name">Cristalina Swimwear (exportación · Miami, EE.UU.)</div>
+        <div class="hbar-track"><div class="hbar-fill" style="width:100.0%"></div></div>
+        <div class="hbar-value">$57,321,692<span class="units">260 uds · 2 docs · IVA $0 · Envío $306,296</span></div>
+      </div>
+      <div class="doc-list"><div class="doc-row"><span class="doc-id">RFEL8269</span><span class="doc-date">2026-08-21</span><span class="doc-units">260 uds</span><span class="doc-amount">$2,755,439 <span class="doc-iva">exportación, 0% IVA</span> <span class="doc-iva">· envío $306,296</span></span></div><div class="doc-row"><span class="doc-id">RFEL8279</span><span class="doc-date">2026-08-26</span><span class="doc-units">servicio</span><span class="doc-amount">$54,566,253 <span class="doc-iva">exportación, 0% IVA</span></span></div></div>
+    </div>
+    <div class="partner-block">
+      <div class="hbar-row">
+        <div class="hbar-name partner-name">Siete Mares CA (exportación · Valencia, Venezuela)</div>
+        <div class="hbar-track"><div class="hbar-fill" style="width:24.1%"></div></div>
+        <div class="hbar-value">$13,799,843<span class="units">0 uds · 2 docs · IVA $0</span></div>
+      </div>
+      <div class="doc-list"><div class="doc-row"><span class="doc-id">RFEL8289</span><span class="doc-date">2026-08-26</span><span class="doc-units">servicio</span><span class="doc-amount">$7,731,748 <span class="doc-iva">exportación, 0% IVA</span></span></div><div class="doc-row"><span class="doc-id">RFEL8295</span><span class="doc-date">2026-08-27</span><span class="doc-units">servicio</span><span class="doc-amount">$6,068,095 <span class="doc-iva">exportación, 0% IVA</span></span></div></div>
     </div></div>
-        <p class="channel-footnote">IVA calculado dividiendo el total de cada proforma entre 1.19 (los totales de Wanitta/Casa Viva/Learia ya incluyen IVA, confirmado con el usuario); Falabella es factura electrónica DIAN formal, ya desglosada. La retención en la fuente que aparece en las proformas es informativa (anticipo de renta descontado por el comprador) y no se resta de la venta. Se excluyeron por ser de julio: proforma Ana Mercedes (31 jul) y las proformas Wanitta de julio (Jul25/Jul28/Jul30-31). Se excluyeron por ser pendientes/planeación, no facturas confirmadas: "Eterna Pendientes Julio31" y "Abanicos Pends Ago21" del archivo Wanitta.</p>
+        <p class="channel-footnote">Mayoristas/retail nacional: IVA calculado dividiendo el total de cada proforma entre 1.19 (los totales de Wanitta/Casa Viva/Learia ya incluyen IVA, confirmado con el usuario); Falabella es factura electrónica DIAN formal, ya desglosada. La retención en la fuente que aparece en las proformas es informativa (anticipo de renta descontado por el comprador) y no se resta de la venta. Se excluyeron por ser de julio: proforma Ana Mercedes (31 jul) y las proformas Wanitta de julio (Jul25/Jul28/Jul30-31). Se excluyeron por ser pendientes/planeación, no facturas confirmadas: "Eterna Pendientes Julio31" y "Abanicos Pends Ago21" del archivo Wanitta.
+        Exportaciones: facturas electrónicas DIAN en USD, convertidas a COP con la TRM del día que trae cada factura; 0% IVA por ser exportación exenta. Flete y seguro internacional se separan como envío (confirmado con el usuario). Cristalina (RFEL8279), Siete Mares (RFEL8289, RFEL8295) son honorarios de asesoría en diseño/patronaje, no unidades de producto — se suman a la venta neta a pedido del usuario, marcados como "servicio" en vez de unidades. Van 5 de ~8 facturas de exportación; 3 más quedan pendientes de una próxima carga.</p>
       </div>
     </div>
   </section>
@@ -372,15 +403,15 @@
     <h2>Consolidado — Agosto 2026</h2>
     <p class="section-sub">Tienda web + Showroom + Socios comerciales. World Office (conciliación contable) sigue pendiente de conectar — no se incluye ni estima aquí.</p>
     <section class="kpi-grid">
-      <div class="kpi kpi-highlight"><div class="label">Unidades totales</div><div class="value">4,062</div><div class="sub">Tienda web + socios comerciales</div></div>
-      <div class="kpi kpi-highlight"><div class="label">Venta neta total (sin IVA)</div><div class="value">$304,883,940</div><div class="sub">Subtotal después de descuentos/devoluciones, antes de IVA y envío</div></div>
+      <div class="kpi kpi-highlight"><div class="label">Unidades totales</div><div class="value">4,331</div><div class="sub">Tienda web + socios comerciales</div></div>
+      <div class="kpi kpi-highlight"><div class="label">Venta neta total (sin IVA)</div><div class="value">$377,151,208</div><div class="sub">Subtotal después de descuentos/devoluciones, antes de IVA y envío</div></div>
       <div class="kpi"><div class="label">IVA total</div><div class="value">$57,723,902</div><div class="sub">Impuesto cobrado en todos los canales</div></div>
-      <div class="kpi"><div class="label">Envío total</div><div class="value">$17,828,823</div><div class="sub">Ingreso de envío, aparte del IVA — debe facturarse</div></div>
-      <div class="kpi"><div class="label">Venta total con IVA y envío</div><div class="value">$380,436,665</div><div class="sub">Lo cobrado a clientes en todos los canales</div></div>
+      <div class="kpi"><div class="label">Envío total</div><div class="value">$18,158,043</div><div class="sub">Ingreso de envío, aparte del IVA — debe facturarse</div></div>
+      <div class="kpi"><div class="label">Venta total con IVA y envío</div><div class="value">$453,033,153</div><div class="sub">Lo cobrado a clientes en todos los canales</div></div>
     </section>
     <div class="consolidado-split">
-      <div class="split-row"><span>Tienda web (Shopify)</span><span>$229,881,012 <span class="split-pct">75.4%</span></span></div>
-      <div class="split-row"><span>Socios comerciales</span><span>$75,002,928 <span class="split-pct">24.6%</span></span></div>
+      <div class="split-row"><span>Tienda web (Shopify)</span><span>$229,881,012 <span class="split-pct">61.0%</span></span></div>
+      <div class="split-row"><span>Socios comerciales</span><span>$147,270,196 <span class="split-pct">39.0%</span></span></div>
       <div class="split-row"><span>Showroom</span><span>$0 <span class="split-pct">0.0%</span></span></div>
     </div>
   </section>
