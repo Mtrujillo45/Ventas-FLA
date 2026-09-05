@@ -1,0 +1,424 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>LOVESSENCE — Dashboard de Colección</title>
+<style>
+  :root {
+    color-scheme: light;
+    --page:           #FBF1E4;
+    --surface-1:      #FEFBF6;
+    --text-primary:   #2E211D;
+    --text-secondary: #6B564C;
+    --text-muted:     #9C8579;
+    --grid:           #ECDFCF;
+    --border:         rgba(46,33,29,0.10);
+    --series-1:       #C9576A; /* rosa Lovessence — referencia / clientes existentes */
+    --series-2:       #2A78D6; /* azul del ribete de la campaña — tráfico / clientes nuevos */
+    --good:           #3F8F45;
+    --warning:        #D98A2E;
+    --critical:       #B23B3B;
+    --good-bg:        #E9F5EA;
+    --warning-bg:     #FBF0DF;
+    --critical-bg:    #F8E7E5;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:where(:not([data-theme="light"])) {
+      color-scheme: dark;
+      --page:           #1E1613;
+      --surface-1:      #271D18;
+      --text-primary:   #FBF1E4;
+      --text-secondary: #D6C2B5;
+      --text-muted:     #A6907F;
+      --grid:           #3B2D25;
+      --border:         rgba(255,255,255,0.10);
+      --series-1:       #C9576A;
+      --series-2:       #3987E5;
+      --good:           #5FB566;
+      --warning:        #E3A754;
+      --critical:       #E2726E;
+      --good-bg:        rgba(95,181,102,0.15);
+      --warning-bg:     rgba(227,167,84,0.15);
+      --critical-bg:    rgba(226,114,106,0.15);
+    }
+  }
+  :root[data-theme="dark"] {
+    color-scheme: dark;
+    --page:           #1E1613;
+    --surface-1:      #271D18;
+    --text-primary:   #FBF1E4;
+    --text-secondary: #D6C2B5;
+    --text-muted:     #A6907F;
+    --grid:           #3B2D25;
+    --border:         rgba(255,255,255,0.10);
+    --series-1:       #C9576A;
+    --series-2:       #3987E5;
+    --good:           #5FB566;
+    --warning:        #E3A754;
+    --critical:       #E2726E;
+    --good-bg:        rgba(95,181,102,0.15);
+    --warning-bg:     rgba(227,167,84,0.15);
+    --critical-bg:    rgba(226,114,106,0.15);
+  }
+
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--page);
+    color: var(--text-primary);
+    font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+  .wrap { max-width: 1180px; margin: 0 auto; padding: 28px 20px 64px; }
+
+  header.top { margin-bottom: 24px; }
+  .eyebrow {
+    display: inline-flex; align-items: center; gap: 8px;
+    font-size: 12px; font-weight: 600; letter-spacing: .04em; text-transform: uppercase;
+    color: var(--series-1);
+    background: color-mix(in srgb, var(--series-1) 14%, transparent);
+    padding: 4px 10px; border-radius: 999px; margin-bottom: 10px;
+  }
+  h1 { font-size: 28px; font-weight: 700; margin: 0 0 6px; letter-spacing: -0.01em; }
+  .subtitle { font-size: 14px; color: var(--text-secondary); margin: 0 0 4px; }
+  .meta { font-size: 12.5px; color: var(--text-muted); }
+  .meta code { background: var(--grid); padding: 1px 5px; border-radius: 4px; font-size: 11.5px; }
+
+  .card {
+    background: var(--surface-1);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 20px 22px;
+  }
+  section { margin-top: 22px; }
+  h2 { font-size: 15px; font-weight: 700; margin: 0 0 4px; }
+  .section-sub { font-size: 12.5px; color: var(--text-muted); margin: 0 0 16px; }
+  .section-scope {
+    display: inline-block; font-size: 11px; font-weight: 600; letter-spacing: .03em;
+    color: var(--series-2); background: color-mix(in srgb, var(--series-2) 14%, transparent);
+    padding: 2px 8px; border-radius: 999px; margin-bottom: 8px;
+  }
+
+  /* KPI tiles */
+  .kpi-grid {
+    display: grid; grid-template-columns: repeat(6, 1fr); gap: 14px;
+  }
+  .kpi {
+    background: var(--surface-1); border: 1px solid var(--border); border-radius: 14px;
+    padding: 16px 16px 14px;
+  }
+  .kpi .label { font-size: 12px; color: var(--text-secondary); margin-bottom: 8px; }
+  .kpi .value { font-size: 22px; font-weight: 700; letter-spacing: -0.01em; font-variant-numeric: tabular-nums; }
+  .kpi .sub { font-size: 11.5px; color: var(--text-muted); margin-top: 4px; line-height: 1.4; }
+
+  /* ranked horizontal bars */
+  .hbar-list { display: flex; flex-direction: column; }
+  .hbar-row { display: grid; grid-template-columns: 26px 200px 1fr 130px; align-items: center; gap: 12px; padding: 7px 0; }
+  .hbar-row.traffic-row { grid-template-columns: 1fr 1fr 130px; }
+  .hbar-row + .hbar-row { border-top: 1px solid var(--grid); }
+  .hbar-rank { font-size: 12px; color: var(--text-muted); font-variant-numeric: tabular-nums; }
+  .hbar-name { font-size: 13px; color: var(--text-primary); }
+  .hbar-track { position: relative; height: 14px; background: var(--grid); border-radius: 4px; overflow: hidden; }
+  .hbar-fill { position: absolute; inset: 0 auto 0 0; background: var(--series-1); border-radius: 4px; }
+  .traffic-row .hbar-fill { background: var(--series-2); }
+  .hbar-value { font-size: 12.5px; text-align: right; font-variant-numeric: tabular-nums; color: var(--text-secondary); }
+  .hbar-value .units { color: var(--text-muted); font-size: 11.5px; display: block; }
+
+  /* composition stacked bars */
+  .comp-block { margin-bottom: 18px; }
+  .comp-title { font-size: 12.5px; color: var(--text-secondary); margin-bottom: 8px; display: flex; justify-content: space-between; }
+  .stack { display: flex; height: 22px; border-radius: 6px; overflow: hidden; }
+  .stack > div { display: flex; align-items: center; justify-content: center; font-size: 11px; color: #fff; font-weight: 600; }
+  .seg-1 { background: var(--series-1); }
+  .seg-2 { background: var(--series-2); }
+  .legend { display: flex; gap: 16px; margin-top: 8px; font-size: 12px; color: var(--text-secondary); }
+  .legend span { display: inline-flex; align-items: center; gap: 6px; }
+  .legend i { width: 10px; height: 10px; border-radius: 3px; display: inline-block; }
+
+  /* table */
+  table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  thead th {
+    text-align: left; font-weight: 600; color: var(--text-muted); font-size: 11.5px;
+    text-transform: uppercase; letter-spacing: .03em; padding: 8px 10px; border-bottom: 1px solid var(--grid);
+  }
+  tbody td { padding: 9px 10px; border-bottom: 1px solid var(--grid); vertical-align: middle; }
+  tbody tr:last-child td { border-bottom: none; }
+  td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; }
+  td.talla { font-weight: 600; color: var(--text-secondary); }
+  td.sku-code { font-size: 11.5px; color: var(--text-muted); font-family: ui-monospace, "SF Mono", Menlo, monospace; }
+  tr.group-row td {
+    background: var(--grid); font-weight: 700; font-size: 12.5px;
+    padding: 8px 10px; border-bottom: 1px solid var(--border);
+  }
+  tr.group-row .group-total { font-weight: 500; color: var(--text-secondary); float: right; font-size: 11.5px; }
+  .badge {
+    display: inline-flex; align-items: center; gap: 5px; font-size: 11px; font-weight: 600;
+    padding: 3px 8px; border-radius: 999px; white-space: nowrap;
+  }
+  .badge.critical { background: var(--critical-bg); color: var(--critical); }
+  .badge.warning  { background: var(--warning-bg); color: color-mix(in srgb, var(--warning) 55%, var(--text-primary)); }
+  .badge.good     { background: var(--good-bg); color: var(--good); }
+  .badge.flat     { background: var(--grid); color: var(--text-secondary); }
+  .cohort-cell { color: var(--text-primary); font-weight: 600; border-radius: 4px; }
+  .cohort-pending { color: var(--text-muted); font-style: italic; font-weight: 400; }
+
+  .table-scroll { overflow-x: auto; }
+
+  .two-col { display: grid; grid-template-columns: 1.2fr 1fr; gap: 16px; align-items: start; }
+
+  .callout {
+    display: flex; gap: 12px; align-items: flex-start;
+    border-radius: 12px; padding: 14px 16px; font-size: 13px; line-height: 1.55;
+  }
+  .callout.critical { background: var(--critical-bg); color: var(--text-primary); }
+  .callout.info { background: color-mix(in srgb, var(--series-2) 10%, var(--surface-1)); color: var(--text-primary); }
+  .callout .dot { width: 8px; height: 8px; border-radius: 50%; margin-top: 6px; flex-shrink: 0; }
+  .callout.critical .dot { background: var(--critical); }
+  .callout.info .dot { background: var(--series-2); }
+  .callout b { display: block; margin-bottom: 2px; }
+  .callout ul { margin: 6px 0 0; padding-left: 18px; }
+  .callout-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 14px; }
+
+  footer { margin-top: 28px; font-size: 11.5px; color: var(--text-muted); line-height: 1.7; }
+  footer p { margin: 0 0 8px; }
+
+  @media (max-width: 900px) {
+    .kpi-grid { grid-template-columns: repeat(2, 1fr); }
+    .two-col { grid-template-columns: 1fr; }
+    .callout-grid { grid-template-columns: 1fr; }
+    .hbar-row { grid-template-columns: 20px 110px 1fr 90px; }
+    .hbar-row.traffic-row { grid-template-columns: 1fr 1fr 90px; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="top">
+    <div class="eyebrow">● Conectado vía Composio · Shopify Admin API</div>
+    <h1>LOVESSENCE — Dashboard de Colección</h1>
+    <p class="subtitle">Mompossina Swimwear (mompossina.com) · Colección permanente lanzada el 4 de septiembre de 2026</p>
+    <p class="meta">
+      Periodo analizado: <code><span id="period-label"></span></code> ·
+      Última actualización de datos: <code><span id="generated-at"></span></code>
+    </p>
+  </header>
+
+  <!-- KPIS_START -->
+  <section class="kpi-grid">
+    <div class="kpi"><div class="label">Pedidos con LOVESSENCE</div><div class="value">42</div><div class="sub">89.4% de los 47 pedidos de la tienda en el período</div></div>
+    <div class="kpi"><div class="label">Unidades vendidas</div><div class="value">120</div><div class="sub">en 40 SKUs / 13 referencias</div></div>
+    <div class="kpi"><div class="label">Ingresos netos</div><div class="value">$10.8M</div><div class="sub">bruto $10.9M · línea de producto, sin envío</div></div>
+    <div class="kpi"><div class="label">Ticket promedio</div><div class="value">$280,098</div><div class="sub">vs. $271,136 promedio general de la tienda (mismo período)</div></div>
+    <div class="kpi"><div class="label">Clientes ya existentes</div><div class="value">68.3%</div><div class="sub">28 de 41 compradores identificados ya habían comprado antes</div></div>
+    <div class="kpi"><div class="label">Clientes nuevos</div><div class="value">31.7%</div><div class="sub">13 compradores cuya primera compra fue LOVESSENCE</div></div>
+  </section>
+  <!-- KPIS_END -->
+
+  <section class="card">
+    <h2>Ventas por referencia</h2>
+    <p class="section-sub">Ingresos brutos por referencia desde el lanzamiento, todas las tallas combinadas</p>
+    <!-- PRODUCTS_START -->
+  <div class="hbar-list">
+    <div class="hbar-row"><div class="hbar-rank">1</div><div class="hbar-name">LOVESSENCE MESH SHIRT</div><div class="hbar-track"><div class="hbar-fill" style="width:100.0%"></div></div><div class="hbar-value">$2.4M<span class="units">17 uds</span></div></div>
+    <div class="hbar-row"><div class="hbar-rank">2</div><div class="hbar-name">AMOR TANK TOP LOVESSENCE</div><div class="hbar-track"><div class="hbar-fill" style="width:65.5%"></div></div><div class="hbar-value">$1.6M<span class="units">13 uds</span></div></div>
+    <div class="hbar-row"><div class="hbar-rank">3</div><div class="hbar-name">LOVESSENCE WRAP SKORT</div><div class="hbar-track"><div class="hbar-fill" style="width:52.9%"></div></div><div class="hbar-value">$1.3M<span class="units">9 uds</span></div></div>
+    <div class="hbar-row"><div class="hbar-rank">4</div><div class="hbar-name">LOVESSENCE PAREO</div><div class="hbar-track"><div class="hbar-fill" style="width:49.1%"></div></div><div class="hbar-value">$1.2M<span class="units">8 uds</span></div></div>
+    <div class="hbar-row"><div class="hbar-rank">5</div><div class="hbar-name">LOVE FOR COLOMBIA PIN</div><div class="hbar-track"><div class="hbar-fill" style="width:37.7%"></div></div><div class="hbar-value">$896K<span class="units">45 uds</span></div></div>
+    <div class="hbar-row"><div class="hbar-rank">6</div><div class="hbar-name">LOVESSENCE ONE SHOULDER ONE PIECE</div><div class="hbar-track"><div class="hbar-fill" style="width:33.6%"></div></div><div class="hbar-value">$800K<span class="units">4 uds</span></div></div>
+    <div class="hbar-row"><div class="hbar-rank">7</div><div class="hbar-name">LOVESSENCE T-SHIRT</div><div class="hbar-track"><div class="hbar-fill" style="width:27.1%"></div></div><div class="hbar-value">$645K<span class="units">5 uds</span></div></div>
+    <div class="hbar-row"><div class="hbar-rank">8</div><div class="hbar-name">LOVESSENCE TRIANGLE TOP</div><div class="hbar-track"><div class="hbar-fill" style="width:21.8%"></div></div><div class="hbar-value">$520K<span class="units">4 uds</span></div></div>
+    <div class="hbar-row"><div class="hbar-rank">9</div><div class="hbar-name">LOVESSENCE STRAP TIE SIDE BOTTOM</div><div class="hbar-track"><div class="hbar-fill" style="width:20.2%"></div></div><div class="hbar-value">$480K<span class="units">4 uds</span></div></div>
+    <div class="hbar-row"><div class="hbar-rank">10</div><div class="hbar-name">LOVESSENCE HEADKERCHIEF</div><div class="hbar-track"><div class="hbar-fill" style="width:17.6%"></div></div><div class="hbar-value">$419K<span class="units">6 uds</span></div></div>
+    <div class="hbar-row"><div class="hbar-rank">11</div><div class="hbar-name">LOVESSENCE MESH DRESS</div><div class="hbar-track"><div class="hbar-fill" style="width:14.3%"></div></div><div class="hbar-value">$340K<span class="units">2 uds</span></div></div>
+    <div class="hbar-row"><div class="hbar-rank">12</div><div class="hbar-name">LOVESSENCE AMOR T-SHIRT</div><div class="hbar-track"><div class="hbar-fill" style="width:10.9%"></div></div><div class="hbar-value">$260K<span class="units">2 uds</span></div></div>
+    <div class="hbar-row"><div class="hbar-rank">13</div><div class="hbar-name">LOVESSENCE AMOR MESH SHIRT</div><div class="hbar-track"><div class="hbar-fill" style="width:5.9%"></div></div><div class="hbar-value">$140K<span class="units">1 uds</span></div></div>
+  </div>
+  <!-- PRODUCTS_END -->
+  </section>
+
+  <section class="card">
+    <h2>Detalle e inventario por referencia y talla</h2>
+    <p class="section-sub">Alertas por stock disponible absoluto (no por velocidad de venta — con menos de 2 días de historial, la velocidad todavía no es un estimador confiable de cobertura)</p>
+    <div class="table-scroll">
+      <!-- SKUTABLE_START -->
+  <table>
+    <thead><tr>
+<th>Talla</th><th>SKU</th><th class="num">Precio</th>
+<th class="num">Uds. vendidas</th><th class="num">Ingresos</th>
+<th class="num">Stock disponible</th><th>Estado</th>
+</tr></thead>
+    <tbody>
+      <tr class="group-row"><td colspan="7">LOVESSENCE MESH SHIRT<span class="group-total">17 uds vendidas · 102 en stock</span></td></tr>
+      <tr><td class="talla">S</td><td class="sku-code">31CA36/LVESS-S</td><td class="num">$139,900</td><td class="num">5</td><td class="num">$699,500</td><td class="num">22</td><td><span class="badge good">saludable</span></td></tr>
+      <tr><td class="talla">M</td><td class="sku-code">31CA36/LVESS-M</td><td class="num">$139,900</td><td class="num">10</td><td class="num">$1,399,000</td><td class="num">47</td><td><span class="badge good">saludable</span></td></tr>
+      <tr><td class="talla">L</td><td class="sku-code">31CA36/LVESS-L</td><td class="num">$139,900</td><td class="num">1</td><td class="num">$139,900</td><td class="num">26</td><td><span class="badge good">saludable</span></td></tr>
+      <tr><td class="talla">XL</td><td class="sku-code">31CA36/LVESS-XL</td><td class="num">$139,900</td><td class="num">1</td><td class="num">$139,900</td><td class="num">7</td><td><span class="badge warning">vigilar</span></td></tr>
+      <tr class="group-row"><td colspan="7">LOVESSENCE AMOR MESH SHIRT<span class="group-total">1 uds vendidas · 137 en stock</span></td></tr>
+      <tr><td class="talla">S</td><td class="sku-code">31CA36/AMR-S</td><td class="num">$139,900</td><td class="num">0</td><td class="num">$0</td><td class="num">30</td><td><span class="badge good">saludable</span></td></tr>
+      <tr><td class="talla">M</td><td class="sku-code">31CA36/AMR-M</td><td class="num">$139,900</td><td class="num">0</td><td class="num">$0</td><td class="num">60</td><td><span class="badge good">saludable</span></td></tr>
+      <tr><td class="talla">L</td><td class="sku-code">31CA36/AMR-L</td><td class="num">$139,900</td><td class="num">1</td><td class="num">$139,900</td><td class="num">29</td><td><span class="badge good">saludable</span></td></tr>
+      <tr><td class="talla">XL</td><td class="sku-code">31CA36/AMR-XL</td><td class="num">$139,900</td><td class="num">0</td><td class="num">$0</td><td class="num">18</td><td><span class="badge good">saludable</span></td></tr>
+      <tr class="group-row"><td colspan="7">LOVESSENCE WRAP SKORT<span class="group-total">9 uds vendidas · 56 en stock</span></td></tr>
+      <tr><td class="talla">6</td><td class="sku-code">31FA25/LVESS-6</td><td class="num">$139,900</td><td class="num">2</td><td class="num">$279,800</td><td class="num">23</td><td><span class="badge good">saludable</span></td></tr>
+      <tr><td class="talla">8</td><td class="sku-code">31FA25/LVESS-8</td><td class="num">$139,900</td><td class="num">3</td><td class="num">$419,700</td><td class="num">17</td><td><span class="badge good">saludable</span></td></tr>
+      <tr><td class="talla">10</td><td class="sku-code">31FA25/LVESS-10</td><td class="num">$139,900</td><td class="num">4</td><td class="num">$559,600</td><td class="num">16</td><td><span class="badge good">saludable</span></td></tr>
+      <tr><td class="talla">12</td><td class="sku-code">31FA25/LVESS-12</td><td class="num">$139,900</td><td class="num">0</td><td class="num">$0</td><td class="num">0</td><td><span class="badge critical">sin inventario</span></td></tr>
+      <tr class="group-row"><td colspan="7">LOVESSENCE ONE SHOULDER ONE PIECE<span class="group-total">4 uds vendidas · 23 en stock</span></td></tr>
+      <tr><td class="talla">S</td><td class="sku-code">313326/LVESS-S</td><td class="num">$199,900</td><td class="num">2</td><td class="num">$399,800</td><td class="num">6</td><td><span class="badge warning">vigilar</span></td></tr>
+      <tr><td class="talla">M</td><td class="sku-code">313326/LVESS-M</td><td class="num">$199,900</td><td class="num">2</td><td class="num">$399,800</td><td class="num">12</td><td><span class="badge warning">vigilar</span></td></tr>
+      <tr><td class="talla">L</td><td class="sku-code">313326/LVESS-L</td><td class="num">$199,900</td><td class="num">0</td><td class="num">$0</td><td class="num">5</td><td><span class="badge critical">stock crítico</span></td></tr>
+      <tr class="group-row"><td colspan="7">LOVESSENCE TRIANGLE TOP<span class="group-total">4 uds vendidas · 16 en stock</span></td></tr>
+      <tr><td class="talla">S</td><td class="sku-code">313135/LVESS-S</td><td class="num">$129,900</td><td class="num">0</td><td class="num">$0</td><td class="num">5</td><td><span class="badge critical">stock crítico</span></td></tr>
+      <tr><td class="talla">M</td><td class="sku-code">313135/LVESS-M</td><td class="num">$129,900</td><td class="num">3</td><td class="num">$389,700</td><td class="num">7</td><td><span class="badge warning">vigilar</span></td></tr>
+      <tr><td class="talla">L</td><td class="sku-code">313135/LVESS-L</td><td class="num">$129,900</td><td class="num">1</td><td class="num">$129,900</td><td class="num">4</td><td><span class="badge critical">stock crítico</span></td></tr>
+      <tr class="group-row"><td colspan="7">LOVESSENCE STRAP TIE SIDE BOTTOM<span class="group-total">4 uds vendidas · 16 en stock</span></td></tr>
+      <tr><td class="talla">S</td><td class="sku-code">313236/LVESS-S</td><td class="num">$119,900</td><td class="num">1</td><td class="num">$119,900</td><td class="num">4</td><td><span class="badge critical">stock crítico</span></td></tr>
+      <tr><td class="talla">M</td><td class="sku-code">313236/LVESS-M</td><td class="num">$119,900</td><td class="num">2</td><td class="num">$239,800</td><td class="num">8</td><td><span class="badge warning">vigilar</span></td></tr>
+      <tr><td class="talla">L</td><td class="sku-code">313236/LVESS-L</td><td class="num">$119,900</td><td class="num">1</td><td class="num">$119,900</td><td class="num">4</td><td><span class="badge critical">stock crítico</span></td></tr>
+      <tr class="group-row"><td colspan="7">LOVESSENCE PAREO<span class="group-total">8 uds vendidas · 24 en stock</span></td></tr>
+      <tr><td class="talla">Único</td><td class="sku-code">31RE22/LVESS-UN</td><td class="num">$145,900</td><td class="num">8</td><td class="num">$1,167,200</td><td class="num">24</td><td><span class="badge good">saludable</span></td></tr>
+      <tr class="group-row"><td colspan="7">LOVESSENCE HEADKERCHIEF<span class="group-total">6 uds vendidas · 59 en stock</span></td></tr>
+      <tr><td class="talla">Único</td><td class="sku-code">31KE21/LVESS-UN</td><td class="num">$69,900</td><td class="num">6</td><td class="num">$419,400</td><td class="num">59</td><td><span class="badge good">saludable</span></td></tr>
+      <tr class="group-row"><td colspan="7">LOVESSENCE T-SHIRT<span class="group-total">5 uds vendidas · 40 en stock</span></td></tr>
+      <tr><td class="talla">XS</td><td class="sku-code">31TSH20/LVESS-XS</td><td class="num">$129,000</td><td class="num">0</td><td class="num">$0</td><td class="num">10</td><td><span class="badge warning">vigilar</span></td></tr>
+      <tr><td class="talla">S</td><td class="sku-code">31TSH20/LVESS-S</td><td class="num">$129,000</td><td class="num">2</td><td class="num">$258,000</td><td class="num">8</td><td><span class="badge warning">vigilar</span></td></tr>
+      <tr><td class="talla">M</td><td class="sku-code">31TSH20/LVESS-M</td><td class="num">$129,000</td><td class="num">3</td><td class="num">$387,000</td><td class="num">17</td><td><span class="badge good">saludable</span></td></tr>
+      <tr><td class="talla">L</td><td class="sku-code">31TSH20/LVESS-L</td><td class="num">$129,000</td><td class="num">0</td><td class="num">$0</td><td class="num">5</td><td><span class="badge critical">stock crítico</span></td></tr>
+      <tr><td class="talla">XL</td><td class="sku-code">31TSH20/LVESS-XL</td><td class="num">$129,000</td><td class="num">0</td><td class="num">$0</td><td class="num">0</td><td><span class="badge critical">sin inventario</span></td></tr>
+      <tr class="group-row"><td colspan="7">LOVESSENCE MESH DRESS<span class="group-total">2 uds vendidas · 27 en stock</span></td></tr>
+      <tr><td class="talla">S</td><td class="sku-code">31VE32/LVESS-S</td><td class="num">$169,900</td><td class="num">1</td><td class="num">$169,900</td><td class="num">9</td><td><span class="badge warning">vigilar</span></td></tr>
+      <tr><td class="talla">M</td><td class="sku-code">31VE32/LVESS-M</td><td class="num">$169,900</td><td class="num">1</td><td class="num">$169,900</td><td class="num">13</td><td><span class="badge warning">vigilar</span></td></tr>
+      <tr><td class="talla">L</td><td class="sku-code">31VE32/LVESS-L</td><td class="num">$169,900</td><td class="num">0</td><td class="num">$0</td><td class="num">5</td><td><span class="badge critical">stock crítico</span></td></tr>
+      <tr class="group-row"><td colspan="7">LOVESSENCE AMOR T-SHIRT<span class="group-total">2 uds vendidas · 59 en stock</span></td></tr>
+      <tr><td class="talla">XS</td><td class="sku-code">31TSH20/AMR-XS</td><td class="num">$129,900</td><td class="num">0</td><td class="num">$0</td><td class="num">5</td><td><span class="badge critical">stock crítico</span></td></tr>
+      <tr><td class="talla">S</td><td class="sku-code">31TSH20/AMR-S</td><td class="num">$129,900</td><td class="num">1</td><td class="num">$129,900</td><td class="num">9</td><td><span class="badge warning">vigilar</span></td></tr>
+      <tr><td class="talla">M</td><td class="sku-code">31TSH20/AMR-M</td><td class="num">$129,900</td><td class="num">1</td><td class="num">$129,900</td><td class="num">19</td><td><span class="badge good">saludable</span></td></tr>
+      <tr><td class="talla">L</td><td class="sku-code">31TSH20/AMR-L</td><td class="num">$129,900</td><td class="num">0</td><td class="num">$0</td><td class="num">5</td><td><span class="badge critical">stock crítico</span></td></tr>
+      <tr><td class="talla">XL</td><td class="sku-code">31TSH20/AMR-XL</td><td class="num">$129,900</td><td class="num">0</td><td class="num">$0</td><td class="num">21</td><td><span class="badge good">saludable</span></td></tr>
+      <tr class="group-row"><td colspan="7">AMOR TANK TOP LOVESSENCE<span class="group-total">13 uds vendidas · 33 en stock</span></td></tr>
+      <tr><td class="talla">S</td><td class="sku-code">31TTP21/AMR-S</td><td class="num">$119,900</td><td class="num">3</td><td class="num">$359,700</td><td class="num">9</td><td><span class="badge warning">vigilar</span></td></tr>
+      <tr><td class="talla">M</td><td class="sku-code">31TTP21/AMR-M</td><td class="num">$119,900</td><td class="num">5</td><td class="num">$599,500</td><td class="num">19</td><td><span class="badge good">saludable</span></td></tr>
+      <tr><td class="talla">L</td><td class="sku-code">31TTP21/AMR-L</td><td class="num">$119,900</td><td class="num">5</td><td class="num">$599,500</td><td class="num">5</td><td><span class="badge critical">stock crítico</span></td></tr>
+      <tr class="group-row"><td colspan="7">LOVE FOR COLOMBIA PIN<span class="group-total">45 uds vendidas · 450 en stock</span></td></tr>
+      <tr><td class="talla">Único</td><td class="sku-code">31PIN21/LFC-UN</td><td class="num">$19,900</td><td class="num">45</td><td class="num">$895,500</td><td class="num">450</td><td><span class="badge good">saludable</span></td></tr>
+    </tbody>
+  </table>
+  <!-- SKUTABLE_END -->
+    </div>
+    <!-- ALERTS_START -->
+  <div class="callout-grid">
+    <div class="callout critical"><div class="dot"></div><div><b>2 talla(s) sin inventario disponible</b>No se pueden vender hasta reponer: <ul><li>LOVESSENCE WRAP SKORT — talla 12 (31FA25/LVESS-12)</li><li>LOVESSENCE T-SHIRT — talla XL (31TSH20/LVESS-XL)</li></ul></div></div>
+    <div class="callout critical"><div class="dot"></div><div><b>10 talla(s) en stock crítico (≤5 unidades)</b><ul><li>LOVESSENCE ONE SHOULDER ONE PIECE — talla L (313326/LVESS-L) — quedan 5</li><li>LOVESSENCE TRIANGLE TOP — talla S (313135/LVESS-S) — quedan 5</li><li>LOVESSENCE TRIANGLE TOP — talla L (313135/LVESS-L) — quedan 4</li><li>LOVESSENCE STRAP TIE SIDE BOTTOM — talla S (313236/LVESS-S) — quedan 4</li><li>LOVESSENCE STRAP TIE SIDE BOTTOM — talla L (313236/LVESS-L) — quedan 4</li><li>LOVESSENCE T-SHIRT — talla L (31TSH20/LVESS-L) — quedan 5</li><li>LOVESSENCE MESH DRESS — talla L (31VE32/LVESS-L) — quedan 5</li><li>LOVESSENCE AMOR T-SHIRT — talla XS (31TSH20/AMR-XS) — quedan 5</li><li>LOVESSENCE AMOR T-SHIRT — talla L (31TSH20/AMR-L) — quedan 5</li><li>AMOR TANK TOP LOVESSENCE — talla L (31TTP21/AMR-L) — quedan 5</li></ul></div></div>
+    <div class="callout info"><div class="dot"></div><div><b>Mayor tracción desde el lanzamiento</b>Vender rápido con pocos días de historial: <ul><li>LOVE FOR COLOMBIA PIN — talla Único (31PIN21/LFC-UN) — 45 uds vendidas, quedan 450</li><li>LOVESSENCE MESH SHIRT — talla M (31CA36/LVESS-M) — 10 uds vendidas, quedan 47</li><li>LOVESSENCE PAREO — talla Único (31RE22/LVESS-UN) — 8 uds vendidas, quedan 24</li></ul></div></div>
+  </div>
+  <!-- ALERTS_END -->
+  </section>
+
+  <section class="two-col">
+    <div class="card">
+      <h2>Ciudades de compra</h2>
+      <p class="section-sub">Pedidos con LOVESSENCE por ciudad de envío (o facturación si no hay envío)</p>
+      <div class="table-scroll">
+        <!-- CITIES_START -->
+  <table>
+    <thead><tr>
+<th>#</th><th>Ciudad</th><th class="num">Pedidos</th>
+<th class="num">Valor total</th><th class="num">Ticket promedio</th>
+</tr></thead>
+    <tbody>
+      <tr><td class="num">1</td><td>Medellín</td><td class="num">8</td><td class="num">$1,874,436</td><td class="num">$234,304</td></tr>
+      <tr><td class="num">2</td><td>Cali</td><td class="num">7</td><td class="num">$2,350,294</td><td class="num">$335,756</td></tr>
+      <tr><td class="num">3</td><td>Bogotá</td><td class="num">4</td><td class="num">$1,920,098</td><td class="num">$480,024</td></tr>
+      <tr><td class="num">4</td><td>Envigado</td><td class="num">3</td><td class="num">$693,599</td><td class="num">$231,200</td></tr>
+      <tr><td class="num">5</td><td>Rionegro</td><td class="num">2</td><td class="num">$558,698</td><td class="num">$279,349</td></tr>
+      <tr><td class="num">6</td><td>Ibagué</td><td class="num">2</td><td class="num">$505,398</td><td class="num">$252,699</td></tr>
+      <tr><td class="num">7</td><td>Itagüí</td><td class="num">2</td><td class="num">$429,698</td><td class="num">$214,849</td></tr>
+      <tr><td class="num">8</td><td>Otras 12 ciudades (1 pedido c/u — Pereira, Bucaramanga, Cartagena, Jardín, Santa Rosa de Cabal, La Estrella, Magangué, Barbosa, San José y San Antonio de Prado, entre otras)</td><td class="num">12</td><td class="num">$3,272,195</td><td class="num">$272,683</td></tr>
+      <tr><td class="num">9</td><td>Sin ciudad registrada</td><td class="num">2</td><td class="num">$159,700</td><td class="num">$79,850</td></tr>
+    </tbody>
+  </table>
+  <!-- CITIES_END -->
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>Comportamiento de compradores</h2>
+      <p class="section-sub">Composición de quienes compraron LOVESSENCE</p>
+      <!-- CUSTOMERS_START -->
+  <div class="comp-block" style="margin-bottom:0">
+    <div class="comp-title"><span>Ya eran clientes vs. primera compra</span><span>41 identificados · 1 sin cuenta (excluidos)</span></div>
+    <div class="stack">
+      <div class="seg-1" style="width:68.3%">68.3%</div>
+      <div class="seg-2" style="width:31.7%">31.7%</div>
+    </div>
+    <div class="legend">
+      <span><i style="background:var(--series-1)"></i>Ya eran clientes (28)</span>
+      <span><i style="background:var(--series-2)"></i>Primera compra (13)</span>
+    </div>
+  </div>
+  <!-- CUSTOMERS_END -->
+      <h2 style="margin-top:18px">Fuente de tráfico</h2>
+      <p class="section-sub">Primer canal de llegada, pedidos de la tienda online</p>
+      <!-- TRAFFIC_START -->
+  <div class="hbar-list">
+    <div class="hbar-row traffic-row"><div class="hbar-name">Instagram</div><div class="hbar-track"><div class="hbar-fill" style="width:100.0%"></div></div><div class="hbar-value">24 pedidos<span class="units">57.1%</span></div></div>
+    <div class="hbar-row traffic-row"><div class="hbar-name">Pedido manual (sin recorrido web)</div><div class="hbar-track"><div class="hbar-fill" style="width:20.8%"></div></div><div class="hbar-value">5 pedidos<span class="units">11.9%</span></div></div>
+    <div class="hbar-row traffic-row"><div class="hbar-name">Directo</div><div class="hbar-track"><div class="hbar-fill" style="width:20.8%"></div></div><div class="hbar-value">5 pedidos<span class="units">11.9%</span></div></div>
+    <div class="hbar-row traffic-row"><div class="hbar-name">Google</div><div class="hbar-track"><div class="hbar-fill" style="width:16.7%"></div></div><div class="hbar-value">4 pedidos<span class="units">9.5%</span></div></div>
+    <div class="hbar-row traffic-row"><div class="hbar-name">Fuente desconocida</div><div class="hbar-track"><div class="hbar-fill" style="width:16.7%"></div></div><div class="hbar-value">4 pedidos<span class="units">9.5%</span></div></div>
+  </div>
+  <!-- TRAFFIC_END -->
+    </div>
+  </section>
+
+  <section class="card">
+    <span class="section-scope">Toda la tienda, no solo LOVESSENCE</span>
+    <h2>Recompra y cohortes de clientes</h2>
+    <p class="section-sub">Clientes agrupados por el mes de su primera compra en Mompossina — qué porcentaje de cada cohorte volvió a comprar. Como LOVESSENCE lleva menos de 2 días, esta vista mide el comportamiento general de la tienda, no específico de la colección.</p>
+    <!-- COHORT_START -->
+  <div class="kpi-grid" style="grid-template-columns:repeat(3,1fr)">
+    <div class="kpi"><div class="label">Tasa de recompra histórica</div><div class="value">16.9%</div><div class="sub">% de todos los clientes (2021–hoy) que han comprado más de una vez</div></div>
+    <div class="kpi"><div class="label">Recompra en ventana reciente</div><div class="value">16.3%</div><div class="sub">% de compradores de los últimos 90 días que ya eran clientes antes</div></div>
+    <div class="kpi"><div class="label">Tiempo entre 1ª y 2ª compra</div><div class="value">97 días</div><div class="sub">mediana histórica (promedio 228 días, con cola larga)</div></div>
+  </div>
+  <table>
+    <thead><tr>
+<th>Cohorte (mes de 1ª compra)</th><th class="num">Nuevos clientes</th>
+<th class="num">Recompra ≤30d</th><th class="num">≤60d</th><th class="num">≤90d</th>
+</tr></thead>
+    <tbody>
+      <tr><td>Sep 2025</td><td class="num">324</td><td class="num cohort-cell" style="background:color-mix(in srgb, var(--series-1) 27%, var(--surface-1))">6.8%</td><td class="num cohort-cell" style="background:color-mix(in srgb, var(--series-1) 33%, var(--surface-1))">8.3%</td><td class="num cohort-cell" style="background:color-mix(in srgb, var(--series-1) 47%, var(--surface-1))">11.7%</td></tr>
+      <tr><td>Oct 2025</td><td class="num">505</td><td class="num cohort-cell" style="background:color-mix(in srgb, var(--series-1) 18%, var(--surface-1))">4.4%</td><td class="num cohort-cell" style="background:color-mix(in srgb, var(--series-1) 40%, var(--surface-1))">9.9%</td><td class="num cohort-cell" style="background:color-mix(in srgb, var(--series-1) 40%, var(--surface-1))">10.1%</td></tr>
+      <tr><td>Nov 2025</td><td class="num">685</td><td class="num cohort-cell" style="background:color-mix(in srgb, var(--series-1) 24%, var(--surface-1))">6.0%</td><td class="num cohort-cell" style="background:color-mix(in srgb, var(--series-1) 27%, var(--surface-1))">6.7%</td><td class="num cohort-cell" style="background:color-mix(in srgb, var(--series-1) 41%, var(--surface-1))">10.2%</td></tr>
+      <tr><td>Dic 2025</td><td class="num">282</td><td class="num cohort-cell" style="background:color-mix(in srgb, var(--series-1) 23%, var(--surface-1))">5.7%</td><td class="num cohort-cell" style="background:color-mix(in srgb, var(--series-1) 33%, var(--surface-1))">8.2%</td><td class="num cohort-cell" style="background:color-mix(in srgb, var(--series-1) 38%, var(--surface-1))">9.6%</td></tr>
+      <tr><td>Ene 2026</td><td class="num">239</td><td class="num cohort-cell" style="background:color-mix(in srgb, var(--series-1) 37%, var(--surface-1))">9.2%</td><td class="num cohort-cell" style="background:color-mix(in srgb, var(--series-1) 62%, var(--surface-1))">15.5%</td><td class="num cohort-cell" style="background:color-mix(in srgb, var(--series-1) 65%, var(--surface-1))">16.3%</td></tr>
+      <tr><td>Feb 2026</td><td class="num">214</td><td class="num cohort-cell" style="background:color-mix(in srgb, var(--series-1) 9%, var(--surface-1))">2.3%</td><td class="num cohort-cell" style="background:color-mix(in srgb, var(--series-1) 13%, var(--surface-1))">3.3%</td><td class="num cohort-cell" style="background:color-mix(in srgb, var(--series-1) 24%, var(--surface-1))">6.1%</td></tr>
+      <tr><td>Mar 2026</td><td class="num">159</td><td class="num cohort-cell" style="background:color-mix(in srgb, var(--series-1) 25%, var(--surface-1))">6.3%</td><td class="num cohort-cell" style="background:color-mix(in srgb, var(--series-1) 35%, var(--surface-1))">8.8%</td><td class="num cohort-cell" style="background:color-mix(in srgb, var(--series-1) 60%, var(--surface-1))">15.1%</td></tr>
+      <tr><td>Abr 2026</td><td class="num">194</td><td class="num cohort-cell" style="background:color-mix(in srgb, var(--series-1) 41%, var(--surface-1))">10.3%</td><td class="num cohort-cell" style="background:color-mix(in srgb, var(--series-1) 74%, var(--surface-1))">18.6%</td><td class="num cohort-cell" style="background:color-mix(in srgb, var(--series-1) 80%, var(--surface-1))">20.1%</td></tr>
+      <tr><td>May 2026 <span class="badge flat">campaña Colombia</span></td><td class="num">4,585</td><td class="num cohort-cell" style="background:color-mix(in srgb, var(--series-1) 18%, var(--surface-1))">4.5%</td><td class="num cohort-cell" style="background:color-mix(in srgb, var(--series-1) 24%, var(--surface-1))">6.0%</td><td class="num cohort-cell" style="background:color-mix(in srgb, var(--series-1) 30%, var(--surface-1))">7.4%</td></tr>
+      <tr><td>Jun 2026 <span class="badge flat">campaña Colombia</span></td><td class="num">5,277</td><td class="num cohort-cell" style="background:color-mix(in srgb, var(--series-1) 9%, var(--surface-1))">2.3%</td><td class="num cohort-cell" style="background:color-mix(in srgb, var(--series-1) 14%, var(--surface-1))">3.6%</td><td class="num cohort-pending">pendiente</td></tr>
+      <tr><td>Jul 2026 <span class="badge flat">cola de campaña</span></td><td class="num">934</td><td class="num cohort-cell" style="background:color-mix(in srgb, var(--series-1) 14%, var(--surface-1))">3.4%</td><td class="num cohort-pending">pendiente</td><td class="num cohort-pending">pendiente</td></tr>
+      <tr><td>Ago 2026</td><td class="num">1,044</td><td class="num cohort-pending">pendiente</td><td class="num cohort-pending">pendiente</td><td class="num cohort-pending">pendiente</td></tr>
+    </tbody>
+  </table>
+  <p class="section-sub" style="margin-top:14px">Mayo y junio 2026 corresponden a la campaña de la colección "Colombia" (miles de clientes nuevos en pocas semanas), confirmado por el equipo — no es ruido de datos. Sus tasas de recompra a 30 días (4.5% y 2.3%) están entre las más bajas de la tabla, consistente con tráfico impulsado por campaña más que compradoras recurrentes; julio 2026 puede tener cola del mismo efecto. Conviene leer esos meses aparte del resto al evaluar tendencia.</p>
+  <!-- COHORT_END -->
+  </section>
+
+  <footer>
+    <p>Fuente: Shopify Admin API (tienda <strong>mompossina.myshopify.com</strong>) consultada en vivo a través del conector de <strong>Composio</strong>. LOVESSENCE se identifica mediante la colección <code>lovessence</code> y el tag <code>LOVESSENCE</code> (13 productos / 40 variantes, incluye el pin "Love For Colombia" como accesorio de la cápsula). Ingresos de producto = valor de línea bruto/neto de descuentos por línea (<code>originalTotalSet</code> / <code>discountedTotalSet</code>), sin envío; se excluyen órdenes de prueba. "Ya era cliente" = tenía al menos un pedido pagado antes de su compra de LOVESSENCE (<code>numberOfOrders &gt; 1</code>); se excluyen pedidos sin cuenta de cliente asociada de ese cálculo. Las alertas de inventario usan stock disponible absoluto, no velocidad de venta, mientras se acumulan más días de historial. La sección de recompra/cohortes cubre <strong>toda la tienda</strong> desde marzo de 2021 (histórico completo), no solo LOVESSENCE. Este archivo es una foto fija; para refrescar los números pide "actualiza el dashboard de LOVESSENCE".</p>
+  </footer>
+
+</div>
+<script>
+  const GENERATED_AT = "2026-09-05T18:00:00-05:00";
+  const PERIOD_LABEL = "4–5 sep 2026 (primeras ~42 h desde el lanzamiento)";
+  (function () {
+    var pl = document.getElementById('period-label'); if (pl) pl.textContent = PERIOD_LABEL;
+    var ga = document.getElementById('generated-at'); if (ga) ga.textContent = GENERATED_AT;
+  })();
+</script>
+</body>
+</html>
