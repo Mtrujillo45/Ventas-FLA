@@ -88,7 +88,9 @@ def esc(s):
 # ---------------------------------------------------------------- inventory
 
 def stock_badge(stock):
-    if stock <= 0:
+    if stock < 0:
+        return f"vendido en exceso ({abs(stock)})", "critical"
+    if stock == 0:
         return "sin inventario", "critical"
     if stock <= 5:
         return "stock crítico", "critical"
@@ -213,6 +215,7 @@ def build_sku_table_html(skus):
 
 
 def build_alerts_html(skus, campaign_note=None):
+    oversold = [s for s in skus if s["stock"] < 0]
     sold_out = [s for s in skus if s["stock"] == 0]
     critical = [s for s in skus if 0 < s["stock"] <= 5]
     high_velocity = sorted([s for s in skus if s["units"] >= 8], key=lambda s: -s["units"])
@@ -222,6 +225,13 @@ def build_alerts_html(skus, campaign_note=None):
 
     out = ['  <div class="callout-grid">']
 
+    if oversold:
+        items = "".join(f"<li>{sku_line(s)} — {abs(s['stock'])} unidad(es) vendidas de más</li>" for s in oversold)
+        out.append(
+            '    <div class="callout critical"><div class="dot"></div><div>'
+            f'<b>⚠ {len(oversold)} talla(s) vendidas por encima del stock disponible</b>'
+            f'Hay pedidos pagados que probablemente no se puedan surtir tal cual — revisar manualmente antes de despachar: <ul>{items}</ul></div></div>'
+        )
     if sold_out:
         items = "".join(f"<li>{sku_line(s)}</li>" for s in sold_out)
         out.append(
