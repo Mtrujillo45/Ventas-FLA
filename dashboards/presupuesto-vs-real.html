@@ -6,7 +6,6 @@
 <meta name="robots" content="noindex, nofollow">
 <title>Mompossina — Presupuesto vs. Real</title>
 <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🎯</text></svg>">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.4/chart.umd.min.js"></script>
 <style>
   :root {
     color-scheme: light;
@@ -140,11 +139,25 @@
 
   /* two/three-col chart grid */
   .chart-grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
-  .chart-box { position: relative; height: 280px; }
-  .chart-box.tall { height: 260px; }
+  .chart-box { position: relative; }
   .legend-row { display: flex; gap: 16px; margin-bottom: 10px; flex-wrap: wrap; }
   .legend-item { display: inline-flex; align-items: center; gap: 6px; font-size: 12px; color: var(--text-secondary); }
   .legend-swatch { width: 10px; height: 10px; border-radius: 3px; }
+
+  /* inline SVG charts (autocontenidos, sin dependencias externas) */
+  .svg-chart { width: 100%; height: auto; display: block; overflow: visible; }
+  .chart-grid-line { stroke: var(--grid); stroke-width: 1; }
+  .chart-axis-label { font-size: 11px; fill: var(--text-muted); text-anchor: middle; }
+  .chart-axis-label-y { font-size: 10px; fill: var(--text-muted); text-anchor: end; }
+  .bar-meta { fill: var(--meta-bar); }
+  .bar-real { fill: var(--series-1); }
+  .bar-value-label { font-size: 11px; fill: var(--text-muted); text-anchor: middle; font-variant-numeric: tabular-nums; }
+  .bar-value-label-real { fill: var(--series-1); font-weight: 700; }
+  .bar-group-label { font-size: 11.5px; fill: var(--text-primary); font-weight: 600; text-anchor: middle; }
+  .rr-line-real { stroke: var(--series-1); stroke-width: 2.5; fill: none; stroke-linejoin: round; stroke-linecap: round; }
+  .rr-line-needed { stroke: var(--text-muted); stroke-width: 1.5; stroke-dasharray: 6 4; fill: none; }
+  .rr-dot { fill: var(--series-1); stroke: var(--surface-1); stroke-width: 2; }
+  .rr-point-label { font-size: 10.5px; fill: var(--text-secondary); text-anchor: middle; font-variant-numeric: tabular-nums; }
 
   /* ticket promedio comparison */
   .ticket-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; }
@@ -267,14 +280,78 @@
   <section class="block card">
     <h2>Real vs. meta por canal</h2>
     <p class="section-sub">Meta = mes completo de septiembre 2026 · Real = acumulado al corte (7 días)</p>
+    <div class="legend-row">
+      <span class="legend-item"><span class="legend-swatch" style="background:var(--meta-bar)"></span>Meta</span>
+      <span class="legend-item"><span class="legend-swatch" style="background:var(--series-1)"></span>Real</span>
+    </div>
     <div class="chart-grid-2">
       <div>
         <h3>Valor (COP)</h3>
-        <div class="chart-box"><canvas id="chartValue"></canvas></div>
+        <div class="chart-box">
+          <svg viewBox="0 0 420 240" class="svg-chart" role="img" aria-label="Real vs meta por canal, en valor">
+            <line x1="10" y1="26.0" x2="410" y2="26.0" class="chart-grid-line"/>
+            <line x1="10" y1="84.0" x2="410" y2="84.0" class="chart-grid-line"/>
+            <line x1="10" y1="142.0" x2="410" y2="142.0" class="chart-grid-line"/>
+            <line x1="10" y1="200.0" x2="410" y2="200.0" class="chart-grid-line"/>
+            <rect x="27.0" y="100.6" width="30" height="99.4" rx="3" class="bar-meta"/>
+            <rect x="63.0" y="163.9" width="30" height="36.1" rx="3" class="bar-real"/>
+            <text x="42.0" y="94.6" class="bar-value-label">$80.9M</text>
+            <text x="78.0" y="157.9" class="bar-value-label bar-value-label-real">$29.3M</text>
+            <text x="60.0" y="216.0" class="bar-group-label">Online</text>
+            <rect x="127.0" y="169.3" width="30" height="30.7" rx="3" class="bar-meta"/>
+            <rect x="163.0" y="198.5" width="30" height="1.5" rx="3" class="bar-real"/>
+            <text x="142.0" y="163.3" class="bar-value-label">$25.0M</text>
+            <text x="178.0" y="192.5" class="bar-value-label bar-value-label-real">$1.2M</text>
+            <text x="160.0" y="216.0" class="bar-group-label">Showroom</text>
+            <rect x="227.0" y="157.0" width="30" height="43.0" rx="3" class="bar-meta"/>
+            <rect x="263.0" y="172.1" width="30" height="27.9" rx="3" class="bar-real"/>
+            <text x="242.0" y="151.0" class="bar-value-label">$35.0M</text>
+            <text x="278.0" y="166.1" class="bar-value-label bar-value-label-real">$22.7M</text>
+            <text x="260.0" y="216.0" class="bar-group-label">May.</text>
+            <text x="260.0" y="229.0" class="bar-group-label">nacionales</text>
+            <rect x="327.0" y="52.5" width="30" height="147.5" rx="3" class="bar-meta"/>
+            <rect x="363.0" y="200.0" width="30" height="0.0" rx="3" class="bar-real"/>
+            <text x="342.0" y="46.5" class="bar-value-label">$120.0M</text>
+            <text x="378.0" y="194.0" class="bar-value-label bar-value-label-real">$0.0M</text>
+            <text x="360.0" y="216.0" class="bar-group-label">May.</text>
+            <text x="360.0" y="229.0" class="bar-group-label">internacionales</text>
+            <line x1="10" y1="200.0" x2="410" y2="200.0" class="chart-grid-line" style="stroke-opacity:.6"/>
+          </svg>
+        </div>
       </div>
       <div>
         <h3>Unidades</h3>
-        <div class="chart-box"><canvas id="chartUnits"></canvas></div>
+        <div class="chart-box">
+          <svg viewBox="0 0 420 240" class="svg-chart" role="img" aria-label="Real vs meta por canal, en unidades">
+            <line x1="10" y1="26.0" x2="410" y2="26.0" class="chart-grid-line"/>
+            <line x1="10" y1="84.0" x2="410" y2="84.0" class="chart-grid-line"/>
+            <line x1="10" y1="142.0" x2="410" y2="142.0" class="chart-grid-line"/>
+            <line x1="10" y1="200.0" x2="410" y2="200.0" class="chart-grid-line"/>
+            <rect x="27.0" y="83.8" width="30" height="116.2" rx="3" class="bar-meta"/>
+            <rect x="63.0" y="149.0" width="30" height="51.0" rx="3" class="bar-real"/>
+            <text x="42.0" y="77.8" class="bar-value-label">700</text>
+            <text x="78.0" y="143.0" class="bar-value-label bar-value-label-real">307</text>
+            <text x="60.0" y="216.0" class="bar-group-label">Online</text>
+            <rect x="127.0" y="164.1" width="30" height="35.9" rx="3" class="bar-meta"/>
+            <rect x="163.0" y="197.7" width="30" height="2.3" rx="3" class="bar-real"/>
+            <text x="142.0" y="158.1" class="bar-value-label">216</text>
+            <text x="178.0" y="191.7" class="bar-value-label bar-value-label-real">14</text>
+            <text x="160.0" y="216.0" class="bar-group-label">Showroom</text>
+            <rect x="227.0" y="112.0" width="30" height="88.0" rx="3" class="bar-meta"/>
+            <rect x="263.0" y="147.5" width="30" height="52.5" rx="3" class="bar-real"/>
+            <text x="242.0" y="106.0" class="bar-value-label">530</text>
+            <text x="278.0" y="141.5" class="bar-value-label bar-value-label-real">316</text>
+            <text x="260.0" y="216.0" class="bar-group-label">May.</text>
+            <text x="260.0" y="229.0" class="bar-group-label">nacionales</text>
+            <rect x="327.0" y="52.5" width="30" height="147.5" rx="3" class="bar-meta"/>
+            <rect x="363.0" y="200.0" width="30" height="0.0" rx="3" class="bar-real"/>
+            <text x="342.0" y="46.5" class="bar-value-label">888</text>
+            <text x="378.0" y="194.0" class="bar-value-label bar-value-label-real">0</text>
+            <text x="360.0" y="216.0" class="bar-group-label">May.</text>
+            <text x="360.0" y="229.0" class="bar-group-label">internacionales</text>
+            <line x1="10" y1="200.0" x2="410" y2="200.0" class="chart-grid-line" style="stroke-opacity:.6"/>
+          </svg>
+        </div>
       </div>
     </div>
   </section>
@@ -291,9 +368,47 @@
     <div class="runrate-stats" id="runrate-stats"></div>
     <div class="legend-row">
       <span class="legend-item"><span class="legend-swatch" style="background:var(--series-1)"></span>Venta diaria real (online+showroom)</span>
-      <span class="legend-item"><span class="legend-swatch" style="background:var(--series-2)"></span>Ritmo diario necesario para la meta</span>
+      <span class="legend-item"><span class="legend-swatch" style="background:var(--text-muted)"></span>Ritmo diario necesario para la meta</span>
     </div>
-    <div class="chart-box tall"><canvas id="chartRunrate"></canvas></div>
+    <div class="chart-box">
+      <svg viewBox="0 0 880 230" class="svg-chart daily-chart" role="img" aria-label="Ritmo diario canal propio: venta real vs ritmo necesario">
+        <defs><linearGradient id="rrAreaFill" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0%" stop-color="var(--series-1)" stop-opacity="0.28"/>
+        <stop offset="100%" stop-color="var(--series-1)" stop-opacity="0"/></linearGradient></defs>
+        <line x1="50" y1="22.0" x2="860" y2="22.0" class="chart-grid-line"/>
+        <text x="42" y="25.0" class="chart-axis-label-y">$8.5M</text>
+        <line x1="50" y1="80.0" x2="860" y2="80.0" class="chart-grid-line"/>
+        <text x="42" y="83.0" class="chart-axis-label-y">$5.7M</text>
+        <line x1="50" y1="138.0" x2="860" y2="138.0" class="chart-grid-line"/>
+        <text x="42" y="141.0" class="chart-axis-label-y">$2.8M</text>
+        <line x1="50" y1="196.0" x2="860" y2="196.0" class="chart-grid-line"/>
+        <text x="42" y="199.0" class="chart-axis-label-y">$0.0M</text>
+        <line x1="50" y1="124.0" x2="860" y2="124.0" class="rr-line-needed"/>
+        <path d="M 50.0,172.4 L 185.0,165.0 L 320.0,150.9 L 455.0,40.6 L 590.0,77.9 L 725.0,63.9 L 860.0,78.4 L 860.0,196.0 L 50.0,196.0 Z" fill="url(#rrAreaFill)" stroke="none"/>
+        <path d="M 50.0,172.4 L 185.0,165.0 L 320.0,150.9 L 455.0,40.6 L 590.0,77.9 L 725.0,63.9 L 860.0,78.4" class="rr-line-real"/>
+        <circle cx="50.0" cy="172.4" r="3.5" class="rr-dot"/>
+        <text x="50.0" y="162.4" class="rr-point-label">$1.2M</text>
+        <circle cx="185.0" cy="165.0" r="3.5" class="rr-dot"/>
+        <text x="185.0" y="155.0" class="rr-point-label">$1.5M</text>
+        <circle cx="320.0" cy="150.9" r="3.5" class="rr-dot"/>
+        <text x="320.0" y="140.9" class="rr-point-label">$2.2M</text>
+        <circle cx="455.0" cy="40.6" r="3.5" class="rr-dot"/>
+        <text x="455.0" y="30.6" class="rr-point-label">$7.6M</text>
+        <circle cx="590.0" cy="77.9" r="3.5" class="rr-dot"/>
+        <text x="590.0" y="67.9" class="rr-point-label">$5.8M</text>
+        <circle cx="725.0" cy="63.9" r="3.5" class="rr-dot"/>
+        <text x="725.0" y="53.9" class="rr-point-label">$6.5M</text>
+        <circle cx="860.0" cy="78.4" r="3.5" class="rr-dot"/>
+        <text x="860.0" y="68.4" class="rr-point-label">$5.8M</text>
+        <text x="50.0" y="222" class="chart-axis-label">1 sep</text>
+        <text x="185.0" y="222" class="chart-axis-label">2 sep</text>
+        <text x="320.0" y="222" class="chart-axis-label">3 sep</text>
+        <text x="455.0" y="222" class="chart-axis-label">4 sep</text>
+        <text x="590.0" y="222" class="chart-axis-label">5 sep</text>
+        <text x="725.0" y="222" class="chart-axis-label">6 sep</text>
+        <text x="860.0" y="222" class="chart-axis-label">7 sep</text>
+      </svg>
+    </div>
     <div class="note-box" style="margin-top:16px;">
       <strong>Nota sobre mayoristas.</strong> El plan de mayoristas nacionales e internacionales ya no se arma con la fórmula 35%/65% sino con cifras reales de pedidos confirmados (backlog) — así que "real vs. meta" en esos dos canales es <strong>facturado/entregado vs. lo ya comprometido</strong>, no una meta de captación como en Online. No se proyecta su cierre por ritmo diario: nacionales ya facturó $22.7M de los $35.0M confirmados para el mes (3 facturas); internacionales no ha facturado nada aún — el plan concentra ese canal en octubre ($180M).
     </div>
@@ -394,15 +509,11 @@ const DATA = {
 };
 
 function fmtCOP(x) { return "$" + Math.round(x).toLocaleString('es-CO'); }
-function fmtCOPM(x) { return "$" + (x/1000000).toLocaleString('es-CO', {minimumFractionDigits:1, maximumFractionDigits:1}) + "M"; }
 function fmtNum(x) { return Math.round(x).toLocaleString('es-CO'); }
 function fmtPct(x) { return x.toLocaleString('es-CO', {minimumFractionDigits:1, maximumFractionDigits:1}) + "%"; }
 function stoplight(pct) { return pct >= 100 ? "verde" : (pct >= 85 ? "amarillo" : "rojo"); }
 
 document.addEventListener('DOMContentLoaded', () => {
-  const css = getComputedStyle(document.documentElement);
-  const cVar = (name) => css.getPropertyValue(name).trim();
-
   // ---- header ----
   document.getElementById('period-label').textContent = DATA.meta.period;
   document.getElementById('cutoff-label').textContent = DATA.meta.cutoff;
@@ -529,83 +640,6 @@ document.addEventListener('DOMContentLoaded', () => {
       <td><span class="badge ${stoplight(DATA.total.paceValue)}">${stoplight(DATA.total.paceValue)}</span></td>
     </tr>`;
   st.innerHTML = `<thead><tr><th>Canal</th><th>Meta</th><th>Real</th><th>Cumpl. %</th><th>Unid. meta</th><th>Unid. real</th><th>Cumpl. % und</th><th>Ticket prom.</th><th>Semáforo</th></tr></thead><tbody>${rows}${totalRow}</tbody>`;
-
-  // ---- charts (Chart.js, cargado desde cdnjs) — aislado: si falla, el resto del dashboard ya está pintado ----
-  function chartFallback(canvasId, msg) {
-    const canvas = document.getElementById(canvasId);
-    if (!canvas) return;
-    const box = canvas.closest('.chart-box');
-    if (box) box.innerHTML = `<p style="font-size:12px;color:var(--text-muted);padding:12px 0;">${msg}</p>`;
-  }
-
-  if (typeof Chart === 'undefined') {
-    ['chartValue','chartUnits','chartRunrate'].forEach(id => chartFallback(id, 'No se pudo cargar Chart.js (cdnjs.cloudflare.com) en este visor. Los datos completos están en las tablas y barras de arriba.'));
-  } else {
-    try {
-      Chart.defaults.font.family = "system-ui, -apple-system, 'Segoe UI', sans-serif";
-      Chart.defaults.color = cVar('--text-secondary');
-      const gridColor = cVar('--grid');
-      const realColor = cVar('--series-1');
-      const metaColor = cVar('--meta-bar');
-      const labels = DATA.channels.map(c => c.label);
-
-      new Chart(document.getElementById('chartValue'), {
-        type: 'bar',
-        data: { labels, datasets: [
-          { label: 'Meta', data: DATA.channels.map(c => c.budgetValue/1000000), backgroundColor: metaColor, borderRadius: 4, maxBarThickness: 40 },
-          { label: 'Real', data: DATA.channels.map(c => c.realValue/1000000), backgroundColor: realColor, borderRadius: 4, maxBarThickness: 40 },
-        ] },
-        options: {
-          responsive: true, maintainAspectRatio: false,
-          plugins: { legend: { position: 'top', labels: { boxWidth: 10, boxHeight: 10, usePointStyle: true, pointStyle: 'rect' } },
-            tooltip: { callbacks: { label: (ctx) => ` ${ctx.dataset.label}: ${fmtCOPM(ctx.parsed.y*1000000)}` } } },
-          scales: {
-            x: { grid: { display: false } },
-            y: { grid: { color: gridColor }, ticks: { callback: (v) => '$' + v + 'M' }, title: { display: true, text: 'COP millones' } }
-          }
-        }
-      });
-
-      new Chart(document.getElementById('chartUnits'), {
-        type: 'bar',
-        data: { labels, datasets: [
-          { label: 'Meta', data: DATA.channels.map(c => c.budgetUnits), backgroundColor: metaColor, borderRadius: 4, maxBarThickness: 40 },
-          { label: 'Real', data: DATA.channels.map(c => c.realUnits), backgroundColor: realColor, borderRadius: 4, maxBarThickness: 40 },
-        ] },
-        options: {
-          responsive: true, maintainAspectRatio: false,
-          plugins: { legend: { position: 'top', labels: { boxWidth: 10, boxHeight: 10, usePointStyle: true, pointStyle: 'rect' } },
-            tooltip: { callbacks: { label: (ctx) => ` ${ctx.dataset.label}: ${fmtNum(ctx.parsed.y)} und` } } },
-          scales: {
-            x: { grid: { display: false } },
-            y: { grid: { color: gridColor }, title: { display: true, text: 'Unidades' } }
-          }
-        }
-      });
-
-      new Chart(document.getElementById('chartRunrate'), {
-        type: 'line',
-        data: {
-          labels: DATA.daily.dates,
-          datasets: [
-            { label: 'Venta diaria real', data: DATA.daily.propioReal, borderColor: realColor, backgroundColor: realColor + '33', fill: true, tension: 0.3, pointRadius: 4, pointBackgroundColor: realColor },
-            { label: 'Ritmo necesario', data: DATA.daily.dates.map(() => DATA.daily.neededDaily), borderColor: metaColor, borderDash: [6,4], pointRadius: 0, fill: false, tension: 0 },
-          ]
-        },
-        options: {
-          responsive: true, maintainAspectRatio: false,
-          plugins: { legend: { display: false },
-            tooltip: { callbacks: { label: (ctx) => ` ${ctx.dataset.label}: ${fmtCOP(ctx.parsed.y)}` } } },
-          scales: {
-            x: { grid: { display: false } },
-            y: { grid: { color: gridColor }, ticks: { callback: (v) => '$' + (v/1000000).toFixed(1) + 'M' } }
-          }
-        }
-      });
-    } catch (err) {
-      ['chartValue','chartUnits','chartRunrate'].forEach(id => chartFallback(id, 'Error al construir el gráfico. Los datos completos están en las tablas y barras de arriba.'));
-    }
-  }
 });
 </script>
 </body>
