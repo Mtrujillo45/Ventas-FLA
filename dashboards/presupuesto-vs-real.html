@@ -18,7 +18,6 @@
     --border:         rgba(11,11,11,0.10);
     --series-1:       #2a78d6;
     --series-2:       #eb6834;
-    --meta-bar:       #c7c4b8;
     --good:           #0ca30c;
     --warning:        #fab219;
     --critical:       #d03b3b;
@@ -39,7 +38,6 @@
       --border:         rgba(255,255,255,0.10);
       --series-1:       #3987e5;
       --series-2:       #d95926;
-      --meta-bar:       #46453f;
       --good:           #0ca30c;
       --warning:        #fab219;
       --critical:       #e66767;
@@ -60,7 +58,6 @@
     --border:         rgba(255,255,255,0.10);
     --series-1:       #3987e5;
     --series-2:       #d95926;
-    --meta-bar:       #46453f;
     --good:           #0ca30c;
     --warning:        #fab219;
     --critical:       #e66767;
@@ -137,8 +134,7 @@
   .progress-value b { color: var(--text-primary); font-size: 13.5px; }
   .progress-value .pct { display: block; margin-top: 1px; }
 
-  /* two/three-col chart grid */
-  .chart-grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  /* chart legend */
   .chart-box { position: relative; }
   .legend-row { display: flex; gap: 16px; margin-bottom: 10px; flex-wrap: wrap; }
   .legend-item { display: inline-flex; align-items: center; gap: 6px; font-size: 12px; color: var(--text-secondary); }
@@ -149,11 +145,6 @@
   .chart-grid-line { stroke: var(--grid); stroke-width: 1; }
   .chart-axis-label { font-size: 11px; fill: var(--text-muted); text-anchor: middle; }
   .chart-axis-label-y { font-size: 10px; fill: var(--text-muted); text-anchor: end; }
-  .bar-meta { fill: var(--meta-bar); }
-  .bar-real { fill: var(--series-1); }
-  .bar-value-label { font-size: 11px; fill: var(--text-muted); text-anchor: middle; font-variant-numeric: tabular-nums; }
-  .bar-value-label-real { fill: var(--series-1); font-weight: 700; }
-  .bar-group-label { font-size: 11.5px; fill: var(--text-primary); font-weight: 600; text-anchor: middle; }
   .rr-line-real { stroke: var(--series-1); stroke-width: 2.5; fill: none; stroke-linejoin: round; stroke-linecap: round; }
   .rr-line-needed { stroke: var(--text-muted); stroke-width: 1.5; stroke-dasharray: 6 4; fill: none; }
   .rr-dot { fill: var(--series-1); stroke: var(--surface-1); stroke-width: 2; }
@@ -217,7 +208,6 @@
 
   @media (max-width: 900px) {
     .kpi-grid { grid-template-columns: repeat(2, 1fr); }
-    .chart-grid-2 { grid-template-columns: 1fr; }
     .ticket-grid { grid-template-columns: repeat(2, 1fr); }
     .runrate-stats { grid-template-columns: repeat(2, 1fr); }
     .proj-grid { grid-template-columns: 1fr; }
@@ -275,85 +265,6 @@
     <h2>Cumplimiento por canal — unidades</h2>
     <p class="section-sub">Misma lógica que el panel anterior, en unidades</p>
     <div class="progress-list" id="progress-units"></div>
-  </section>
-
-  <section class="block card">
-    <h2>Real vs. meta por canal</h2>
-    <p class="section-sub">Meta = mes completo de septiembre 2026 · Real = acumulado al corte (7 días)</p>
-    <div class="legend-row">
-      <span class="legend-item"><span class="legend-swatch" style="background:var(--meta-bar)"></span>Meta</span>
-      <span class="legend-item"><span class="legend-swatch" style="background:var(--series-1)"></span>Real</span>
-    </div>
-    <div class="chart-grid-2">
-      <div>
-        <h3>Valor (COP)</h3>
-        <div class="chart-box">
-          <svg viewBox="0 0 420 240" class="svg-chart" role="img" aria-label="Real vs meta por canal, en valor">
-            <line x1="10" y1="26.0" x2="410" y2="26.0" class="chart-grid-line"/>
-            <line x1="10" y1="84.0" x2="410" y2="84.0" class="chart-grid-line"/>
-            <line x1="10" y1="142.0" x2="410" y2="142.0" class="chart-grid-line"/>
-            <line x1="10" y1="200.0" x2="410" y2="200.0" class="chart-grid-line"/>
-            <rect x="27.0" y="100.6" width="30" height="99.4" rx="3" class="bar-meta"/>
-            <rect x="63.0" y="163.9" width="30" height="36.1" rx="3" class="bar-real"/>
-            <text x="42.0" y="94.6" class="bar-value-label">$80.9M</text>
-            <text x="78.0" y="157.9" class="bar-value-label bar-value-label-real">$29.3M</text>
-            <text x="60.0" y="216.0" class="bar-group-label">Online</text>
-            <rect x="127.0" y="169.3" width="30" height="30.7" rx="3" class="bar-meta"/>
-            <rect x="163.0" y="198.5" width="30" height="1.5" rx="3" class="bar-real"/>
-            <text x="142.0" y="163.3" class="bar-value-label">$25.0M</text>
-            <text x="178.0" y="192.5" class="bar-value-label bar-value-label-real">$1.2M</text>
-            <text x="160.0" y="216.0" class="bar-group-label">Showroom</text>
-            <rect x="227.0" y="157.0" width="30" height="43.0" rx="3" class="bar-meta"/>
-            <rect x="263.0" y="172.1" width="30" height="27.9" rx="3" class="bar-real"/>
-            <text x="242.0" y="151.0" class="bar-value-label">$35.0M</text>
-            <text x="278.0" y="166.1" class="bar-value-label bar-value-label-real">$22.7M</text>
-            <text x="260.0" y="216.0" class="bar-group-label">May.</text>
-            <text x="260.0" y="229.0" class="bar-group-label">nacionales</text>
-            <rect x="327.0" y="52.5" width="30" height="147.5" rx="3" class="bar-meta"/>
-            <rect x="363.0" y="200.0" width="30" height="0.0" rx="3" class="bar-real"/>
-            <text x="342.0" y="46.5" class="bar-value-label">$120.0M</text>
-            <text x="378.0" y="194.0" class="bar-value-label bar-value-label-real">$0.0M</text>
-            <text x="360.0" y="216.0" class="bar-group-label">May.</text>
-            <text x="360.0" y="229.0" class="bar-group-label">internacionales</text>
-            <line x1="10" y1="200.0" x2="410" y2="200.0" class="chart-grid-line" style="stroke-opacity:.6"/>
-          </svg>
-        </div>
-      </div>
-      <div>
-        <h3>Unidades</h3>
-        <div class="chart-box">
-          <svg viewBox="0 0 420 240" class="svg-chart" role="img" aria-label="Real vs meta por canal, en unidades">
-            <line x1="10" y1="26.0" x2="410" y2="26.0" class="chart-grid-line"/>
-            <line x1="10" y1="84.0" x2="410" y2="84.0" class="chart-grid-line"/>
-            <line x1="10" y1="142.0" x2="410" y2="142.0" class="chart-grid-line"/>
-            <line x1="10" y1="200.0" x2="410" y2="200.0" class="chart-grid-line"/>
-            <rect x="27.0" y="83.8" width="30" height="116.2" rx="3" class="bar-meta"/>
-            <rect x="63.0" y="149.0" width="30" height="51.0" rx="3" class="bar-real"/>
-            <text x="42.0" y="77.8" class="bar-value-label">700</text>
-            <text x="78.0" y="143.0" class="bar-value-label bar-value-label-real">307</text>
-            <text x="60.0" y="216.0" class="bar-group-label">Online</text>
-            <rect x="127.0" y="164.1" width="30" height="35.9" rx="3" class="bar-meta"/>
-            <rect x="163.0" y="197.7" width="30" height="2.3" rx="3" class="bar-real"/>
-            <text x="142.0" y="158.1" class="bar-value-label">216</text>
-            <text x="178.0" y="191.7" class="bar-value-label bar-value-label-real">14</text>
-            <text x="160.0" y="216.0" class="bar-group-label">Showroom</text>
-            <rect x="227.0" y="112.0" width="30" height="88.0" rx="3" class="bar-meta"/>
-            <rect x="263.0" y="147.5" width="30" height="52.5" rx="3" class="bar-real"/>
-            <text x="242.0" y="106.0" class="bar-value-label">530</text>
-            <text x="278.0" y="141.5" class="bar-value-label bar-value-label-real">316</text>
-            <text x="260.0" y="216.0" class="bar-group-label">May.</text>
-            <text x="260.0" y="229.0" class="bar-group-label">nacionales</text>
-            <rect x="327.0" y="52.5" width="30" height="147.5" rx="3" class="bar-meta"/>
-            <rect x="363.0" y="200.0" width="30" height="0.0" rx="3" class="bar-real"/>
-            <text x="342.0" y="46.5" class="bar-value-label">888</text>
-            <text x="378.0" y="194.0" class="bar-value-label bar-value-label-real">0</text>
-            <text x="360.0" y="216.0" class="bar-group-label">May.</text>
-            <text x="360.0" y="229.0" class="bar-group-label">internacionales</text>
-            <line x1="10" y1="200.0" x2="410" y2="200.0" class="chart-grid-line" style="stroke-opacity:.6"/>
-          </svg>
-        </div>
-      </div>
-    </div>
   </section>
 
   <section class="block card">
