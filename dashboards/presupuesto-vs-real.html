@@ -226,7 +226,7 @@
     <p class="meta">
       Mes reportado: <code id="period-label">Septiembre 2026</code> ·
       Fecha de corte: <code id="cutoff-label">7 sep 2026, 12:59 hora Bogotá</code> ·
-      Día <code>7 de 30</code> del mes (23.3% transcurrido)
+      Día <code id="day-progress-label">7 de 30</code> del mes (<span id="pct-elapsed-label">23.3%</span> transcurrido)
     </p>
   </header>
 
@@ -245,7 +245,7 @@
 
   <section class="block card">
     <h2>Cumplimiento por canal — valor</h2>
-    <p class="section-sub">Marca vertical = punto esperado a la fecha (23.3% del mes). Color de la barra = semáforo sobre el ritmo esperado.</p>
+    <p class="section-sub">Marca vertical = punto esperado a la fecha (<span id="pct-elapsed-label-2">23.3%</span> del mes). Color de la barra = semáforo sobre el ritmo esperado.</p>
     <div class="progress-list" id="progress-value"></div>
   </section>
 
@@ -257,13 +257,14 @@
 
   <section class="block card">
     <h2>Resumen ejecutivo</h2>
-    <p class="section-sub">Lectura del corte al 7 de septiembre — día 7 de 30 del mes</p>
+    <p class="section-sub">Lectura del corte al 7 de septiembre, 14:27 — día 7 de 30 del mes</p>
     <ul class="exec-list">
-      <li><strong>20.4% de la meta del mes facturado en 7 días</strong> ($53.3M de $260.9M), pero eso equivale a <strong>87.5% del ritmo esperado a la fecha</strong> (día 7/30 = 23.3% del mes) — el mes va en amarillo, no en rojo.</li>
-      <li><strong>Online va muy por delante del ritmo</strong> (155% de lo esperado a la fecha), impulsado por el lanzamiento de la colección LOVESSENCE el 4 de septiembre — el ritmo diario puede moderarse una vez pase el pico de lanzamiento.</li>
+      <li><strong>Corrección de canal (7-sep):</strong> Showroom pasó de reportar 21% del ritmo esperado (rojo) a <strong>116% (verde)</strong> al corregir la regla de clasificación Online/Showroom — 2 de las 4 ventas de mostrador del 7 de septiembre no tenían el tag manual "showroom" y se estaban contando como Online. La regla nueva ya no depende de ese tag (se aplicaba de forma inconsistente): usa si el pedido se creó como venta manual (Draft Order) y excluye los que llevan el tag "REDES SOCIALES" (ventas por WhatsApp/Instagram, que sí se etiquetan siempre). Ver nota de metodología en el footer.</li>
+      <li><strong>20.8% de la meta del mes facturado en 7 días</strong> ($54.2M de $260.9M), equivalente al <strong>89.0% del ritmo esperado a la fecha</strong> (día 7/30 = 23.3% del mes) — el mes va en amarillo, muy cerca de verde.</li>
+      <li><strong>Online y Showroom van por delante del ritmo</strong> (130.6% y 116.0% de lo esperado a la fecha respectivamente), impulsados por el lanzamiento de la colección LOVESSENCE el 4 de septiembre — el ritmo diario puede moderarse una vez pase el pico de lanzamiento.</li>
       <li><strong>Mayoristas nacionales va muy adelante</strong> (278% del ritmo esperado): dos facturas a Falabella y una a Casa Viva ya suman $22.7M de los $35.0M del mes, con pedidos que siguen siendo irregulares mes a mes.</li>
-      <li><strong>Dos canales en rojo:</strong> Showroom apenas alcanza el 21% del ritmo esperado (3 pedidos, $1.2M), y Mayoristas internacionales no registra ninguna factura en lo corrido del mes ($0 de $120M) — el pico de ese canal según el plan es octubre.</li>
-      <li><strong>Proyección de cierre del mes (piso conservador):</strong> ~$153.6M (58.9% de la meta) si Online/Showroom mantienen el ritmo actual y mayoristas no factura nada más — es un piso, no una previsión: casi seguro sube en cuanto se facturen más pedidos confirmados de mayoristas (ver nota metodológica más abajo).</li>
+      <li><strong>Un solo canal en rojo:</strong> Mayoristas internacionales no registra ninguna factura en lo corrido del mes ($0 de $120M) — el pico de ese canal según el plan es octubre.</li>
+      <li><strong>Proyección de cierre del mes (piso conservador):</strong> ~$157.4M (60.3% de la meta) si Online/Showroom mantienen el ritmo actual y mayoristas no factura nada más — es un piso, no una previsión: casi seguro sube en cuanto se facturen más pedidos confirmados de mayoristas (ver nota metodológica más abajo).</li>
       <li id="accion-recomendada"><strong>Acción #1 recomendada:</strong> confirmar con el equipo comercial si hay pedidos internacionales de septiembre ya confirmados pero pendientes de facturar — es la brecha más grande en pesos ($120M) y el plan concentra ese canal en octubre, así que hay que verificar si es un problema de timing (factura tardía) o si septiembre realmente no tiene pedidos internacionales.</li>
     </ul>
   </section>
@@ -283,43 +284,9 @@
       <span class="legend-item"><span class="legend-swatch" style="background:var(--text-muted)"></span>Ritmo diario necesario para la meta</span>
     </div>
     <div class="chart-box">
-      <svg viewBox="0 0 880 230" class="svg-chart daily-chart" role="img" aria-label="Ritmo diario canal propio: venta real vs ritmo necesario">
-        <defs><linearGradient id="rrAreaFill" x1="0" y1="0" x2="0" y2="1">
-        <stop offset="0%" stop-color="var(--series-1)" stop-opacity="0.28"/>
-        <stop offset="100%" stop-color="var(--series-1)" stop-opacity="0"/></linearGradient></defs>
-        <line x1="50" y1="22.0" x2="860" y2="22.0" class="chart-grid-line"/>
-        <text x="42" y="25.0" class="chart-axis-label-y">$8.5M</text>
-        <line x1="50" y1="80.0" x2="860" y2="80.0" class="chart-grid-line"/>
-        <text x="42" y="83.0" class="chart-axis-label-y">$5.7M</text>
-        <line x1="50" y1="138.0" x2="860" y2="138.0" class="chart-grid-line"/>
-        <text x="42" y="141.0" class="chart-axis-label-y">$2.8M</text>
-        <line x1="50" y1="196.0" x2="860" y2="196.0" class="chart-grid-line"/>
-        <text x="42" y="199.0" class="chart-axis-label-y">$0.0M</text>
-        <line x1="50" y1="124.0" x2="860" y2="124.0" class="rr-line-needed"/>
-        <path d="M 50.0,172.4 L 185.0,165.0 L 320.0,150.9 L 455.0,40.6 L 590.0,77.9 L 725.0,63.9 L 860.0,78.4 L 860.0,196.0 L 50.0,196.0 Z" fill="url(#rrAreaFill)" stroke="none"/>
-        <path d="M 50.0,172.4 L 185.0,165.0 L 320.0,150.9 L 455.0,40.6 L 590.0,77.9 L 725.0,63.9 L 860.0,78.4" class="rr-line-real"/>
-        <circle cx="50.0" cy="172.4" r="3.5" class="rr-dot"/>
-        <text x="50.0" y="162.4" class="rr-point-label">$1.2M</text>
-        <circle cx="185.0" cy="165.0" r="3.5" class="rr-dot"/>
-        <text x="185.0" y="155.0" class="rr-point-label">$1.5M</text>
-        <circle cx="320.0" cy="150.9" r="3.5" class="rr-dot"/>
-        <text x="320.0" y="140.9" class="rr-point-label">$2.2M</text>
-        <circle cx="455.0" cy="40.6" r="3.5" class="rr-dot"/>
-        <text x="455.0" y="30.6" class="rr-point-label">$7.6M</text>
-        <circle cx="590.0" cy="77.9" r="3.5" class="rr-dot"/>
-        <text x="590.0" y="67.9" class="rr-point-label">$5.8M</text>
-        <circle cx="725.0" cy="63.9" r="3.5" class="rr-dot"/>
-        <text x="725.0" y="53.9" class="rr-point-label">$6.5M</text>
-        <circle cx="860.0" cy="78.4" r="3.5" class="rr-dot"/>
-        <text x="860.0" y="68.4" class="rr-point-label">$5.8M</text>
-        <text x="50.0" y="222" class="chart-axis-label">1 sep</text>
-        <text x="185.0" y="222" class="chart-axis-label">2 sep</text>
-        <text x="320.0" y="222" class="chart-axis-label">3 sep</text>
-        <text x="455.0" y="222" class="chart-axis-label">4 sep</text>
-        <text x="590.0" y="222" class="chart-axis-label">5 sep</text>
-        <text x="725.0" y="222" class="chart-axis-label">6 sep</text>
-        <text x="860.0" y="222" class="chart-axis-label">7 sep</text>
-      </svg>
+      <!-- RUNRATE_SVG_START -->
+<svg viewBox="0 0 880 230" class="svg-chart daily-chart" role="img" aria-label="Ritmo diario canal propio: venta real vs ritmo necesario"><defs><linearGradient id="rrAreaFill" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="var(--series-1)" stop-opacity="0.28"/><stop offset="100%" stop-color="var(--series-1)" stop-opacity="0"/></linearGradient></defs><line x1="50" y1="22.0" x2="860" y2="22.0" class="chart-grid-line"/><text x="42" y="25.0" class="chart-axis-label-y">$8.8M</text><line x1="50" y1="80.0" x2="860" y2="80.0" class="chart-grid-line"/><text x="42" y="83.0" class="chart-axis-label-y">$5.8M</text><line x1="50" y1="138.0" x2="860" y2="138.0" class="chart-grid-line"/><text x="42" y="141.0" class="chart-axis-label-y">$2.9M</text><line x1="50" y1="196.0" x2="860" y2="196.0" class="chart-grid-line"/><text x="42" y="199.0" class="chart-axis-label-y">$0</text><line x1="50" y1="125.9" x2="860" y2="125.9" class="rr-line-needed"/><path d="M 50.0,173.0 L 185.0,165.8 L 320.0,152.1 L 455.0,44.7 L 590.0,81.0 L 725.0,67.4 L 860.0,63.8 L 860.0,196.0 L 50.0,196.0 Z" fill="url(#rrAreaFill)" stroke="none"/><path d="M 50.0,173.0 L 185.0,165.8 L 320.0,152.1 L 455.0,44.7 L 590.0,81.0 L 725.0,67.4 L 860.0,63.8" class="rr-line-real"/><circle cx="50.0" cy="173.0" r="3.5" class="rr-dot"/><text x="50.0" y="163.0" class="rr-point-label">$1.2M</text><circle cx="185.0" cy="165.8" r="3.5" class="rr-dot"/><text x="185.0" y="155.8" class="rr-point-label">$1.5M</text><circle cx="320.0" cy="152.1" r="3.5" class="rr-dot"/><text x="320.0" y="142.1" class="rr-point-label">$2.2M</text><circle cx="455.0" cy="44.7" r="3.5" class="rr-dot"/><text x="455.0" y="34.7" class="rr-point-label">$7.6M</text><circle cx="590.0" cy="81.0" r="3.5" class="rr-dot"/><text x="590.0" y="71.0" class="rr-point-label">$5.8M</text><circle cx="725.0" cy="67.4" r="3.5" class="rr-dot"/><text x="725.0" y="57.4" class="rr-point-label">$6.5M</text><circle cx="860.0" cy="63.8" r="3.5" class="rr-dot"/><text x="860.0" y="53.8" class="rr-point-label">$6.7M</text><text x="50.0" y="222" class="chart-axis-label">1 sep</text><text x="185.0" y="222" class="chart-axis-label">2 sep</text><text x="320.0" y="222" class="chart-axis-label">3 sep</text><text x="455.0" y="222" class="chart-axis-label">4 sep</text><text x="590.0" y="222" class="chart-axis-label">5 sep</text><text x="725.0" y="222" class="chart-axis-label">6 sep</text><text x="860.0" y="222" class="chart-axis-label">7 sep</text></svg>
+<!-- RUNRATE_SVG_END -->
     </div>
     <div class="note-box" id="nota-mayoristas" style="margin-top:16px; scroll-margin-top:16px;">
       <strong>Nota sobre mayoristas — por qué no se proyecta su cierre.</strong> El plan de mayoristas nacionales e internacionales ya no se arma con la fórmula 35%/65% sino con cifras reales de pedidos confirmados (backlog) — así que "real vs. meta" en esos dos canales es <strong>facturado/entregado vs. lo ya comprometido</strong>, no una meta de captación como en Online.
@@ -332,7 +299,7 @@
 
   <section class="block card">
     <h2>Acumulado del periodo Sep–Dic 2026</h2>
-    <p class="section-sub">Estamos en el mes 1 de 4 del plan — el acumulado a hoy es sólo lo real de septiembre</p>
+    <p class="section-sub" id="ytd-month-label">Estamos en el mes 1 de 4 del plan — el acumulado a hoy es sólo lo real de septiembre</p>
     <div class="progress-list" id="progress-ytd" style="margin-bottom:18px;"></div>
     <h3>Proyección de cierre del periodo vs. meta total ($1,399.0M)</h3>
     <div class="proj-grid">
@@ -353,7 +320,7 @@
 
   <section class="block card">
     <h2>Semáforo — canales que requieren acción</h2>
-    <p class="section-sub">🟢 Verde ≥ 100% · 🟡 Amarillo 85–99% · 🔴 Rojo &lt; 85% del ritmo esperado a la fecha (día 7 de 30)</p>
+    <p class="section-sub">🟢 Verde ≥ 100% · 🟡 Amarillo 85–99% · 🔴 Rojo &lt; 85% del ritmo esperado a la fecha (<span id="day-progress-label-2">día 7 de 30</span>)</p>
     <div class="alert-list" id="alert-list"></div>
   </section>
 
@@ -374,7 +341,7 @@
 
   <footer>
     <p><strong>Presupuesto:</strong> Dropbox → <code>/Mompossina/Plan Estrategico/Plan_Estrategico_Mompossina_2026_2027.xlsx</code> (versión sin "Ajuste", meta total Sep-Dic 2026 = $1.399M — verificado contra la hoja "Plan Ago-Dic 2026" y "Canales Ago-Dic 2026" antes de calcular).</p>
-    <p><strong>Ventas reales:</strong> Online y Showroom = pedidos de Shopify (mompossina.myshopify.com) del 1 al 7 de septiembre de 2026, hora Bogotá, estado de pago PAID (se excluyó 1 pedido PENDING de $19,900 aún sin confirmar). Showroom = pedidos con etiqueta <code>SHOWROOM</code>; el resto (incluye tienda web, redes sociales, y marketplace Falabella sincronizado a Shopify) se cuenta como Online. Venta neta = <code>currentSubtotalPriceSet</code> de cada pedido (ya sin IVA — la tienda maneja precios con impuesto incluido — y ya neto de devoluciones/reembolsos aplicados a la fecha).</p>
+    <p><strong>Ventas reales:</strong> Online y Showroom = pedidos de Shopify (mompossina.myshopify.com) del 1 al 7 de septiembre de 2026, hora Bogotá, estado de pago PAID/PARTIALLY_PAID/PARTIALLY_REFUNDED/REFUNDED (se excluyó 1 pedido PENDING de $19,900 aún sin confirmar y 1 pedido en $0 que era solo un registro de saldo de bono, no venta de producto). <strong>Regla de clasificación (corregida 2026-09-07):</strong> ya NO se usa el tag <code>SHOWROOM</code> — se aplicaba manualmente al crear el pedido y con frecuencia se omitía (2 de 4 ventas de mostrador del 7-sep no lo tenían, incluida la más grande del día, $2.56M). Ahora Showroom = pedidos creados como venta manual (<code>sourceName = shopify_draft_order</code>, venta en el local con Bold/QR/efectivo/transferencia) que NO llevan tag <code>REDES SOCIALES</code>/<code>Melonn</code>/<code>Melonn-Entregado</code>; esos sí quedan en Online porque son ventas por WhatsApp/Instagram (Redes propias), no de mostrador — ese tag se confirmó 100% consistente sobre ~150 pedidos de muestra. El resto (tienda web y marketplace Falabella sincronizado a Shopify) también cuenta como Online. Venta neta = <code>currentSubtotalPriceSet</code> de cada pedido (ya sin IVA — la tienda maneja precios con impuesto incluido — y ya neto de devoluciones/reembolsos aplicados a la fecha). Regla implementada en <code>.claude/skills/presupuesto-vs-real/compute.py</code> (función <code>classify_shopify_order</code>).</p>
     <p><strong>Mayoristas:</strong> facturas electrónicas en Google Drive, carpetas "FACTURAS NACIONALES" y "FACTURA EXPOR", filtradas a fecha de factura de septiembre 2026. Nacionales: RFEL8308 (Casa Viva, 1 sep, $1,540,839 / 20 und), RFEL8314 (Falabella, 7 sep, $21,077,224 / 296 und) y RFEL8315 (Falabella, 7 sep, $120,447 — nota de crédito por "servicio de descuento no autorizado", se sumó al valor del canal pero no a las unidades por no ser prenda despachada). Internacionales: no hay facturas con fecha de septiembre 2026 en la carpeta a la fecha de corte.</p>
     <p><strong>Semáforo:</strong> calculado sobre el ritmo esperado a la fecha (meta del mes × días transcurridos/días del mes), no sobre la meta mensual completa — a día 7 de 30, comparar contra el 100% de la meta mensual haría ver todo en rojo por razones puramente de calendario. Umbrales: verde ≥100%, amarillo 85-99%, rojo &lt;85% del ritmo esperado.</p>
     <p>Cifras en pesos colombianos (COP), sin decimales. Este archivo es una foto fija del corte indicado; para un nuevo corte se vuelve a correr el cálculo con datos frescos de Shopify y las facturas de Google Drive.</p>
@@ -383,46 +350,9 @@
 </div>
 
 <script>
-const DATA = {
-  meta: { period: "Septiembre 2026", cutoff: "7 sep 2026, 12:59 hora Bogotá", daysElapsed: 7, daysInMonth: 30 },
-  total: {
-    budgetValue: 260900000, realValue: 53278945, pctValue: 20.421213108470684,
-    budgetUnits: 2335, realUnits: 637, pctUnits: 27.280513918629552,
-    ticketProm: 83640.41601255887,
-    paceValue: 87.51948475058863, paceUnits: 116.91648822269806,
-  },
-  channels: [
-    { key:"online", label:"Online", budgetValue:80900000, realValue:29337655, pctValue:36.26409765142151, budgetUnits:700, realUnits:307, pctUnits:43.857142857142854, paceValue:155.41756136323502, paceUnits:187.95918367346937, ticketReal:95562.39413680782, ticketPlan:115595, ticketDelta:-17.329993393479114, orders:109, semaforoValue:"verde", semaforoUnits:"verde" },
-    { key:"showroom", label:"Showroom", budgetValue:25000000, realValue:1202780, pctValue:4.81112, budgetUnits:216, realUnits:14, pctUnits:6.481481481481481, paceValue:20.619085714285713, paceUnits:27.77777777777778, ticketReal:85912.85714285714, ticketPlan:115595, ticketDelta:-25.6777047944486, orders:3, semaforoValue:"rojo", semaforoUnits:"rojo" },
-    { key:"nacional", label:"May. nacionales", budgetValue:35000000, realValue:22738510, pctValue:64.96717142857142, budgetUnits:530, realUnits:316, pctUnits:59.62264150943396, paceValue:278.4307346938776, paceUnits:255.52560646900267, ticketReal:71957.31012658228, ticketPlan:65979, ticketDelta:9.060928669095134, orders:3, semaforoValue:"verde", semaforoUnits:"verde" },
-    { key:"internacional", label:"May. internacionales", budgetValue:120000000, realValue:0, pctValue:0, budgetUnits:888, realUnits:0, pctUnits:0, paceValue:0, paceUnits:0, ticketReal:null, ticketPlan:135121, ticketDelta:null, orders:0, semaforoValue:"rojo", semaforoUnits:"rojo" },
-  ],
-  runrate: {
-    daysElapsed:7, daysInMonth:30,
-    onlineDailyRate:4191093.5714285714, onlineNeededRate:2696666.6666666665, onlinePacePct:155.41756136323502, onlineProjection:125732807.14285713, onlineProjectionPct:155.41756136323502,
-    showroomDailyRate:171825.7142857143, showroomNeededRate:833333.3333333334, showroomPacePct:20.619085714285713, showroomProjection:5154771.428571429, showroomProjectionPct:20.619085714285717,
-    floorValue:153626088.57142857, floorPct:58.88313092044024,
-  },
-  daily: {
-    dates: ["1 sep","2 sep","3 sep","4 sep","5 sep","6 sep","7 sep"],
-    propioReal: [1159220, 1518780, 2211395, 7618240, 5789400, 6476200, 5767200],
-    neededDaily: 3530000,
-  },
-  ytd: {
-    realValue:53278945, realUnits:637, expectedValue:60876666.666666664, expectedUnits:544.8333333333334,
-    paceValue:87.51948475058863, paceUnits:116.91648822269806,
-    planTotal:1399000000, planTotalUnits:12913,
-    proj1:1391402278.3333333, proj1Pct:99.45691767929473,
-    proj2:1211276152.857143, proj2Pct:86.58156918206883,
-  },
-  margins: [
-    { mes:"Septiembre", venta:260.9, cogs:99.7, margenBruto:161.2, mercadeo:52.2, personalAdmin:60.3, utilidad:48.7, margenPct:18.7 },
-    { mes:"Octubre", venta:309.9, cogs:118.4, margenBruto:191.5, mercadeo:62.0, personalAdmin:60.3, utilidad:69.2, margenPct:22.3 },
-    { mes:"Noviembre", venta:422.9, cogs:161.6, margenBruto:261.3, mercadeo:84.6, personalAdmin:60.3, utilidad:116.4, margenPct:27.5 },
-    { mes:"Diciembre", venta:405.3, cogs:154.9, margenBruto:250.4, mercadeo:81.1, personalAdmin:60.3, utilidad:109.0, margenPct:26.9 },
-    { mes:"Total", venta:1399.0, cogs:534.6, margenBruto:864.4, mercadeo:279.8, personalAdmin:241.2, utilidad:343.4, margenPct:24.5 },
-  ],
-};
+<!-- DATA_START -->
+const DATA = {"meta": {"period": "Septiembre 2026", "cutoff": "7 sep 2026, 14:27 hora Bogotá", "daysElapsed": 7, "daysInMonth": 30, "pctElapsed": 23.333333333333332, "monthIndex": 1, "monthTotal": 4, "monthLabel": "Septiembre"}, "total": {"budgetValue": 260900000, "realValue": 54168145.0, "pctValue": 20.76203334610962, "budgetUnits": 2334, "realUnits": 648, "pctUnits": 27.76349614395887, "ticketProm": 83592.81635802469, "paceValue": 88.98014291189837, "paceUnits": 118.98641204553802}, "channels": [{"key": "online", "label": "Online", "budgetValue": 80900000, "realValue": 24660660.0, "pctValue": 30.48289245982695, "budgetUnits": 700, "realUnits": 266, "pctUnits": 38.0, "paceValue": 130.64096768497262, "paceUnits": 162.85714285714286, "ticketReal": 92709.24812030075, "ticketPlan": 115595, "ticketDelta": -19.798219542107574, "orders": 98, "semaforoValue": "verde", "semaforoUnits": "verde"}, {"key": "showroom", "label": "Showroom", "budgetValue": 25000000, "realValue": 6768975.0, "pctValue": 27.075900000000004, "budgetUnits": 216, "realUnits": 66, "pctUnits": 30.555555555555557, "paceValue": 116.03957142857143, "paceUnits": 130.95238095238096, "ticketReal": 102560.22727272728, "ticketPlan": 115595, "ticketDelta": -11.27624268114773, "orders": 17, "semaforoValue": "verde", "semaforoUnits": "verde"}, {"key": "nacional", "label": "May. nacionales", "budgetValue": 35000000, "realValue": 22738510.0, "pctValue": 64.96717142857142, "budgetUnits": 530, "realUnits": 316, "pctUnits": 59.62264150943396, "paceValue": 278.4307346938776, "paceUnits": 255.52560646900267, "ticketReal": 71957.31012658228, "ticketPlan": 65979, "ticketDelta": 9.060928669095137, "orders": 3, "semaforoValue": "verde", "semaforoUnits": "verde"}, {"key": "internacional", "label": "May. internacionales", "budgetValue": 120000000, "realValue": 0.0, "pctValue": 0.0, "budgetUnits": 888, "realUnits": 0, "pctUnits": 0.0, "paceValue": 0.0, "paceUnits": 0.0, "ticketReal": null, "ticketPlan": 135121, "ticketDelta": null, "orders": 0, "semaforoValue": "rojo", "semaforoUnits": "rojo"}], "runrate": {"daysElapsed": 7, "daysInMonth": 30, "onlineDailyRate": 3522951.4285714286, "onlineNeededRate": 2696666.6666666665, "onlinePacePct": 130.64096768497265, "onlineProjection": 105688542.85714287, "onlineProjectionPct": 130.64096768497265, "showroomDailyRate": 966996.4285714285, "showroomNeededRate": 833333.3333333334, "showroomPacePct": 116.03957142857142, "showroomProjection": 29009892.857142854, "showroomProjectionPct": 116.03957142857142, "floorValue": 157436945.71428573, "floorPct": 60.34378908174999}, "daily": {"dates": ["1 sep", "2 sep", "3 sep", "4 sep", "5 sep", "6 sep", "7 sep"], "propioReal": [1159220.0, 1518780.0, 2211395.0, 7618240.0, 5789400.0, 6476200.0, 6656400.0], "neededDaily": 3530000.0}, "ytd": {"realValue": 54168145.0, "realUnits": 648.0, "expectedValue": 60876666.666666664, "expectedUnits": 544.6, "paceValue": 88.98014291189837, "paceUnits": 118.98641204553802, "planTotal": 1399000000, "planTotalUnits": 12913, "proj1": 1392291478.3333333, "proj1Pct": 99.52047736478437, "proj2": 1226773638.5714285, "proj2Pct": 87.68932370060247}, "margins": [{"mes": "Septiembre", "venta": 260.9, "cogs": 99.7, "margenBruto": 161.2, "mercadeo": 52.2, "personalAdmin": 60.3, "utilidad": 48.7, "margenPct": 18.7}, {"mes": "Octubre", "venta": 309.9, "cogs": 118.4, "margenBruto": 191.5, "mercadeo": 62.0, "personalAdmin": 60.3, "utilidad": 69.2, "margenPct": 22.3}, {"mes": "Noviembre", "venta": 422.9, "cogs": 161.6, "margenBruto": 261.3, "mercadeo": 84.6, "personalAdmin": 60.3, "utilidad": 116.4, "margenPct": 27.5}, {"mes": "Diciembre", "venta": 405.3, "cogs": 154.9, "margenBruto": 250.4, "mercadeo": 81.1, "personalAdmin": 60.3, "utilidad": 109.0, "margenPct": 26.9}, {"mes": "Total", "venta": 1399.0, "cogs": 534.6, "margenBruto": 864.4, "mercadeo": 279.8, "personalAdmin": 241.2, "utilidad": 343.4, "margenPct": 24.5}]};
+<!-- DATA_END -->
 
 function fmtCOP(x) { return "$" + Math.round(x).toLocaleString('es-CO'); }
 function fmtNum(x) { return Math.round(x).toLocaleString('es-CO'); }
@@ -433,6 +363,14 @@ document.addEventListener('DOMContentLoaded', () => {
   // ---- header ----
   document.getElementById('period-label').textContent = DATA.meta.period;
   document.getElementById('cutoff-label').textContent = DATA.meta.cutoff;
+  const dayProgressTxt = `${DATA.meta.daysElapsed} de ${DATA.meta.daysInMonth}`;
+  const pctElapsedTxt = fmtPct(DATA.meta.pctElapsed);
+  document.getElementById('day-progress-label').textContent = dayProgressTxt;
+  document.getElementById('pct-elapsed-label').textContent = pctElapsedTxt;
+  document.getElementById('pct-elapsed-label-2').textContent = pctElapsedTxt;
+  document.getElementById('day-progress-label-2').textContent = `día ${dayProgressTxt}`;
+  document.getElementById('ytd-month-label').textContent =
+    `Estamos en el mes ${DATA.meta.monthIndex} de ${DATA.meta.monthTotal} del plan — el acumulado a hoy incluye ${DATA.meta.monthIndex > 1 ? 'los meses ya cerrados más' : 'sólo'} lo real de ${DATA.meta.monthLabel.toLowerCase()}`;
 
   // ---- total KPIs ----
   document.getElementById('kpi-venta').textContent = fmtCOP(DATA.total.realValue);
@@ -520,9 +458,9 @@ document.addEventListener('DOMContentLoaded', () => {
   // ---- alerts ----
   const redChannels = DATA.channels.filter(c => c.semaforoValue === 'rojo' || c.semaforoUnits === 'rojo');
   document.getElementById('alert-list').innerHTML = redChannels.map(c => {
-    let detail = '';
-    if (c.key === 'showroom') detail = `Sólo ${fmtPct(c.paceValue)} del ritmo esperado a la fecha — ${c.orders} pedidos por ${fmtCOP(c.realValue)} de una meta mensual de ${fmtCOP(c.budgetValue)}.`;
-    if (c.key === 'internacional') detail = `Sin facturas registradas en septiembre a la fecha de corte, de una meta mensual de ${fmtCOP(c.budgetValue)}. El plan concentra este canal en octubre ($180M) — revisar si hay pedidos confirmados por facturar antes de fin de mes.`;
+    const detail = c.realValue > 0
+      ? `Sólo ${fmtPct(c.paceValue)} del ritmo esperado a la fecha — ${c.orders} pedidos por ${fmtCOP(c.realValue)} de una meta mensual de ${fmtCOP(c.budgetValue)}.`
+      : `Sin ventas registradas en ${DATA.meta.monthLabel.toLowerCase()} a la fecha de corte, de una meta mensual de ${fmtCOP(c.budgetValue)}.`;
     return `<div class="alert-item"><div class="dot"></div><div class="txt"><b>${c.label}</b> — <span>${detail}</span></div></div>`;
   }).join('') || '<p style="font-size:13px;color:var(--text-muted);">Sin canales en rojo.</p>';
 
