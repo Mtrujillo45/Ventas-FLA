@@ -1,0 +1,68 @@
+{
+  "_source": "Dropbox /Mompossina/Plan Estrategico/Plan_Estrategico_Mompossina_2026_2027.xlsx (version SIN 'Ajuste', 43358 bytes) — hojas 'Canales Ago-Dic 2026' y 'Plan Ago-Dic 2026'. NO usar el archivo con 'Ajuste' en el nombre (48351 bytes) — es una versión distinta que no cuadra con la meta total de $1,399M confirmada por el usuario.",
+  "period_order": ["2026-09", "2026-10", "2026-11", "2026-12"],
+  "channel_order": ["online", "showroom", "nacional", "internacional"],
+  "channel_labels": {
+    "online": "Online",
+    "showroom": "Showroom",
+    "nacional": "May. nacionales",
+    "internacional": "May. internacionales"
+  },
+  "months": {
+    "2026-09": {
+      "label": "Septiembre 2026",
+      "daysInMonth": 30,
+      "channels": {
+        "online": { "budgetValue": 80900000, "budgetUnits": 700 },
+        "showroom": { "budgetValue": 25000000, "budgetUnits": 216 },
+        "nacional": { "budgetValue": 35000000, "budgetUnits": 530 },
+        "internacional": { "budgetValue": 120000000, "budgetUnits": 888 }
+      }
+    },
+    "2026-10": {
+      "label": "Octubre 2026",
+      "daysInMonth": 31,
+      "channels": {
+        "online": { "budgetValue": 80900000, "budgetUnits": 700 },
+        "showroom": { "budgetValue": 25000000, "budgetUnits": 216 },
+        "nacional": { "budgetValue": 24000000, "budgetUnits": 364 },
+        "internacional": { "budgetValue": 180000000, "budgetUnits": 1332 }
+      }
+    },
+    "2026-11": {
+      "label": "Noviembre 2026",
+      "daysInMonth": 30,
+      "channels": {
+        "online": { "budgetValue": 200400000, "budgetUnits": 1734 },
+        "showroom": { "budgetValue": 32500000, "budgetUnits": 281 },
+        "nacional": { "budgetValue": 70000000, "budgetUnits": 1061 },
+        "internacional": { "budgetValue": 120000000, "budgetUnits": 888 }
+      }
+    },
+    "2026-12": {
+      "label": "Diciembre 2026",
+      "daysInMonth": 31,
+      "channels": {
+        "online": { "budgetValue": 240300000, "budgetUnits": 2079 },
+        "showroom": { "budgetValue": 35000000, "budgetUnits": 303 },
+        "nacional": { "budgetValue": 85000000, "budgetUnits": 1288 },
+        "internacional": { "budgetValue": 45000000, "budgetUnits": 333 }
+      }
+    }
+  },
+  "ticket_plan": {
+    "online": 115595,
+    "showroom": 115595,
+    "nacional": 65979,
+    "internacional": 135121
+  },
+  "plan_total_value": 1399000000,
+  "plan_total_units": 12913,
+  "margins": [
+    { "mes": "Septiembre", "venta": 260.9, "cogs": 99.7, "margenBruto": 161.2, "mercadeo": 52.2, "personalAdmin": 60.3, "utilidad": 48.7, "margenPct": 18.7 },
+    { "mes": "Octubre", "venta": 309.9, "cogs": 118.4, "margenBruto": 191.5, "mercadeo": 62.0, "personalAdmin": 60.3, "utilidad": 69.2, "margenPct": 22.3 },
+    { "mes": "Noviembre", "venta": 422.9, "cogs": 161.6, "margenBruto": 261.3, "mercadeo": 84.6, "personalAdmin": 60.3, "utilidad": 116.4, "margenPct": 27.5 },
+    { "mes": "Diciembre", "venta": 405.3, "cogs": 154.9, "margenBruto": 250.4, "mercadeo": 81.1, "personalAdmin": 60.3, "utilidad": 109.0, "margenPct": 26.9 },
+    { "mes": "Total", "venta": 1399.0, "cogs": 534.6, "margenBruto": 864.4, "mercadeo": 279.8, "personalAdmin": 241.2, "utilidad": 343.4, "margenPct": 24.5 }
+  ]
+}
