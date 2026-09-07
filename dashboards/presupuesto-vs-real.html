@@ -239,7 +239,7 @@
       <div class="kpi"><div class="label">Ticket promedio real</div><div class="value" id="kpi-ticket">—</div><div class="sub">Todos los canales combinados, venta ÷ unidades</div></div>
       <div class="kpi"><div class="label">% cumplimiento del mes</div><div class="value" id="kpi-cumpl">—</div><div class="sub">Venta real ÷ meta mensual completa (valor)</div></div>
       <div class="kpi"><div class="label">% del ritmo esperado a la fecha</div><div class="value" id="kpi-ritmo">—</div><div class="sub">Real ÷ (meta × 7/30 días transcurridos) — base del semáforo</div></div>
-      <div class="kpi"><div class="label">Proyección de cierre (piso)</div><div class="value" id="kpi-proy">—</div><div class="sub"><span id="kpi-proy-pct">—</span> de la meta · Online/Showroom por ritmo, mayoristas sin proyectar</div></div>
+      <div class="kpi"><div class="label">Proyección de cierre (piso conservador)</div><div class="value" id="kpi-proy">—</div><div class="sub"><span id="kpi-proy-pct">—</span> de la meta · asume $0 más de mayoristas este mes, no que estén fallando — <a href="#nota-mayoristas" style="color:inherit;">ver por qué</a></div></div>
     </div>
   </section>
 
@@ -263,7 +263,8 @@
       <li><strong>Online va muy por delante del ritmo</strong> (155% de lo esperado a la fecha), impulsado por el lanzamiento de la colección LOVESSENCE el 4 de septiembre — el ritmo diario puede moderarse una vez pase el pico de lanzamiento.</li>
       <li><strong>Mayoristas nacionales va muy adelante</strong> (278% del ritmo esperado): dos facturas a Falabella y una a Casa Viva ya suman $22.7M de los $35.0M del mes, con pedidos que siguen siendo irregulares mes a mes.</li>
       <li><strong>Dos canales en rojo:</strong> Showroom apenas alcanza el 21% del ritmo esperado (3 pedidos, $1.2M), y Mayoristas internacionales no registra ninguna factura en lo corrido del mes ($0 de $120M) — el pico de ese canal según el plan es octubre.</li>
-      <li><strong>Proyección de cierre del mes (piso conservador):</strong> ~$153.6M (58.9% de la meta) si Online/Showroom mantienen el ritmo actual y mayoristas no factura nada más — cifra que casi seguro sube en cuanto se facturen más pedidos confirmados de mayoristas.</li>
+      <li><strong>Proyección de cierre del mes (piso conservador):</strong> ~$153.6M (58.9% de la meta) si Online/Showroom mantienen el ritmo actual y mayoristas no factura nada más — es un piso, no una previsión: casi seguro sube en cuanto se facturen más pedidos confirmados de mayoristas (ver nota metodológica más abajo).</li>
+      <li id="accion-recomendada"><strong>Acción #1 recomendada:</strong> confirmar con el equipo comercial si hay pedidos internacionales de septiembre ya confirmados pero pendientes de facturar — es la brecha más grande en pesos ($120M) y el plan concentra ese canal en octubre, así que hay que verificar si es un problema de timing (factura tardía) o si septiembre realmente no tiene pedidos internacionales.</li>
     </ul>
   </section>
 
@@ -320,8 +321,12 @@
         <text x="860.0" y="222" class="chart-axis-label">7 sep</text>
       </svg>
     </div>
-    <div class="note-box" style="margin-top:16px;">
-      <strong>Nota sobre mayoristas.</strong> El plan de mayoristas nacionales e internacionales ya no se arma con la fórmula 35%/65% sino con cifras reales de pedidos confirmados (backlog) — así que "real vs. meta" en esos dos canales es <strong>facturado/entregado vs. lo ya comprometido</strong>, no una meta de captación como en Online. No se proyecta su cierre por ritmo diario: nacionales ya facturó $22.7M de los $35.0M confirmados para el mes (3 facturas); internacionales no ha facturado nada aún — el plan concentra ese canal en octubre ($180M).
+    <div class="note-box" id="nota-mayoristas" style="margin-top:16px; scroll-margin-top:16px;">
+      <strong>Nota sobre mayoristas — por qué no se proyecta su cierre.</strong> El plan de mayoristas nacionales e internacionales ya no se arma con la fórmula 35%/65% sino con cifras reales de pedidos confirmados (backlog) — así que "real vs. meta" en esos dos canales es <strong>facturado/entregado vs. lo ya comprometido</strong>, no una meta de captación como en Online.
+      <br><br>
+      No es que no se pueda calcular un ritmo diario para mayoristas — es que sería una cifra engañosa. Mayoristas no vende en flujo continuo día a día: llega como pocas órdenes de compra grandes de golpe (ej. la factura del 7 de septiembre a Falabella fueron 296 unidades en una sola operación). Con solo 2-3 facturas en 7 días, un "ritmo diario" no refleja ninguna tendencia real — extrapolarlo sería inventar un número, no proyectarlo. Por eso la "Proyección de cierre (piso)" de arriba congela mayoristas en lo ya facturado, sin sumarle nada más el resto del mes.
+      <br><br>
+      Eso no significa que ambos canales estén igual: <strong>nacionales</strong> ya facturó $22.7M de los $35.0M confirmados para el mes (3 facturas, adelante del backlog) — el "piso" lo subestima porque es muy probable que facture más antes de fin de mes. <strong>Internacionales</strong> no ha facturado nada aún, pero eso tampoco es necesariamente una alerta: el plan concentra ese canal en octubre ($180M), así que septiembre en cero puede ser normal — vale la pena confirmar con el equipo comercial si hay pedidos internacionales ya confirmados pendientes de facturar (ver <a href="#accion-recomendada" style="color:inherit;">acción recomendada</a> arriba).
     </div>
   </section>
 
