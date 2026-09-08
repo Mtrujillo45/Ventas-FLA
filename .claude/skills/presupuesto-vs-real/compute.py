@@ -85,12 +85,23 @@ Uso:
   unidades de producto). Se muestran en una sección aparte del dashboard,
   claramente marcada como "fuera del presupuesto" — NUNCA se suman a
   channels, total, runrate, ytd ni al semáforo. Formato:
-  [{"date":"2026-09-07","invoice":"RFEL8320","partner":"...",
+  [{"date":"2026-09-07","invoice":"RFEL8320","category":"FLA","partner":"...",
     "description":"...","value":64250000,"note":"..."}, ...]
   El criterio para decidir si una factura va aquí en vez de a --wholesale:
   ¿tiene unidades de producto vendido y un canal claro (nacional/
   internacional)? Si no — si es un monto fijo por un servicio/colaboración/
   patrocinio — va en --extraordinary, no en --wholesale.
+  "category" es una de EXTRAORDINARY_CATEGORIES (ver constante más abajo:
+  "FLA" = colaboraciones/co-branding con la Fábrica de Licores de Antioquia,
+  "PAC" = ventas de paquete completo/curado a un cliente, fuera del esquema
+  normal por unidad de mayoristas). Estas dos categorías SIEMPRE aparecen
+  como fila en el panel "Cumplimiento por canal — $ Valor" del dashboard
+  (barra al 100% si hubo algo facturado ese mes bajo esa categoría, 0% si
+  no) — es un indicador visual de presencia/ausencia, no de cumplimiento
+  real, así que no se compara contra ninguna meta. Una categoría nueva que
+  no esté en EXTRAORDINARY_CATEGORIES igual se agrega a la tabla resumen de
+  abajo, pero no genera fila fija en el panel de barras a menos que se
+  agregue a esa constante.
 """
 import json
 import argparse
@@ -102,6 +113,10 @@ MESES_ES_LARGO = ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio"
                    "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"]
 REDES_TAGS = {"redes sociales", "melonn", "melonn-entregado"}
 VALID_STATUS = {"PAID", "PARTIALLY_PAID", "PARTIALLY_REFUNDED", "REFUNDED"}
+EXTRAORDINARY_CATEGORIES = [
+    ("FLA", "Colaboración FLA"),
+    ("PAC", "Paquete completo (PAC)"),
+]
 
 
 def classify_shopify_order(o):
@@ -187,6 +202,27 @@ def aggregate_wholesale(entries):
         buckets[ch]["units"] += int(e.get("units", 0))
         buckets[ch]["orders"] += 1
     return buckets
+
+
+def build_extraordinary_by_category(entries):
+    """Agrupa las facturas fuera de presupuesto por categoría (FLA/PAC/...).
+    Las categorías fijas en EXTRAORDINARY_CATEGORIES SIEMPRE aparecen (con
+    total 0 / hasInvoice False si no hubo factura ese mes) para que el panel
+    de barras tenga una fila estable mes a mes; una categoría nueva que
+    aparezca en `entries` pero no esté en la lista fija también se agrega
+    (al final), pero no está garantizado que se muestre en meses sin datos."""
+    by_key = {key: {"key": key, "label": label, "total": 0.0, "items": [], "hasInvoice": False}
+              for key, label in EXTRAORDINARY_CATEGORIES}
+    for e in entries:
+        key = e.get("category") or "OTRO"
+        if key not in by_key:
+            by_key[key] = {"key": key, "label": key, "total": 0.0, "items": [], "hasInvoice": False}
+        by_key[key]["total"] += float(e["value"])
+        by_key[key]["items"].append(e)
+        by_key[key]["hasInvoice"] = True
+    fixed_order = [k for k, _ in EXTRAORDINARY_CATEGORIES]
+    extra_order = [k for k in by_key if k not in fixed_order]
+    return [by_key[k] for k in fixed_order + extra_order]
 
 
 def stoplight(pct):
@@ -482,6 +518,7 @@ def main():
         "extraordinary": {
             "items": extraordinary_entries,
             "total": sum(float(e["value"]) for e in extraordinary_entries),
+            "byCategory": build_extraordinary_by_category(extraordinary_entries),
         },
     }
 
@@ -511,6 +548,9 @@ def main():
         print(f"Facturación fuera del presupuesto ({len(extraordinary_entries)}, NO incluida arriba): "
               f"{money_short(data['extraordinary']['total'])} — " +
               ", ".join(f"{e.get('invoice','?')} {e.get('partner','')} {money_short(e['value'])}" for e in extraordinary_entries))
+    print("Categorías fuera de presupuesto (fila fija en el panel $ Valor): " +
+          ", ".join(f"{c['label']}={'sí, ' + money_short(c['total']) if c['hasInvoice'] else 'sin facturación'}"
+                     for c in data["extraordinary"]["byCategory"]))
 
     if args.html:
         data_js = "const DATA = " + json.dumps(data, ensure_ascii=False) + ";"
