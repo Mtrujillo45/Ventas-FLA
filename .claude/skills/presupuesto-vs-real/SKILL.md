@@ -69,6 +69,18 @@ reportado. Si en el futuro Shopify habilita `staffMember`/`retailLocation`
 para esta cuenta, sería una señal más limpia — reevaluar en ese momento,
 pero no es necesario mientras el patrón de tags siga siendo consistente.
 
+## Envío — confirmado con el usuario, 2026-09-08
+
+El envío que se cobra en pedidos web bajo $280.000 SÍ es ingreso de cuenta
+4 (la misma cuenta de la que sale la "venta neta" histórica del plan), así
+que el valor de cada pedido de Shopify para este dashboard es
+`currentSubtotalPriceSet + currentShippingPriceSet` (producto + envío),
+no solo producto — ver `order_value()` en `compute.py`. Aplica igual a
+Online y Showroom (será $0 donde no se cobró envío). Si se usa el camino
+`--shopify-summary` (agregación hecha aparte, ver más abajo), el valor que
+se agrega por pedido también debe incluir el envío — copiar `order_value()`
+igual que se copia `classify_shopify_order()`.
+
 ## Facturación adicional (fuera del presupuesto) — confirmado 2026-09-08
 
 A veces el mes trae facturas que no son venta recurrente de producto por
@@ -124,6 +136,7 @@ query Orders($q: String!, $after: String) {
     edges { node {
       name createdAt tags sourceName test displayFinancialStatus
       currentSubtotalPriceSet { shopMoney { amount } }
+      currentShippingPriceSet { shopMoney { amount } }
       lineItems(first: 50) { edges { node { currentQuantity } } }
     } }
   }
