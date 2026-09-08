@@ -69,6 +69,27 @@ reportado. Si en el futuro Shopify habilita `staffMember`/`retailLocation`
 para esta cuenta, sería una señal más limpia — reevaluar en ese momento,
 pero no es necesario mientras el patrón de tags siga siendo consistente.
 
+## Facturación adicional (fuera del presupuesto) — confirmado 2026-09-08
+
+A veces el mes trae facturas que no son venta recurrente de producto por
+canal: colaboraciones/co-branding con marcas externas, paquetes puntuales,
+patrocinios. Ejemplo: RFEL8320, un pago único de "Consorcio Licores de la
+Sabana Limitada y Otros" (razón social de la Fábrica de Licores de
+Antioquia — FLA) por la propuesta de co-branding Mompossina x Aguardiente
+Antioqueño, $64,250,000 sin IVA, sin unidades de producto.
+
+**Estas facturas NUNCA se suman a `channels`, `total`, `runrate`, `ytd` ni
+al semáforo** — el plan no las contempla y mezclarlas infla el
+cumplimiento de forma engañosa. En vez de eso van en la sección aparte
+"Facturación adicional" del dashboard (`DATA.extraordinary`), claramente
+marcada como fuera del presupuesto.
+
+**Criterio para decidir dónde va una factura de mayoristas:** ¿tiene
+unidades de producto vendido y encaja en un canal (nacional/
+internacional)? Si sí → `--wholesale`. Si es un monto fijo por un
+servicio/colaboración/patrocinio sin unidades → `--extraordinary`. Ante la
+duda, preguntarle al usuario en vez de asumir.
+
 ## Datos de referencia
 
 | Concepto | Valor |
@@ -144,6 +165,15 @@ desde Bash local). Armar `wholesale_<mes>.json`:
 Una nota de crédito sin prenda despachada usa `"units": 0` (se suma al
 valor del canal, no a las unidades — ver ejemplo RFEL8315 en septiembre).
 
+Al revisar cada factura nueva, separa las que NO sean venta de producto por
+unidades (colaboraciones, co-branding, patrocinios — ver sección
+"Facturación adicional" arriba) en `extraordinary_<mes>.json` en vez de
+`wholesale_<mes>.json`:
+```json
+[{"date":"YYYY-MM-DD","invoice":"RFEL...","partner":"...",
+  "description":"...","value":123,"note":"opcional"}]
+```
+
 **4. Acumulado de meses ya cerrados (sólo relevante desde octubre en
 adelante).** `compute.py` necesita `--prior-real-value`/`--prior-real-units`
 = suma de venta/unidades REAL de los meses del periodo ya cerrados antes del
@@ -161,8 +191,12 @@ python3 .claude/skills/presupuesto-vs-real/compute.py \
   --now "<hora ISO Bogotá del paso 1>" \
   --html dashboards/presupuesto-vs-real.html
   [--prior-real-value 0 --prior-real-units 0]
+  [--extraordinary $SCRATCH/presupuesto-vs-real/extraordinary_2026-09.json]
 ```
 (o `--shopify-summary ...json` en vez de `--shopify-orders`, ver paso 2).
+`--extraordinary` es opcional — solo pasarlo si hubo facturas fuera del
+presupuesto ese mes (ver sección de arriba); si no se pasa, la sección
+"Facturación adicional" del dashboard queda oculta automáticamente.
 Revisa el resumen impreso (por canal: real/meta/% mes/ritmo/semáforo,
 proyección de cierre, acumulado, canales en rojo). Si algo se ve fuera de
 lugar (un canal en rojo que no debería, un ticket promedio absurdo), no

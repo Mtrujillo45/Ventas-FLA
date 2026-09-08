@@ -66,6 +66,20 @@ Uso:
 --prior-real-value / --prior-real-units: suma de venta/unidades REAL de los
   meses del periodo Sep-Dic ya cerrados antes de --month (0 en septiembre,
   el mes 1). Necesario para el acumulado (YTD) en meses futuros.
+
+--extraordinary (opcional): facturas del mes que NO son venta recurrente de
+  producto por canal — colaboraciones/co-branding, paquetes puntuales,
+  patrocinios (ej. RFEL8320, pago único de Consorcio Licores de la Sabana /
+  FLA por una propuesta de co-branding con Aguardiente Antioqueño, sin
+  unidades de producto). Se muestran en una sección aparte del dashboard,
+  claramente marcada como "fuera del presupuesto" — NUNCA se suman a
+  channels, total, runrate, ytd ni al semáforo. Formato:
+  [{"date":"2026-09-07","invoice":"RFEL8320","partner":"...",
+    "description":"...","value":64250000,"note":"..."}, ...]
+  El criterio para decidir si una factura va aquí en vez de a --wholesale:
+  ¿tiene unidades de producto vendido y un canal claro (nacional/
+  internacional)? Si no — si es un monto fijo por un servicio/colaboración/
+  patrocinio — va en --extraordinary, no en --wholesale.
 """
 import json
 import argparse
@@ -373,6 +387,7 @@ def main():
     ap.add_argument("--shopify-orders", help="JSON crudo de pedidos (paginado). Alternativa: --shopify-summary")
     ap.add_argument("--shopify-summary", help="JSON ya agregado {online,showroom,daily,excluded}. Alternativa: --shopify-orders")
     ap.add_argument("--wholesale", required=True)
+    ap.add_argument("--extraordinary", help="JSON opcional: facturas fuera del presupuesto (co-branding, colaboraciones) — ver docstring")
     ap.add_argument("--now", required=True, help="ISO timestamp con offset, hora Bogotá")
     ap.add_argument("--prior-real-value", type=float, default=0.0)
     ap.add_argument("--prior-real-units", type=float, default=0.0)
@@ -386,6 +401,10 @@ def main():
         plan = json.load(f)
     with open(args.wholesale, encoding="utf-8") as f:
         wholesale_entries = json.load(f)
+    extraordinary_entries = []
+    if args.extraordinary:
+        with open(args.extraordinary, encoding="utf-8") as f:
+            extraordinary_entries = json.load(f)
 
     now = datetime.datetime.fromisoformat(args.now)
     plan_month = dict(plan["months"][args.month])
@@ -438,6 +457,10 @@ def main():
         "runrate": runrate,
         "daily": daily,
         "ytd": ytd,
+        "extraordinary": {
+            "items": extraordinary_entries,
+            "total": sum(float(e["value"]) for e in extraordinary_entries),
+        },
     }
 
     print(f"=== Presupuesto vs. Real — {plan_month['label']} (corte {data['meta']['cutoff']}) ===")
@@ -458,6 +481,10 @@ def main():
     print(f"Proyección método 2 (ritmo propio plano + backlog mayorista {money_short(wholesale_backlog_total)}): {money_short(ytd['proj2'])} ({ytd['proj2Pct']:.1f}%)")
     red = [c["label"] for c in channels if c["semaforoValue"] == "rojo" or c["semaforoUnits"] == "rojo"]
     print(f"Canales en rojo: {red or 'ninguno'}")
+    if extraordinary_entries:
+        print(f"Facturación fuera del presupuesto ({len(extraordinary_entries)}, NO incluida arriba): "
+              f"{money_short(data['extraordinary']['total'])} — " +
+              ", ".join(f"{e.get('invoice','?')} {e.get('partner','')} {money_short(e['value'])}" for e in extraordinary_entries))
 
     if args.html:
         data_js = "const DATA = " + json.dumps(data, ensure_ascii=False) + ";"
