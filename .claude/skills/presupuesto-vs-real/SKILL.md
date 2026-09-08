@@ -81,6 +81,22 @@ Online y Showroom (será $0 donde no se cobró envío). Si se usa el camino
 se agrega por pedido también debe incluir el envío — copiar `order_value()`
 igual que se copia `classify_shopify_order()`.
 
+## Marcador de punto de equilibrio (PE) — confirmado 2026-09-08
+
+La barra TOTAL del panel "Cumplimiento por canal — $ Valor" (sólo esa,
+no la de unidades ni las de canal individual) lleva un triángulo invertido
+"▽ PE" arriba, marcando la venta neta mínima mensual para no perder
+dinero. Viene de la hoja "Costos y Márgenes" del plan: `Personal+Admin
+fijo mensual / (1 - COGS% - Mercadeo%)` = 60.3M / (1 - 0.382 - 0.20) =
+**$144.3M**. Es una cifra de estructura de costos fija — **no varía por
+mes** dentro del periodo Sep-Dic 2026, a diferencia de la meta de venta
+que sí varía mes a mes. Está en `plan_2026_2027.json` como
+`breakeven_value` (top-level, no por mes) y se computa como
+`total.breakevenValue`/`total.breakevenPctOfBudget`/`total.breakevenReached`
+en `build_total()`. Si el plan cambia su estructura de costos fijos
+(Personal+Admin) o sus techos de COGS%/Mercadeo%, este valor hay que
+recalcularlo a mano — no está enlazado a esas hojas automáticamente.
+
 ## Facturación adicional (fuera del presupuesto) — confirmado 2026-09-08
 
 A veces el mes trae facturas que no son venta recurrente de producto por
