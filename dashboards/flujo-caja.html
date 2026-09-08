@@ -1,0 +1,454 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Mompossina — Flujo de Caja</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>💧</text></svg>">
+<style>
+  :root {
+    color-scheme: light;
+    --surface-1:      #fcfcfb;
+    --page:           #f9f9f7;
+    --text-primary:   #0b0b0b;
+    --text-secondary: #52514e;
+    --text-muted:     #898781;
+    --grid:           #e1e0d9;
+    --border:         rgba(11,11,11,0.10);
+    --series-1:       #2a78d6;
+    --series-2:       #eb6834;
+    --good:           #0ca30c;
+    --warning:        #fab219;
+    --critical:       #d03b3b;
+    --good-bg:        #eaf7ea;
+    --warning-bg:     #fff6e2;
+    --critical-bg:    #fbe9e9;
+    --pending-border: #d99a4e;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:where(:not([data-theme="light"])) {
+      color-scheme: dark;
+      --surface-1:      #1a1a19;
+      --page:           #0d0d0d;
+      --text-primary:   #ffffff;
+      --text-secondary: #c3c2b7;
+      --text-muted:     #898781;
+      --grid:           #2c2c2a;
+      --border:         rgba(255,255,255,0.10);
+      --series-1:       #3987e5;
+      --series-2:       #d95926;
+      --good:           #0ca30c;
+      --warning:        #fab219;
+      --critical:       #e66767;
+      --good-bg:        rgba(12,163,12,0.14);
+      --warning-bg:     rgba(250,178,25,0.14);
+      --critical-bg:    rgba(230,103,103,0.14);
+      --pending-border: #b3823f;
+    }
+  }
+  :root[data-theme="dark"] {
+    color-scheme: dark;
+    --surface-1:      #1a1a19;
+    --page:           #0d0d0d;
+    --text-primary:   #ffffff;
+    --text-secondary: #c3c2b7;
+    --text-muted:     #898781;
+    --grid:           #2c2c2a;
+    --border:         rgba(255,255,255,0.10);
+    --series-1:       #3987e5;
+    --series-2:       #d95926;
+    --good:           #0ca30c;
+    --warning:        #fab219;
+    --critical:       #e66767;
+    --good-bg:        rgba(12,163,12,0.14);
+    --warning-bg:     rgba(250,178,25,0.14);
+    --critical-bg:    rgba(230,103,103,0.14);
+    --pending-border: #b3823f;
+  }
+
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--page);
+    color: var(--text-primary);
+    font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+  .wrap { max-width: 1180px; margin: 0 auto; padding: 28px 20px 64px; }
+
+  header.top { margin-bottom: 22px; }
+  .eyebrow {
+    display: inline-flex; align-items: center; gap: 8px;
+    font-size: 12px; font-weight: 600; letter-spacing: .04em; text-transform: uppercase;
+    color: var(--series-1);
+    background: color-mix(in srgb, var(--series-1) 12%, transparent);
+    padding: 4px 10px; border-radius: 999px; margin-bottom: 10px;
+  }
+  h1 { font-size: 28px; font-weight: 700; margin: 0 0 6px; letter-spacing: -0.01em; text-wrap: balance; }
+  .subtitle { font-size: 14px; color: var(--text-secondary); margin: 0 0 4px; }
+  .meta { font-size: 12.5px; color: var(--text-muted); }
+  .meta code { background: var(--grid); padding: 1px 5px; border-radius: 4px; font-size: 11.5px; }
+
+  .card { background: var(--surface-1); border: 1px solid var(--border); border-radius: 14px; padding: 20px 22px; }
+  section.block { margin-top: 22px; }
+  h2 { font-size: 15px; font-weight: 700; margin: 0 0 4px; display: flex; align-items: center; gap: 10px; }
+  h3 { font-size: 13px; font-weight: 700; margin: 16px 0 10px; color: var(--text-secondary); }
+  .section-sub { font-size: 12.5px; color: var(--text-muted); margin: 0 0 16px; }
+
+  .metric-tag { display: inline-flex; align-items: center; font-size: 11.5px; font-weight: 800; letter-spacing: .04em; text-transform: uppercase; padding: 4px 11px; border-radius: 7px; }
+  .metric-tag.value { color: var(--series-1); background: color-mix(in srgb, var(--series-1) 15%, transparent); }
+  .metric-tag.units { color: var(--series-2); background: color-mix(in srgb, var(--series-2) 15%, transparent); }
+  .metric-tag.extra { color: var(--text-secondary); background: var(--grid); }
+  .metric-tag.warn { color: color-mix(in srgb, var(--warning) 55%, var(--text-primary)); background: var(--warning-bg); }
+
+  .exec-list { margin: 0; padding-left: 20px; display: flex; flex-direction: column; gap: 8px; }
+  .exec-list li { font-size: 13.5px; line-height: 1.55; color: var(--text-secondary); }
+  .exec-list strong { color: var(--text-primary); }
+
+  .kpi-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+  .kpi-grid.cols-6 { grid-template-columns: repeat(6, 1fr); }
+  .kpi { background: var(--surface-1); border: 1px solid var(--border); border-radius: 14px; padding: 16px 16px 14px; }
+  .kpi .label { font-size: 12px; color: var(--text-secondary); font-weight: 600; margin-bottom: 8px; }
+  .kpi .value { font-size: 23px; font-weight: 700; letter-spacing: -0.01em; font-variant-numeric: tabular-nums; }
+  .kpi .value.small { font-size: 18px; }
+  .kpi .sub { font-size: 11.5px; color: var(--text-muted); margin-top: 5px; line-height: 1.4; }
+
+  .badge { display: inline-flex; align-items: center; gap: 7px; font-size: 13px; font-weight: 800; padding: 5px 13px 5px 10px; border-radius: 999px; text-transform: uppercase; letter-spacing: .03em; white-space: nowrap; border: 1px solid transparent; }
+  .badge::before { content: ""; width: 9px; height: 9px; border-radius: 50%; flex-shrink: 0; }
+  .badge.verde { color: color-mix(in srgb, var(--good) 70%, var(--text-primary)); background: var(--good-bg); border-color: color-mix(in srgb, var(--good) 35%, transparent); }
+  .badge.verde::before { background: var(--good); }
+  .badge.amarillo { color: color-mix(in srgb, var(--warning) 60%, var(--text-primary)); background: var(--warning-bg); border-color: color-mix(in srgb, var(--warning) 45%, transparent); }
+  .badge.amarillo::before { background: var(--warning); }
+  .badge.rojo { color: color-mix(in srgb, var(--critical) 60%, var(--text-primary)); background: var(--critical-bg); border-color: color-mix(in srgb, var(--critical) 45%, transparent); box-shadow: 0 0 0 3px color-mix(in srgb, var(--critical) 12%, transparent); }
+  .badge.rojo::before { background: var(--critical); }
+  .badge.info { color: var(--text-secondary); background: var(--grid); border-color: var(--border); }
+  .badge.info::before { background: var(--text-muted); }
+
+  .progress-list { display: flex; flex-direction: column; }
+  .progress-row { display: grid; grid-template-columns: 168px 1fr 220px; align-items: center; gap: 14px; padding: 10px 0; }
+  .progress-row + .progress-row { border-top: 1px solid var(--grid); }
+  .progress-name { font-size: 13px; font-weight: 600; color: var(--text-primary); }
+  .progress-name .note { display: block; font-size: 11px; font-weight: 400; color: var(--text-muted); margin-top: 1px; }
+  .progress-track { position: relative; height: 16px; background: var(--grid); border-radius: 5px; }
+  .progress-fill { position: absolute; inset: 0 auto 0 0; border-radius: 5px; }
+  .progress-fill.verde { background: var(--good); }
+  .progress-fill.amarillo { background: var(--warning); }
+  .progress-fill.rojo { background: var(--critical); }
+  .progress-fill.neutral { background: var(--text-muted); opacity: .5; }
+  .progress-marker { position: absolute; top: -3px; bottom: -3px; width: 2px; background: var(--text-primary); opacity: .55; }
+  .progress-value { font-size: 12.5px; text-align: right; font-variant-numeric: tabular-nums; color: var(--text-secondary); }
+  .progress-value b { color: var(--text-primary); font-size: 13.5px; }
+  .progress-value .pct { display: flex; align-items: center; justify-content: flex-end; gap: 8px; margin-top: 6px; }
+
+  .chart-box { position: relative; }
+  .legend-row { display: flex; gap: 16px; margin-bottom: 10px; flex-wrap: wrap; }
+  .legend-item { display: inline-flex; align-items: center; gap: 6px; font-size: 12px; color: var(--text-secondary); }
+  .legend-swatch { width: 16px; height: 3px; border-radius: 2px; }
+  .legend-swatch.dashed { background: repeating-linear-gradient(90deg, var(--text-muted) 0 5px, transparent 5px 8px); }
+
+  .svg-chart { width: 100%; height: auto; display: block; overflow: visible; }
+  .chart-grid-line { stroke: var(--grid); stroke-width: 1; }
+  .chart-axis-label { font-size: 10.5px; fill: var(--text-muted); text-anchor: middle; }
+  .chart-axis-label-y { font-size: 10px; fill: var(--text-muted); text-anchor: end; }
+  .rr-line-real { stroke: var(--series-1); stroke-width: 2.5; fill: none; stroke-linejoin: round; stroke-linecap: round; }
+  .traj-line-plan { stroke: var(--text-muted); stroke-width: 2; stroke-dasharray: 5 4; fill: none; stroke-linejoin: round; stroke-linecap: round; }
+  .rr-line-needed { stroke: var(--pending-border); stroke-width: 1.5; stroke-dasharray: 6 4; fill: none; }
+  .rr-dot { fill: var(--series-1); stroke: var(--surface-1); stroke-width: 2; }
+
+  .proj-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .proj-card { border: 1px solid var(--border); border-radius: 12px; padding: 16px 18px; }
+  .proj-card .proj-label { font-size: 12px; font-weight: 700; color: var(--text-secondary); margin-bottom: 6px; }
+  .proj-card .proj-value { font-size: 22px; font-weight: 700; font-variant-numeric: tabular-nums; }
+  .proj-card .proj-pct { font-size: 13px; color: var(--text-muted); margin-top: 2px; }
+  .proj-card p { font-size: 12px; color: var(--text-muted); line-height: 1.5; margin: 10px 0 0; }
+
+  .alert-list { display: flex; flex-direction: column; gap: 10px; }
+  .alert-item { display: flex; align-items: flex-start; gap: 10px; border: 1px solid transparent; border-radius: 10px; padding: 10px 14px; }
+  .alert-item.rojo { background: var(--critical-bg); border-color: color-mix(in srgb, var(--critical) 30%, transparent); }
+  .alert-item.amarillo { background: var(--warning-bg); border-color: color-mix(in srgb, var(--warning) 30%, transparent); }
+  .alert-item.info { background: var(--grid); border-color: var(--border); }
+  .alert-item .dot { width: 8px; height: 8px; border-radius: 50%; margin-top: 5px; flex-shrink: 0; }
+  .alert-item.rojo .dot { background: var(--critical); }
+  .alert-item.amarillo .dot { background: var(--warning); }
+  .alert-item.info .dot { background: var(--text-muted); }
+  .alert-item .txt { font-size: 13px; color: var(--text-primary); line-height: 1.5; }
+  .alert-item .txt b { font-weight: 700; }
+  .alert-item .txt span { color: var(--text-secondary); }
+
+  .table-scroll { overflow-x: auto; }
+  table.summary-table { width: 100%; border-collapse: collapse; font-size: 12.5px; min-width: 640px; }
+  table.summary-table th, table.summary-table td { padding: 10px 12px; text-align: right; font-variant-numeric: tabular-nums; }
+  table.summary-table th:first-child, table.summary-table td:first-child { text-align: left; }
+  table.summary-table thead th { color: var(--text-muted); font-weight: 600; font-size: 10.5px; text-transform: uppercase; letter-spacing: .03em; border-bottom: 1px solid var(--border); }
+  table.summary-table tbody td { border-bottom: 1px solid var(--grid); color: var(--text-secondary); }
+  table.summary-table tbody tr:last-child td { border-bottom: none; }
+  table.summary-table tbody tr.total td { font-weight: 700; color: var(--text-primary); border-top: 1px solid var(--border); background: color-mix(in srgb, var(--series-1) 5%, transparent); }
+  table.summary-table tbody tr.vencida td { background: color-mix(in srgb, var(--critical) 6%, transparent); }
+  table.summary-table td.name { color: var(--text-primary); font-weight: 600; }
+
+  .bucket-grid { display: grid; grid-template-columns: repeat(6, 1fr); gap: 12px; }
+  .bucket-tile { border: 1px solid var(--border); border-radius: 12px; padding: 12px 12px 10px; text-align: center; }
+  .bucket-tile.vencida { border-color: color-mix(in srgb, var(--critical) 40%, transparent); background: var(--critical-bg); }
+  .bucket-tile .b-label { font-size: 10.5px; color: var(--text-muted); font-weight: 700; text-transform: uppercase; letter-spacing: .03em; margin-bottom: 6px; }
+  .bucket-tile .b-value { font-size: 16px; font-weight: 700; font-variant-numeric: tabular-nums; }
+  .bucket-tile .b-count { font-size: 11px; color: var(--text-muted); margin-top: 2px; }
+
+  footer { margin-top: 28px; font-size: 11.5px; color: var(--text-muted); line-height: 1.7; }
+  footer p { margin: 0 0 8px; }
+
+  @media (max-width: 900px) {
+    .kpi-grid { grid-template-columns: repeat(2, 1fr); }
+    .kpi-grid.cols-6 { grid-template-columns: repeat(3, 1fr); }
+    .bucket-grid { grid-template-columns: repeat(3, 1fr); }
+    .proj-grid { grid-template-columns: 1fr; }
+    .progress-row { grid-template-columns: 1fr; row-gap: 6px; }
+    .progress-value { text-align: left; }
+    .progress-value .pct { justify-content: flex-start; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="top">
+    <div class="eyebrow">● Flujo de Caja · Plan Estratégico 2026-2027</div>
+    <h1>Mompossina Swimwear — Flujo de Caja</h1>
+    <p class="subtitle">Saldo de banco, cobros y pagos proyectados Sep-26 a Dic-27, cruzados con venta real y cuentas por pagar</p>
+    <p class="meta">
+      Corte: <code id="now-label">—</code> ·
+      Mes en curso: <code id="current-month-label">—</code> ·
+      Venta real al: <code id="sales-cutoff-label">—</code>
+    </p>
+  </header>
+
+  <section class="block">
+    <h2>Estado de caja hoy</h2>
+    <p class="section-sub" id="saldo-nota">—</p>
+    <div class="kpi-grid">
+      <div class="kpi"><div class="label">Saldo de caja (banco + fiducuenta)</div><div class="value" id="kpi-saldo">—</div><div class="sub" id="kpi-saldo-sub">—</div></div>
+      <div class="kpi"><div class="label">Colchón fijo mínimo</div><div class="value" id="kpi-colchon">—</div><div class="sub" id="kpi-colchon-sub">—</div></div>
+      <div class="kpi"><div class="label">Piso más ajustado del periodo</div><div class="value" id="kpi-piso">—</div><div class="sub" id="kpi-piso-sub">—</div></div>
+      <div class="kpi"><div class="label">CxP pendiente (real, ledger)</div><div class="value" id="kpi-cxp">—</div><div class="sub" id="kpi-cxp-sub">—</div></div>
+      <div class="kpi"><div class="label">Facturas vencidas</div><div class="value" id="kpi-vencida">—</div><div class="sub">Fecha de pago ya pasada, aún sin saldar</div></div>
+      <div class="kpi"><div class="label">Caja libre hoy</div><div class="value" id="kpi-libre">—</div><div class="sub">Saldo − colchón − obligaciones próx. 60 días</div></div>
+    </div>
+  </section>
+
+  <section class="block card">
+    <h2>Semáforo de alertas</h2>
+    <p class="section-sub">🔴 Facturas vencidas y meses bajo el colchón fijo · 🟡 Desviación vs. lo que el plan proyectaba para el mes en curso</p>
+    <div class="alert-list" id="alert-list"></div>
+  </section>
+
+  <section class="block card">
+    <h2>Trayectoria de caja — Sep-26 a Dic-27</h2>
+    <p class="section-sub">Línea sólida = ajustada con venta real del mes en curso (se propaga hacia adelante como un único ajuste de nivel, no un reforecast mes a mes). Línea punteada gris = plan original. Línea punteada ámbar = colchón fijo.</p>
+    <div class="legend-row">
+      <span class="legend-item"><span class="legend-swatch" style="background:var(--series-1)"></span>Saldo ajustado con venta real</span>
+      <span class="legend-item"><span class="legend-swatch dashed"></span>Plan original</span>
+      <span class="legend-item"><span class="legend-swatch" style="background:var(--pending-border)"></span>Colchón fijo</span>
+    </div>
+    <div class="chart-box">
+      <!-- TRAJECTORY_SVG_START -->
+<svg viewBox="0 0 920 280" class="svg-chart traj-chart" role="img" aria-label="Trayectoria de caja proyectada, plan original vs. ajustado con venta real"><line x1="56" y1="22.0" x2="900" y2="22.0" class="chart-grid-line"/><text x="48" y="25.0" class="chart-axis-label-y">$2105.5M</text><line x1="56" y1="79.0" x2="900" y2="79.0" class="chart-grid-line"/><text x="48" y="82.0" class="chart-axis-label-y">$1579.1M</text><line x1="56" y1="136.0" x2="900" y2="136.0" class="chart-grid-line"/><text x="48" y="139.0" class="chart-axis-label-y">$1052.8M</text><line x1="56" y1="193.0" x2="900" y2="193.0" class="chart-grid-line"/><text x="48" y="196.0" class="chart-axis-label-y">$526.4M</text><line x1="56" y1="250.0" x2="900" y2="250.0" class="chart-grid-line"/><text x="48" y="253.0" class="chart-axis-label-y">$0</text><line x1="56" y1="210.8" x2="900" y2="210.8" class="rr-line-needed"/><text x="62" y="204.8" class="chart-axis-label" text-anchor="start">Colchón fijo $361.8M</text><path d="M 56.0,143.6 L 112.3,141.4 L 168.5,124.8 L 224.8,106.6 L 281.1,118.2 L 337.3,108.4 L 393.6,107.8 L 449.9,107.9 L 506.1,114.4 L 562.4,110.5 L 618.7,111.3 L 674.9,102.9 L 731.2,115.6 L 787.5,133.0 L 843.7,107.3 L 900.0,47.5" class="traj-line-plan"/><path d="M 56.0,138.9 L 112.3,136.6 L 168.5,120.0 L 224.8,101.8 L 281.1,113.4 L 337.3,103.6 L 393.6,103.0 L 449.9,103.1 L 506.1,109.6 L 562.4,105.8 L 618.7,106.5 L 674.9,98.1 L 731.2,110.8 L 787.5,128.2 L 843.7,102.5 L 900.0,42.7" class="rr-line-real"/><circle cx="56.0" cy="138.9" r="3.5" class="rr-dot"/><circle cx="112.3" cy="136.6" r="3.5" class="rr-dot"/><circle cx="168.5" cy="120.0" r="3.5" class="rr-dot"/><circle cx="224.8" cy="101.8" r="3.5" class="rr-dot"/><circle cx="281.1" cy="113.4" r="3.5" class="rr-dot"/><circle cx="337.3" cy="103.6" r="3.5" class="rr-dot"/><circle cx="393.6" cy="103.0" r="3.5" class="rr-dot"/><circle cx="449.9" cy="103.1" r="3.5" class="rr-dot"/><circle cx="506.1" cy="109.6" r="3.5" class="rr-dot"/><circle cx="562.4" cy="105.8" r="3.5" class="rr-dot"/><circle cx="618.7" cy="106.5" r="3.5" class="rr-dot"/><circle cx="674.9" cy="98.1" r="3.5" class="rr-dot"/><circle cx="731.2" cy="110.8" r="3.5" class="rr-dot"/><circle cx="787.5" cy="128.2" r="3.5" class="rr-dot"/><circle cx="843.7" cy="102.5" r="3.5" class="rr-dot"/><circle cx="900.0" cy="42.7" r="3.5" class="rr-dot"/><text x="56.0" y="274" class="chart-axis-label">Sep 26</text><text x="112.3" y="274" class="chart-axis-label">Oct 26</text><text x="168.5" y="274" class="chart-axis-label">Nov 26</text><text x="224.8" y="274" class="chart-axis-label">Dic 26</text><text x="281.1" y="274" class="chart-axis-label">Ene 27</text><text x="337.3" y="274" class="chart-axis-label">Feb 27</text><text x="393.6" y="274" class="chart-axis-label">Mar 27</text><text x="449.9" y="274" class="chart-axis-label">Abr 27</text><text x="506.1" y="274" class="chart-axis-label">May 27</text><text x="562.4" y="274" class="chart-axis-label">Jun 27</text><text x="618.7" y="274" class="chart-axis-label">Jul 27</text><text x="674.9" y="274" class="chart-axis-label">Ago 27</text><text x="731.2" y="274" class="chart-axis-label">Sep 27</text><text x="787.5" y="274" class="chart-axis-label">Oct 27</text><text x="843.7" y="274" class="chart-axis-label">Nov 27</text><text x="900.0" y="274" class="chart-axis-label">Dic 27</text></svg>
+<!-- TRAJECTORY_SVG_END -->
+    </div>
+  </section>
+
+  <section class="block card">
+    <h2>Ajuste por venta real de <span id="ajuste-mes-label">—</span></h2>
+    <p class="section-sub">Compara el presupuesto del plan para el mes con lo realmente vendido/proyectado por canal (mismo criterio del dashboard <em>Presupuesto vs. Real</em>, para no doblar venta ya facturada con lo que aún se proyecta como nueva venta).</p>
+    <div class="table-scroll">
+      <table class="summary-table" id="ajuste-table"></table>
+    </div>
+  </section>
+
+  <section class="block card">
+    <h2>Venta del mes en curso vs. plan <span class="metric-tag value">Cruce con Presupuesto vs. Real</span></h2>
+    <p class="section-sub" id="ventas-mes-sub">—</p>
+    <div class="progress-list" id="ventas-progress"></div>
+  </section>
+
+  <section class="block card">
+    <h2>Cuentas por pagar — próximos vencimientos</h2>
+    <p class="section-sub">Ledger real de <code>CONTROL DE PAGOS 2026.xlsx</code>, sólo facturas con saldo pendiente a la fecha de corte</p>
+    <div class="bucket-grid" id="cxp-buckets"></div>
+
+    <h3>Por categoría</h3>
+    <div class="progress-list" id="cxp-category"></div>
+
+    <h3>Facturas vencidas</h3>
+    <div class="table-scroll"><table class="summary-table" id="cxp-vencidas-table"></table></div>
+
+    <h3>Próximos 30 días</h3>
+    <div class="table-scroll"><table class="summary-table" id="cxp-proximos-table"></table></div>
+
+    <h3>Top proveedores por saldo pendiente</h3>
+    <div class="table-scroll"><table class="summary-table" id="cxp-proveedores-table"></table></div>
+  </section>
+
+  <section class="block card">
+    <h2>Caja libre proyectada por mes</h2>
+    <p class="section-sub">Saldo ajustado − colchón fijo − obligaciones conocidas de los próximos ~60 días (mes en curso: ledger real de CxP; meses futuros: gasto total que el propio plan proyecta para ese mes, como proxy). Positivo y creciente = margen para decisiones de prepago de deuda, inversión o distribución.</p>
+    <div class="table-scroll">
+      <table class="summary-table" id="libre-table"></table>
+    </div>
+  </section>
+
+  <section class="block card">
+    <h2>Resumen ejecutivo</h2>
+    <p class="section-sub" id="exec-summary-label">—</p>
+    <ul class="exec-list" id="exec-list">
+      <li><strong>Caja proyectada hoy: $1,026.4M</strong> (banco + fiducuenta) — el plan original arrancaba el mes en $982.2M, y el buen ritmo de Online (150% del ritmo esperado) y Showroom (114%) en lo corrido de septiembre suma +$44.2M. <strong>Esto es una proyección, no un extracto bancario</strong> — el primer dato real que reemplace este número debe venir de banco/fiducuenta directamente.</li>
+      <li><strong>El colchón fijo de $361.8M (6 meses de Personal+Admin) nunca se compromete</strong> en los 16 meses del plan — el punto más ajustado de todo el periodo es hoy mismo, septiembre 2026, con casi $665M de holgura sobre el colchón.</li>
+      <li><strong>11 facturas vencidas por $20.5M</strong> requieren atención inmediata — incluye PADILLO ($10.2M, vencida desde abril, la más antigua) y varias de la primera semana de septiembre (Nexus Estratégico, Lía Upegui, Juanita Gómez, Gloria Inés Gutiérrez).</li>
+      <li><strong>Mayoristas internacionales en $0 de $120M</strong> de meta de septiembre (mismo hallazgo que Presupuesto vs. Real) — si no se factura antes de fin de mes, el 20% de rezago que el plan de caja espera cobrar en octubre ($24M) también queda en riesgo.</li>
+      <li id="accion-recomendada"><strong>Acción recomendada:</strong> gestionar el pago o renegociación de las 11 facturas vencidas esta semana, y confirmar con comercial el estado de los pedidos internacionales de septiembre antes del cierre de mes.</li>
+      <li><strong>Caja libre creciente:</strong> hoy hay $485.8M disponibles más allá del colchón y las obligaciones de los próximos 60 días — esa caja libre crece de forma sostenida en el horizonte del plan (hasta ~$1,335M hacia diciembre 2027), lo que abre espacio para decisiones de prepago de deuda, inversión o distribución en la medida en que se confirme con saldos reales.</li>
+      <li><strong>Pendiente de conciliar:</strong> el pago de $64.25M de la colaboración FLA (factura RFEL8320, cobrada el 7 de septiembre) se muestra en la sección de venta del mes como "fuera del presupuesto", pero el plan de caja ya traía un supuesto de $91.6M de "cobros pendientes de agosto" que incluía un componente FLA — falta confirmar con contabilidad si son el mismo cobro o si hay un ingreso adicional no contemplado en el plan.</li>
+    </ul>
+  </section>
+
+  <footer>
+    <p><strong>Trayectoria de 16 meses:</strong> hoja "Flujo de Caja" del Plan Estratégico 2026-2027 (Dropbox, <code>/Mompossina/Plan Estrategico/Plan_Estrategico_Mompossina_2026_2027.xlsx</code>, versión sin "Ajuste"). Caja inicial $1,018M (banco $41M + fiducuenta $977M) a la fecha en que se construyó el plan. Supuestos de cobro: Online/Showroom/Mayoristas nacionales 100% mismo mes; exportaciones 80% mismo mes + 20% consignación con 1 mes de rezago. Producción se paga con 2 meses de anticipo respecto al mes de venta. IVA se paga en el mes real del bimestre. Este saldo es <strong>proyectado</strong>, no un extracto bancario — se reemplaza por el saldo real cuando el usuario lo confirma en cada corte.</p>
+    <p><strong>Ajuste por venta real:</strong> Online/Showroom usan la proyección de cierre por ritmo diario cuando van por delante del presupuesto (mismo método que <code>presupuesto-vs-real</code>); Mayoristas nacionales/internacionales usan "Método 1" (real + resto del presupuesto tal cual, sin proyectar por ritmo por ser venta lumpy) — por eso normalmente sólo generan ajuste cuando ya superaron su meta del mes. El delta se propaga como un único ajuste de nivel hacia todos los meses siguientes, no como un reforecast mes a mes de todo el periodo.</p>
+    <p><strong>Cuentas por pagar:</strong> <code>CONTROL DE PAGOS 2026.xlsx</code> (Google Drive), pestañas mensuales Ene-Sep 2026, columna "TOTAL PEND*PAGO" &gt; 0 con su fecha de vencimiento real (columna "FECHA PARA PAGO"). Categorías: Personal, Administrativos, Mercadeo y Ventas, Producción. Se muestra aparte de la trayectoria de 16 meses porque el ledger sólo captura lo pendiente (lo ya pagado no aparece) — mezclarlo subestimaría el gasto real del mes.</p>
+    <p><strong>Colchón fijo:</strong> 6 meses de gasto fijo de Personal + Administrativos (~$60.3M/mes según el plan) = mínimo estructural de sobrevivencia, definido por el usuario. <strong>Piso dinámico:</strong> compara el saldo ajustado del mes en curso contra lo que el plan proyectaba para ese mismo mes — sólo aplica al mes en curso, los meses futuros son iguales al plan hasta que tengan su propio ajuste real. <strong>Excedente:</strong> caja libre (ver definición arriba) mayor a 1x el colchón fijo — criterio inicial, ajustable.</p>
+    <p>Cifras en pesos colombianos (COP), sin decimales, salvo donde se indique "M" (millones). Este archivo es una foto fija del corte indicado; se recalcula corriendo de nuevo <code>.claude/skills/flujo-caja/compute.py</code> con datos frescos del plan, Presupuesto vs. Real y el ledger de CxP.</p>
+  </footer>
+
+</div>
+
+<script>
+<!-- DATA_START -->
+const DATA = {"meta": {"now": "8 sep 2026, 21:44 hora Bogotá", "currentMonth": "2026-09", "currentMonthLabel": "Septiembre 2026", "salesCutoff": "8 sep 2026, 15:44 hora Bogotá", "cushionMonths": 6.0}, "cushion": {"months": 6.0, "personalAdminMonthly": 60305429, "value": 361832574.0}, "kpis": {"saldoActual": 1026358005.0, "saldoActualEsReal": false, "saldoPlanOriginal": 982174283, "deltaVsPlan": 44183722.0, "pisoMinimoPeriodo": 1026358005.0, "pisoMinimoMes": "Septiembre 2026", "cxpPendienteTotal": 185759420.89, "cxpVencida": 20460206.810000002, "cajaLibreHoy": 485789021.21000004}, "trajectory": [{"key": "2026-09", "label": "Septiembre 2026", "isCurrent": true, "hasRealData": true, "saldoInicialPlan": 1018000000, "cobrosPlan": 328482353, "cobrosAjustado": 372666075.0, "pagosPlan": 364308070, "saldoFinalPlan": 982174283, "saldoFinalAjustado": 1026358005.0, "colchonFijo": 361832574.0, "obligaciones60d": 178736409.79, "cajaLibre": 485789021.21000004, "alertaColchon": false, "alertaPiso": false, "alertaExcedente": true, "esReal": false}, {"key": "2026-10", "label": "Octubre 2026", "isCurrent": false, "hasRealData": false, "saldoInicialPlan": 982174283, "cobrosPlan": 297882353, "cobrosAjustado": 297882353.0, "pagosPlan": 277165046, "saldoFinalPlan": 1002891590, "saldoFinalAjustado": 1047075312.0, "colchonFijo": 361832574.0, "obligaciones60d": 277165046, "cajaLibre": 408077692.0, "alertaColchon": false, "alertaPiso": false, "alertaExcedente": true}, {"key": "2026-11", "label": "Noviembre 2026", "isCurrent": false, "hasRealData": false, "saldoInicialPlan": 1002891590, "cobrosPlan": 434941176, "cobrosAjustado": 434941176.0, "pagosPlan": 281435222, "saldoFinalPlan": 1156397544, "saldoFinalAjustado": 1200581266.0, "colchonFijo": 361832574.0, "obligaciones60d": 281435222, "cajaLibre": 557313470.0, "alertaColchon": false, "alertaPiso": false, "alertaExcedente": true}, {"key": "2026-12", "label": "Diciembre 2026", "isCurrent": false, "hasRealData": false, "saldoInicialPlan": 1156397544, "cobrosPlan": 420294118, "cobrosAjustado": 420294118.0, "pagosPlan": 252512249, "saldoFinalPlan": 1324179413, "saldoFinalAjustado": 1368363135.0, "colchonFijo": 361832574.0, "obligaciones60d": 252512249, "cajaLibre": 754018312.0, "alertaColchon": false, "alertaPiso": false, "alertaExcedente": true}, {"key": "2027-01", "label": "Enero 2027", "isCurrent": false, "hasRealData": false, "saldoInicialPlan": 1324179413, "cobrosPlan": 177811212, "cobrosAjustado": 177811212.0, "pagosPlan": 284906739, "saldoFinalPlan": 1217083886, "saldoFinalAjustado": 1261267608.0, "colchonFijo": 361832574.0, "obligaciones60d": 284906739, "cajaLibre": 614528295.0, "alertaColchon": false, "alertaPiso": false, "alertaExcedente": true}, {"key": "2027-02", "label": "Febrero 2027", "isCurrent": false, "hasRealData": false, "saldoInicialPlan": 1217083886, "cobrosPlan": 284984666, "cobrosAjustado": 284984666.0, "pagosPlan": 194464192, "saldoFinalPlan": 1307604360, "saldoFinalAjustado": 1351788082.0, "colchonFijo": 361832574.0, "obligaciones60d": 194464192, "cajaLibre": 795491316.0, "alertaColchon": false, "alertaPiso": false, "alertaExcedente": true}, {"key": "2027-03", "label": "Marzo 2027", "isCurrent": false, "hasRealData": false, "saldoInicialPlan": 1307604360, "cobrosPlan": 237392251, "cobrosAjustado": 237392251.0, "pagosPlan": 231517630, "saldoFinalPlan": 1313478981, "saldoFinalAjustado": 1357662703.0, "colchonFijo": 361832574.0, "obligaciones60d": 231517630, "cajaLibre": 764312499.0, "alertaColchon": false, "alertaPiso": false, "alertaExcedente": true}, {"key": "2027-04", "label": "Abril 2027", "isCurrent": false, "hasRealData": false, "saldoInicialPlan": 1313478981, "cobrosPlan": 200697774, "cobrosAjustado": 200697774.0, "pagosPlan": 202149287, "saldoFinalPlan": 1312027468, "saldoFinalAjustado": 1356211190.0, "colchonFijo": 361832574.0, "obligaciones60d": 202149287, "cajaLibre": 792229329.0, "alertaColchon": false, "alertaPiso": false, "alertaExcedente": true}, {"key": "2027-05", "label": "Mayo 2027", "isCurrent": false, "hasRealData": false, "saldoInicialPlan": 1312027468, "cobrosPlan": 179151195, "cobrosAjustado": 179151195.0, "pagosPlan": 238649369, "saldoFinalPlan": 1252529294, "saldoFinalAjustado": 1296713016.0, "colchonFijo": 361832574.0, "obligaciones60d": 238649369, "cajaLibre": 696231073.0, "alertaColchon": false, "alertaPiso": false, "alertaExcedente": true}, {"key": "2027-06", "label": "Junio 2027", "isCurrent": false, "hasRealData": false, "saldoInicialPlan": 1252529294, "cobrosPlan": 262476505, "cobrosAjustado": 262476505.0, "pagosPlan": 227143021, "saldoFinalPlan": 1287862778, "saldoFinalAjustado": 1332046500.0, "colchonFijo": 361832574.0, "obligaciones60d": 227143021, "cajaLibre": 743070905.0, "alertaColchon": false, "alertaPiso": false, "alertaExcedente": true}, {"key": "2027-07", "label": "Julio 2027", "isCurrent": false, "hasRealData": false, "saldoInicialPlan": 1287862778, "cobrosPlan": 238971146, "cobrosAjustado": 238971146.0, "pagosPlan": 246274513, "saldoFinalPlan": 1280559410, "saldoFinalAjustado": 1324743132.0, "colchonFijo": 361832574.0, "obligaciones60d": 246274513, "cajaLibre": 716636045.0, "alertaColchon": false, "alertaPiso": false, "alertaExcedente": true}, {"key": "2027-08", "label": "Agosto 2027", "isCurrent": false, "hasRealData": false, "saldoInicialPlan": 1280559410, "cobrosPlan": 293698269, "cobrosAjustado": 293698269.0, "pagosPlan": 216066269, "saldoFinalPlan": 1358191409, "saldoFinalAjustado": 1402375131.0, "colchonFijo": 361832574.0, "obligaciones60d": 216066269, "cajaLibre": 824476288.0, "alertaColchon": false, "alertaPiso": false, "alertaExcedente": true}, {"key": "2027-09", "label": "Septiembre 2027", "isCurrent": false, "hasRealData": false, "saldoInicialPlan": 1358191409, "cobrosPlan": 226446826, "cobrosAjustado": 226446826.0, "pagosPlan": 343589814, "saldoFinalPlan": 1241048421, "saldoFinalAjustado": 1285232143.0, "colchonFijo": 361832574.0, "obligaciones60d": 343589814, "cajaLibre": 579809755.0, "alertaColchon": false, "alertaPiso": false, "alertaExcedente": true}, {"key": "2027-10", "label": "Octubre 2027", "isCurrent": false, "hasRealData": false, "saldoInicialPlan": 1241048421, "cobrosPlan": 250723825, "cobrosAjustado": 250723825.0, "pagosPlan": 411312106, "saldoFinalPlan": 1080460140, "saldoFinalAjustado": 1124643862.0, "colchonFijo": 361832574.0, "obligaciones60d": 411312106, "cajaLibre": 351499182.0, "alertaColchon": false, "alertaPiso": false, "alertaExcedente": false}, {"key": "2027-11", "label": "Noviembre 2027", "isCurrent": false, "hasRealData": false, "saldoInicialPlan": 1080460140, "cobrosPlan": 446400000, "cobrosAjustado": 446400000.0, "pagosPlan": 208697844, "saldoFinalPlan": 1318162296, "saldoFinalAjustado": 1362346018.0, "colchonFijo": 361832574.0, "obligaciones60d": 208697844, "cajaLibre": 791815600.0, "alertaColchon": false, "alertaPiso": false, "alertaExcedente": true}, {"key": "2027-12", "label": "Diciembre 2027", "isCurrent": false, "hasRealData": false, "saldoInicialPlan": 1318162296, "cobrosPlan": 769349382, "cobrosAjustado": 769349382.0, "pagosPlan": 217601389, "saldoFinalPlan": 1869910289, "saldoFinalAjustado": 1914094011.0, "colchonFijo": 361832574.0, "obligaciones60d": 217601389, "cajaLibre": 1334660048.0, "alertaColchon": false, "alertaPiso": false, "alertaExcedente": true}], "detalleAjuste": {"online": 40783569.5, "showroom": 3400152.5, "nacional": 0.0, "internacional": 0.0, "total": 44183722.0}, "ventasMes": {"meta": {"period": "Septiembre 2026", "cutoff": "8 sep 2026, 15:44 hora Bogotá", "daysElapsed": 8, "daysInMonth": 30, "pctElapsed": 26.666666666666668, "monthIndex": 1, "monthTotal": 4, "monthLabel": "Septiembre"}, "total": {"budgetValue": 260900000, "realValue": 62756130.0, "pctValue": 24.053710233806054, "budgetUnits": 2334, "realUnits": 719, "pctUnits": 30.80548414738646, "ticketProm": 87282.5173852573, "paceValue": 90.20141337677272, "paceUnits": 115.52056555269922, "breakevenValue": 144300000, "breakevenPctOfBudget": 55.30854733614412, "breakevenReached": false}, "channels": [{"key": "online", "label": "Online", "budgetValue": 80900000, "realValue": 32444246.0, "pctValue": 40.10413597033374, "budgetUnits": 700, "realUnits": 329, "pctUnits": 47.0, "paceValue": 150.39050988875155, "paceUnits": 176.25000000000003, "ticketReal": 98614.72948328267, "ticketPlan": 115595, "ticketDelta": -14.689450682743477, "orders": 123, "semaforoValue": "verde", "semaforoUnits": "verde"}, {"key": "showroom", "label": "Showroom", "budgetValue": 25000000, "realValue": 7573374.0, "pctValue": 30.293495999999998, "budgetUnits": 216, "realUnits": 74, "pctUnits": 34.25925925925926, "paceValue": 113.60060999999999, "paceUnits": 128.4722222222222, "ticketReal": 102342.8918918919, "ticketPlan": 115595, "ticketDelta": -11.464257198069216, "orders": 19, "semaforoValue": "verde", "semaforoUnits": "verde"}, {"key": "nacional", "label": "May. nacionales", "budgetValue": 35000000, "realValue": 22738510.0, "pctValue": 64.96717142857142, "budgetUnits": 530, "realUnits": 316, "pctUnits": 59.62264150943396, "paceValue": 243.62689285714282, "paceUnits": 223.58490566037736, "ticketReal": 71957.31012658228, "ticketPlan": 65979, "ticketDelta": 9.060928669095137, "orders": 3, "semaforoValue": "verde", "semaforoUnits": "verde"}, {"key": "internacional", "label": "May. internacionales", "budgetValue": 120000000, "realValue": 0.0, "pctValue": 0.0, "budgetUnits": 888, "realUnits": 0, "pctUnits": 0.0, "paceValue": 0.0, "paceUnits": 0.0, "ticketReal": null, "ticketPlan": 135121, "ticketDelta": null, "orders": 0, "semaforoValue": "rojo", "semaforoUnits": "rojo"}], "runrate": {"daysElapsed": 8, "daysInMonth": 30, "onlineDailyRate": 4055530.75, "onlineNeededRate": 2696666.6666666665, "onlinePacePct": 150.39050988875155, "onlineProjection": 121665922.5, "onlineProjectionPct": 150.39050988875155, "showroomDailyRate": 946671.75, "showroomNeededRate": 833333.3333333334, "showroomPacePct": 113.60060999999999, "showroomProjection": 28400152.5, "showroomProjectionPct": 113.60060999999999, "floorValue": 172804585.0, "floorPct": 66.23403027980069}, "extraordinary": {"items": [{"date": "2026-09-07", "invoice": "RFEL8320", "category": "FLA", "partner": "Consorcio Licores de la Sabana Limitada y Otros (FLA — Aguardiente Antioqueño)", "description": "Pago total propuesta co-branding Mompossina x Aguardiente Antioqueño", "value": 64250000, "note": "Pago único de colaboración/co-branding, no ligado a unidades de producto — no está en el plan y no suma a ningún canal ni al % de cumplimiento."}], "total": 64250000.0}}, "cxp": {"total": 185759420.89, "buckets": [{"key": "vencida", "label": "Vencida", "total": 20460206.810000002, "count": 11}, {"key": "0-7", "label": "0-7 días", "total": 51709767.6, "count": 8}, {"key": "8-30", "label": "8-30 días", "total": 71454428.98, "count": 29}, {"key": "31-60", "label": "31-60 días", "total": 35112006.4, "count": 15}, {"key": "61-90", "label": "61-90 días", "total": 7023011.1, "count": 4}, {"key": "90+", "label": "Más de 90 días", "total": 0, "count": 0}], "byCategory": [{"key": "PRODUCCION", "label": "Producción", "total": 114959083.69, "count": 47, "pct": 61.88600456397558}, {"key": "MERCADEO Y VENTAS", "label": "Mercadeo y Ventas", "total": 29395337.490000002, "count": 9, "pct": 15.824412753421996}, {"key": "GASTOS PERSONAL", "label": "Personal", "total": 24353987.0, "count": 4, "pct": 13.110498990208175}, {"key": "GASTOS ADMINISTRATIVOS", "label": "Administrativos", "total": 17051012.71, "count": 7, "pct": 9.179083692394258}], "topProveedores": [{"empresa": "INSUMO TEXTILES", "total": 41517363.0, "count": 13}, {"empresa": "GLOBAL CREATIVO", "total": 38435788.75, "count": 11}, {"empresa": "MELONN", "total": 23121986.0, "count": 1}, {"empresa": "NOMINA", "total": 17327807.0, "count": 2}, {"empresa": "SUTEX", "total": 10243222.5, "count": 5}, {"empresa": "PADILLO", "total": 10150428.0, "count": 1}, {"empresa": "MANUFACTURA ELIOT", "total": 6534847.33, "count": 8}, {"empresa": "GEPPINEDA", "total": 5624620.0, "count": 1}, {"empresa": "ARUS", "total": 3826500.0, "count": 1}, {"empresa": "TEXCOMPLET", "total": 3804303.5, "count": 1}], "vencidas": [{"mes_tab": "SEPTIEMBRE", "categoria": "GASTOS ADMINISTRATIVOS", "empresa": "PADILLO", "factura": null, "valor_factura": 13120002, "pendiente": 10150428, "fecha_pago": "2026-04-15T00:00:00"}, {"mes_tab": "ABRIL", "categoria": "PRODUCCION", "empresa": "LADY", "factura": "FE428", "valor_factura": 84841050, "pendiente": 2138850.0, "fecha_pago": "2026-04-28T00:00:00"}, {"mes_tab": "ABRIL", "categoria": "PRODUCCION", "empresa": "LADY", "factura": "FE429", "valor_factura": 28135241.4, "pendiente": 1418583.0, "fecha_pago": "2026-04-30T00:00:00"}, {"mes_tab": "SEPTIEMBRE", "categoria": "GASTOS ADMINISTRATIVOS", "empresa": "REDEBAN", "factura": "7002084.0", "valor_factura": 14756, "pendiente": 14756, "fecha_pago": "2026-08-05T00:00:00"}, {"mes_tab": "SEPTIEMBRE", "categoria": "GASTOS ADMINISTRATIVOS", "empresa": "LIA UPEGUI", "factura": null, "valor_factura": 3686003.58, "pendiente": 3577591.71, "fecha_pago": "2026-09-04T00:00:00"}, {"mes_tab": "SEPTIEMBRE", "categoria": "GASTOS ADMINISTRATIVOS", "empresa": "JUANITA GOMEZ", "factura": null, "valor_factura": 300000, "pendiente": 300000, "fecha_pago": "2026-09-05T00:00:00"}, {"mes_tab": "SEPTIEMBRE", "categoria": "MERCADEO Y VENTAS", "empresa": "LITOGRAFIA FRANCISCO", "factura": null, "valor_factura": 803250, "pendiente": 401625, "fecha_pago": "2026-09-05T00:00:00"}, {"mes_tab": "SEPTIEMBRE", "categoria": "PRODUCCION", "empresa": "GLORIA INES GUTIERREZ", "factura": "45.0", "valor_factura": 3826000, "pendiente": 540000, "fecha_pago": "2026-09-05T00:00:00"}, {"mes_tab": "SEPTIEMBRE", "categoria": "GASTOS ADMINISTRATIVOS", "empresa": "NEXUS ESTRATEGICO", "factura": null, "valor_factura": 1785000, "pendiente": 1614000, "fecha_pago": "2026-09-06T00:00:00"}, {"mes_tab": "SEPTIEMBRE", "categoria": "MERCADEO Y VENTAS", "empresa": "BOLSAS EL INDIO", "factura": null, "valor_factura": 255000, "pendiente": 255000, "fecha_pago": "2026-09-07T00:00:00"}, {"mes_tab": "SEPTIEMBRE", "categoria": "PRODUCCION", "empresa": "MANUFACTURA ELIOT", "factura": "2312177865.0", "valor_factura": 49373.1, "pendiente": 49373.1, "fecha_pago": "2026-09-07T00:00:00"}], "proximos30": [{"mes_tab": "SEPTIEMBRE", "categoria": "PRODUCCION", "empresa": "MARQUIDEAS", "factura": "FE3465", "valor_factura": 1792140, "pendiente": 1730490, "fecha_pago": "2026-09-08T00:00:00"}, {"mes_tab": "SEPTIEMBRE", "categoria": "PRODUCCION", "empresa": "GLOBAL CREATIVO", "factura": "FE8618", "valor_factura": 6563088, "pendiente": 6342480, "fecha_pago": "2026-09-11T00:00:00"}, {"mes_tab": "SEPTIEMBRE", "categoria": "GASTOS PERSONAL", "empresa": "ARUS", "factura": null, "valor_factura": 3826500, "pendiente": 3826500, "fecha_pago": "2026-09-12T00:00:00"}, {"mes_tab": "SEPTIEMBRE", "categoria": "MERCADEO Y VENTAS", "empresa": "MELONN", "factura": "MED28673", "valor_factura": 23628022, "pendiente": 23121986, "fecha_pago": "2026-09-12T00:00:00"}, {"mes_tab": "SEPTIEMBRE", "categoria": "PRODUCCION", "empresa": "INSUMO TEXTILES", "factura": "FE25583", "valor_factura": 2076954.6, "pendiente": 2076954.6, "fecha_pago": "2026-09-14T00:00:00"}, {"mes_tab": "SEPTIEMBRE", "categoria": "PRODUCCION", "empresa": "GLOBAL CREATIVO", "factura": "FE8626", "valor_factura": 2527084, "pendiente": 2442140, "fecha_pago": "2026-09-14T00:00:00"}, {"mes_tab": "SEPTIEMBRE", "categoria": "GASTOS PERSONAL", "empresa": "NOMINA", "factura": null, "valor_factura": 8969537, "pendiente": 8969537, "fecha_pago": "2026-09-15T00:00:00"}, {"mes_tab": "SEPTIEMBRE", "categoria": "GASTOS PERSONAL", "empresa": "MAURICIO TRUJILLO", "factura": null, "valor_factura": 3333000, "pendiente": 3199680, "fecha_pago": "2026-09-15T00:00:00"}, {"mes_tab": "SEPTIEMBRE", "categoria": "GASTOS ADMINISTRATIVOS", "empresa": "TC48225", "factura": null, "valor_factura": 1248637, "pendiente": 1248637, "fecha_pago": "2026-09-16T00:00:00"}, {"mes_tab": "SEPTIEMBRE", "categoria": "MERCADEO Y VENTAS", "empresa": "DHL", "factura": "IBE1563026", "valor_factura": 1748623, "pendiente": 1748623, "fecha_pago": "2026-09-16T00:00:00"}, {"mes_tab": "SEPTIEMBRE", "categoria": "PRODUCCION", "empresa": "SUTEX", "factura": "SSP31027", "valor_factura": 8288350, "pendiente": 8288350, "fecha_pago": "2026-09-18T00:00:00"}, {"mes_tab": "SEPTIEMBRE", "categoria": "PRODUCCION", "empresa": "SUTEX", "factura": "SSP31039", "valor_factura": 952000, "pendiente": 952000, "fecha_pago": "2026-09-18T00:00:00"}, {"mes_tab": "SEPTIEMBRE", "categoria": "PRODUCCION", "empresa": "INSUMO TEXTILES", "factura": "FE26003", "valor_factura": 1190000, "pendiente": 1190000, "fecha_pago": "2026-09-19T00:00:00"}, {"mes_tab": "SEPTIEMBRE", "categoria": "PRODUCCION", "empresa": "MANUFACTURA ELIOT", "factura": "2312181323.0", "valor_factura": 1540633.5, "pendiente": 1454431.5, "fecha_pago": "2026-09-22T00:00:00"}, {"mes_tab": "SEPTIEMBRE", "categoria": "PRODUCCION", "empresa": "BONTEX", "factura": "FE1601", "valor_factura": 2756040, "pendiente": 2690034, "fecha_pago": "2026-09-23T00:00:00"}, {"mes_tab": "SEPTIEMBRE", "categoria": "PRODUCCION", "empresa": "GLOBAL CREATIVO", "factura": "FE8655", "valor_factura": 3857504, "pendiente": 3727840, "fecha_pago": "2026-09-24T00:00:00"}, {"mes_tab": "SEPTIEMBRE", "categoria": "PRODUCCION", "empresa": "SUTEX", "factura": "SS262894", "valor_factura": 952000, "pendiente": 952000, "fecha_pago": "2026-09-24T00:00:00"}, {"mes_tab": "SEPTIEMBRE", "categoria": "PRODUCCION", "empresa": "INSUMO TEXTILES", "factura": "FE26099", "valor_factura": 13608054.6, "pendiente": 13608054.6, "fecha_pago": "2026-09-25T00:00:00"}, {"mes_tab": "SEPTIEMBRE", "categoria": "GASTOS ADMINISTRATIVOS", "empresa": "FABIO MARTINEZ", "factura": null, "valor_factura": 145600, "pendiente": 145600, "fecha_pago": "2026-09-26T00:00:00"}, {"mes_tab": "SEPTIEMBRE", "categoria": "PRODUCCION", "empresa": "BOMBAY", "factura": "FR634406", "valor_factura": 101460.59, "pendiente": 101460.59, "fecha_pago": "2026-09-26T00:00:00"}, {"mes_tab": "SEPTIEMBRE", "categoria": "MERCADEO Y VENTAS", "empresa": "TRANSPARENCIA DUO", "factura": "FETP20588", "valor_factura": 1228080, "pendiente": 1198668, "fecha_pago": "2026-09-27T00:00:00"}, {"mes_tab": "SEPTIEMBRE", "categoria": "MERCADEO Y VENTAS", "empresa": "TRANSPARENCIA DUO", "factura": "FETP20589", "valor_factura": 628320, "pendiente": 628320, "fecha_pago": "2026-09-27T00:00:00"}, {"mes_tab": "SEPTIEMBRE", "categoria": "MERCADEO Y VENTAS", "empresa": "TRANSPARENCIA DUO", "factura": "FETP20590", "valor_factura": 901425, "pendiente": 879836.25, "fecha_pago": "2026-09-27T00:00:00"}, {"mes_tab": "SEPTIEMBRE", "categoria": "PRODUCCION", "empresa": "GLOBAL CREATIVO", "factura": "FE8665", "valor_factura": 942230.1, "pendiente": 910558.5, "fecha_pago": "2026-09-27T00:00:00"}, {"mes_tab": "SEPTIEMBRE", "categoria": "PRODUCCION", "empresa": "PRIMATELA", "factura": "1111474211.0", "valor_factura": 28322, "pendiente": 28322, "fecha_pago": "2026-09-28T00:00:00"}, {"mes_tab": "SEPTIEMBRE", "categoria": "PRODUCCION", "empresa": "MANUFACTURA ELIOT", "factura": "2312183026.0", "valor_factura": 695485.98, "pendiente": 695485.98, "fecha_pago": "2026-09-29T00:00:00"}, {"mes_tab": "SEPTIEMBRE", "categoria": "GASTOS PERSONAL", "empresa": "NOMINA", "factura": null, "valor_factura": 8358270, "pendiente": 8358270, "fecha_pago": "2026-09-30T00:00:00"}, {"mes_tab": "SEPTIEMBRE", "categoria": "PRODUCCION", "empresa": "BOMBAY", "factura": "FR634845", "valor_factura": 151199.02, "pendiente": 151199.02, "fecha_pago": "2026-09-30T00:00:00"}, {"mes_tab": "SEPTIEMBRE", "categoria": "PRODUCCION", "empresa": "TEXCOMPLET", "factura": "FE938", "valor_factura": 3936627.1, "pendiente": 3804303.5, "fecha_pago": "2026-09-30T00:00:00"}, {"mes_tab": "SEPTIEMBRE", "categoria": "MERCADEO Y VENTAS", "empresa": "TRANSPARENCIA DUO", "factura": "FETP20614", "valor_factura": 729470, "pendiente": 711999.5, "fecha_pago": "2026-10-01T00:00:00"}, {"mes_tab": "SEPTIEMBRE", "categoria": "PRODUCCION", "empresa": "SUTEX", "factura": "SS263864", "valor_factura": 24097.5, "pendiente": 24097.5, "fecha_pago": "2026-10-02T00:00:00"}, {"mes_tab": "SEPTIEMBRE", "categoria": "MERCADEO Y VENTAS", "empresa": "18 RAZONES", "factura": "CVW1427", "valor_factura": 449279.74, "pendiente": 449279.74, "fecha_pago": "2026-10-03T00:00:00"}, {"mes_tab": "SEPTIEMBRE", "categoria": "PRODUCCION", "empresa": "INSUMO TEXTILES", "factura": "FE26176", "valor_factura": 7424671.8, "pendiente": 7424671.8, "fecha_pago": "2026-10-03T00:00:00"}, {"mes_tab": "SEPTIEMBRE", "categoria": "PRODUCCION", "empresa": "GLOBAL CREATIVO", "factura": "FE8677", "valor_factura": 3220616, "pendiente": 3112360, "fecha_pago": "2026-10-03T00:00:00"}, {"mes_tab": "SEPTIEMBRE", "categoria": "PRODUCCION", "empresa": "SUTEX", "factura": "SS264038", "valor_factura": 26775, "pendiente": 26775, "fecha_pago": "2026-10-03T00:00:00"}, {"mes_tab": "SEPTIEMBRE", "categoria": "PRODUCCION", "empresa": "GLOBAL CREATIVO", "factura": "FE8700", "valor_factura": 4335895.9, "pendiente": 4190151.5, "fecha_pago": "2026-10-05T00:00:00"}, {"mes_tab": "SEPTIEMBRE", "categoria": "PRODUCCION", "empresa": "GLOBAL CREATIVO", "factura": "FE8703", "valor_factura": 2848860, "pendiente": 2753100, "fecha_pago": "2026-10-08T00:00:00"}], "vencidaTotal": 20460206.810000002}, "alerts": [{"tipo": "vencida", "severidad": "rojo", "mes": "Septiembre 2026", "texto": "11 factura(s) vencida(s) por $20.5M — ver detalle en Cuentas por Pagar."}]};
+<!-- DATA_END -->
+
+function fmtCOP(x) { return "$" + Math.round(x).toLocaleString('es-CO'); }
+function fmtCOPSigned(x) { return (x >= 0 ? "+" : "") + "$" + Math.round(x).toLocaleString('es-CO'); }
+function fmtNum(x) { return Math.round(x).toLocaleString('es-CO'); }
+function fmtPct(x) { return x.toLocaleString('es-CO', {minimumFractionDigits:1, maximumFractionDigits:1}) + "%"; }
+function fmtDate(iso) { const d = new Date(iso); return d.toLocaleDateString('es-CO', {day:'numeric', month:'short', year:'numeric'}); }
+function stoplight(pct) { return pct >= 100 ? "verde" : (pct >= 85 ? "amarillo" : "rojo"); }
+
+document.addEventListener('DOMContentLoaded', () => {
+  document.getElementById('now-label').textContent = DATA.meta.now;
+  document.getElementById('current-month-label').textContent = DATA.meta.currentMonthLabel;
+  document.getElementById('sales-cutoff-label').textContent = DATA.meta.salesCutoff;
+
+  // ---- estado de caja hoy ----
+  const k = DATA.kpis;
+  document.getElementById('saldo-nota').textContent = k.saldoActualEsReal
+    ? `Saldo REAL confirmado a la fecha de corte.`
+    : `Saldo PROYECTADO (plan + ajuste por venta real de ${DATA.meta.currentMonthLabel.split(' ')[0]}) — aún sin saldo bancario real confirmado por el usuario para este corte.`;
+  document.getElementById('kpi-saldo').textContent = fmtCOP(k.saldoActual);
+  document.getElementById('kpi-saldo-sub').textContent = k.saldoActualEsReal
+    ? `Plan original: ${fmtCOP(k.saldoPlanOriginal)}`
+    : `Plan original ${fmtCOP(k.saldoPlanOriginal)} · ajuste ${fmtCOPSigned(k.deltaVsPlan)}`;
+  document.getElementById('kpi-colchon').textContent = fmtCOP(DATA.cushion.value);
+  document.getElementById('kpi-colchon-sub').textContent = `${DATA.cushion.months} meses de Personal+Admin (${fmtCOP(DATA.cushion.personalAdminMonthly)}/mes)`;
+  document.getElementById('kpi-piso').textContent = fmtCOP(k.pisoMinimoPeriodo);
+  document.getElementById('kpi-piso-sub').textContent = `en ${k.pisoMinimoMes}`;
+  document.getElementById('kpi-cxp').textContent = fmtCOP(k.cxpPendienteTotal);
+  document.getElementById('kpi-cxp-sub').textContent = `${DATA.cxp.buckets.reduce((a,b)=>a+b.count,0)} facturas con saldo pendiente`;
+  document.getElementById('kpi-vencida').textContent = fmtCOP(k.cxpVencida);
+  document.getElementById('kpi-libre').textContent = fmtCOP(k.cajaLibreHoy);
+
+  // ---- alertas ----
+  document.getElementById('alert-list').innerHTML = DATA.alerts.length
+    ? DATA.alerts.map(a => `<div class="alert-item ${a.severidad}"><div class="dot"></div><div class="txt">${a.texto}</div></div>`).join('')
+    : '<p style="font-size:13px;color:var(--text-muted);">Sin alertas de colchón, piso o facturas vencidas en este corte.</p>';
+
+  // ---- ajuste por venta real ----
+  document.getElementById('ajuste-mes-label').textContent = DATA.meta.currentMonthLabel;
+  const dj = DATA.detalleAjuste;
+  const ajusteRows = [
+    ['Online', dj.online], ['Showroom', dj.showroom],
+    ['May. nacionales', dj.nacional], ['May. internacionales', dj.internacional],
+  ].map(([label, val]) => `<tr><td class="name">${label}</td><td>${fmtCOPSigned(val)}</td></tr>`).join('');
+  document.getElementById('ajuste-table').innerHTML =
+    `<thead><tr><th>Canal</th><th>Ajuste vs. plan</th></tr></thead><tbody>${ajusteRows}<tr class="total"><td class="name">TOTAL — se suma al saldo desde ${DATA.meta.currentMonthLabel} en adelante</td><td>${fmtCOPSigned(dj.total)}</td></tr></tbody>`;
+
+  // ---- venta del mes vs plan ----
+  const vm = DATA.ventasMes;
+  document.getElementById('ventas-mes-sub').textContent = `Corte de ventas: ${vm.meta.cutoff} — día ${vm.meta.daysElapsed} de ${vm.meta.daysInMonth} del mes`;
+  const markerPct = vm.meta.daysElapsed / vm.meta.daysInMonth * 100;
+  document.getElementById('ventas-progress').innerHTML = vm.channels.map(c => {
+    const status = c.semaforoValue;
+    const fillPct = Math.min(c.pctValue, 100);
+    return `<div class="progress-row">
+      <div class="progress-name">${c.label}<span class="note">${fmtPct(c.pctValue)} de la meta del mes</span></div>
+      <div class="progress-track"><div class="progress-fill ${status}" style="width:${fillPct}%"></div><div class="progress-marker" style="left:${markerPct}%"></div></div>
+      <div class="progress-value"><b>${fmtCOP(c.realValue)} / ${fmtCOP(c.budgetValue)}</b><span class="pct">Ritmo: ${fmtPct(c.paceValue)} <span class="badge ${status}">${status}</span></span></div>
+    </div>`;
+  }).join('');
+
+  // ---- CxP buckets ----
+  document.getElementById('cxp-buckets').innerHTML = DATA.cxp.buckets.map(b =>
+    `<div class="bucket-tile ${b.key === 'vencida' ? 'vencida' : ''}">
+      <div class="b-label">${b.label}</div>
+      <div class="b-value">${fmtCOP(b.total)}</div>
+      <div class="b-count">${b.count} factura${b.count === 1 ? '' : 's'}</div>
+    </div>`).join('');
+
+  // ---- CxP por categoría ----
+  document.getElementById('cxp-category').innerHTML = DATA.cxp.byCategory.map(c =>
+    `<div class="progress-row">
+      <div class="progress-name">${c.label}<span class="note">${c.count} factura${c.count === 1 ? '' : 's'}</span></div>
+      <div class="progress-track"><div class="progress-fill neutral" style="width:${Math.min(c.pct,100)}%"></div></div>
+      <div class="progress-value"><b>${fmtCOP(c.total)}</b><span class="pct">${fmtPct(c.pct)} del total pendiente</span></div>
+    </div>`).join('');
+
+  // ---- CxP vencidas ----
+  const vencidasRows = DATA.cxp.vencidas.map(r => `<tr class="vencida">
+      <td class="name">${r.empresa || '—'}</td>
+      <td style="text-align:left;">${r.categoria || '—'}</td>
+      <td>${r.factura || '—'}</td>
+      <td>${fmtDate(r.fecha_pago)}</td>
+      <td>${fmtCOP(r.pendiente)}</td>
+    </tr>`).join('');
+  document.getElementById('cxp-vencidas-table').innerHTML = DATA.cxp.vencidas.length
+    ? `<thead><tr><th>Proveedor</th><th style="text-align:left;">Categoría</th><th>Factura</th><th>Vencía</th><th>Pendiente</th></tr></thead><tbody>${vencidasRows}</tbody>`
+    : '<tbody><tr><td style="padding:10px;color:var(--text-muted);">Sin facturas vencidas.</td></tr></tbody>';
+
+  // ---- CxP próximos 30 días ----
+  const proxRows = DATA.cxp.proximos30.map(r => `<tr>
+      <td class="name">${r.empresa || '—'}</td>
+      <td style="text-align:left;">${r.categoria || '—'}</td>
+      <td>${r.factura || '—'}</td>
+      <td>${fmtDate(r.fecha_pago)}</td>
+      <td>${fmtCOP(r.pendiente)}</td>
+    </tr>`).join('');
+  document.getElementById('cxp-proximos-table').innerHTML = DATA.cxp.proximos30.length
+    ? `<thead><tr><th>Proveedor</th><th style="text-align:left;">Categoría</th><th>Factura</th><th>Vence</th><th>Pendiente</th></tr></thead><tbody>${proxRows}</tbody>`
+    : '<tbody><tr><td style="padding:10px;color:var(--text-muted);">Sin vencimientos en los próximos 30 días.</td></tr></tbody>';
+
+  // ---- CxP top proveedores ----
+  const provRows = DATA.cxp.topProveedores.map(p => `<tr>
+      <td class="name">${p.empresa}</td>
+      <td>${p.count}</td>
+      <td>${fmtCOP(p.total)}</td>
+    </tr>`).join('');
+  document.getElementById('cxp-proveedores-table').innerHTML =
+    `<thead><tr><th>Proveedor</th><th>Facturas</th><th>Pendiente</th></tr></thead><tbody>${provRows}</tbody>`;
+
+  // ---- caja libre por mes ----
+  const libreRows = DATA.trajectory.map(r => {
+    const badge = r.alertaColchon ? 'rojo' : (r.alertaExcedente ? 'verde' : 'amarillo');
+    const badgeTxt = r.alertaColchon ? 'bajo colchón' : (r.alertaExcedente ? 'excedente' : 'ajustado');
+    return `<tr>
+      <td class="name">${r.label}${r.isCurrent ? ' <span class="badge info" style="margin-left:6px;">actual</span>' : ''}</td>
+      <td>${fmtCOP(r.saldoFinalAjustado)}</td>
+      <td>${fmtCOP(r.colchonFijo)}</td>
+      <td>${fmtCOP(r.obligaciones60d)}</td>
+      <td>${fmtCOP(r.cajaLibre)}</td>
+      <td><span class="badge ${badge}">${badgeTxt}</span></td>
+    </tr>`;
+  }).join('');
+  document.getElementById('libre-table').innerHTML =
+    `<thead><tr><th>Mes</th><th>Saldo ajustado</th><th>Colchón fijo</th><th>Obligaciones ~60d</th><th>Caja libre</th><th>Estado</th></tr></thead><tbody>${libreRows}</tbody>`;
+});
+</script>
+</body>
+</html>
