@@ -130,12 +130,15 @@
   .progress-row + .progress-row { border-top: 1px solid var(--grid); }
   .progress-name { font-size: 13px; font-weight: 600; color: var(--text-primary); }
   .progress-name .note { display: block; font-size: 11px; font-weight: 400; color: var(--text-muted); margin-top: 1px; }
-  .progress-track { position: relative; height: 16px; background: var(--grid); border-radius: 5px; overflow: hidden; }
+  .progress-track { position: relative; height: 16px; background: var(--grid); border-radius: 5px; }
   .progress-fill { position: absolute; inset: 0 auto 0 0; border-radius: 5px; }
   .progress-fill.verde { background: var(--good); }
   .progress-fill.amarillo { background: var(--warning); }
   .progress-fill.rojo { background: var(--critical); }
   .progress-marker { position: absolute; top: -3px; bottom: -3px; width: 2px; background: var(--text-primary); opacity: .55; }
+  .pe-marker { position: absolute; top: -19px; transform: translateX(-50%); display: flex; flex-direction: column; align-items: center; line-height: 1; }
+  .pe-marker .pe-label { font-size: 9.5px; font-weight: 800; letter-spacing: .02em; color: var(--text-primary); }
+  .pe-marker .pe-triangle { width: 0; height: 0; border-left: 5px solid transparent; border-right: 5px solid transparent; border-top: 6px solid var(--text-primary); margin-top: 1px; }
   .progress-value { font-size: 12.5px; text-align: right; font-variant-numeric: tabular-nums; color: var(--text-secondary); }
   .progress-value b { color: var(--text-primary); font-size: 13.5px; }
   .progress-value .pct { display: flex; align-items: center; justify-content: flex-end; gap: 8px; margin-top: 6px; }
@@ -242,7 +245,7 @@
 
   <section class="block card">
     <h2>Cumplimiento por canal <span class="metric-tag value">$ Valor</span></h2>
-    <p class="section-sub">Marca vertical = punto esperado a la fecha (<span id="pct-elapsed-label-2">23.3%</span> del mes). Color de la barra = semáforo sobre el ritmo esperado.</p>
+    <p class="section-sub">Marca vertical = punto esperado a la fecha (<span id="pct-elapsed-label-2">23.3%</span> del mes). Color de la barra = semáforo sobre el ritmo esperado. ▽ PE en la barra TOTAL = punto de equilibrio del mes (<span id="pe-value-label">—</span>) — venta mínima para no perder dinero.</p>
     <div class="progress-list" id="progress-value"></div>
   </section>
 
@@ -341,7 +344,7 @@
 
 <script>
 <!-- DATA_START -->
-const DATA = {"meta": {"period": "Septiembre 2026", "cutoff": "8 sep 2026, 15:44 hora Bogotá", "daysElapsed": 8, "daysInMonth": 30, "pctElapsed": 26.666666666666668, "monthIndex": 1, "monthTotal": 4, "monthLabel": "Septiembre"}, "total": {"budgetValue": 260900000, "realValue": 62756130.0, "pctValue": 24.053710233806054, "budgetUnits": 2334, "realUnits": 719, "pctUnits": 30.80548414738646, "ticketProm": 87282.5173852573, "paceValue": 90.20141337677272, "paceUnits": 115.52056555269922}, "channels": [{"key": "online", "label": "Online", "budgetValue": 80900000, "realValue": 32444246.0, "pctValue": 40.10413597033374, "budgetUnits": 700, "realUnits": 329, "pctUnits": 47.0, "paceValue": 150.39050988875155, "paceUnits": 176.25000000000003, "ticketReal": 98614.72948328267, "ticketPlan": 115595, "ticketDelta": -14.689450682743477, "orders": 123, "semaforoValue": "verde", "semaforoUnits": "verde"}, {"key": "showroom", "label": "Showroom", "budgetValue": 25000000, "realValue": 7573374.0, "pctValue": 30.293495999999998, "budgetUnits": 216, "realUnits": 74, "pctUnits": 34.25925925925926, "paceValue": 113.60060999999999, "paceUnits": 128.4722222222222, "ticketReal": 102342.8918918919, "ticketPlan": 115595, "ticketDelta": -11.464257198069216, "orders": 19, "semaforoValue": "verde", "semaforoUnits": "verde"}, {"key": "nacional", "label": "May. nacionales", "budgetValue": 35000000, "realValue": 22738510.0, "pctValue": 64.96717142857142, "budgetUnits": 530, "realUnits": 316, "pctUnits": 59.62264150943396, "paceValue": 243.62689285714282, "paceUnits": 223.58490566037736, "ticketReal": 71957.31012658228, "ticketPlan": 65979, "ticketDelta": 9.060928669095137, "orders": 3, "semaforoValue": "verde", "semaforoUnits": "verde"}, {"key": "internacional", "label": "May. internacionales", "budgetValue": 120000000, "realValue": 0.0, "pctValue": 0.0, "budgetUnits": 888, "realUnits": 0, "pctUnits": 0.0, "paceValue": 0.0, "paceUnits": 0.0, "ticketReal": null, "ticketPlan": 135121, "ticketDelta": null, "orders": 0, "semaforoValue": "rojo", "semaforoUnits": "rojo"}], "runrate": {"daysElapsed": 8, "daysInMonth": 30, "onlineDailyRate": 4055530.75, "onlineNeededRate": 2696666.6666666665, "onlinePacePct": 150.39050988875155, "onlineProjection": 121665922.5, "onlineProjectionPct": 150.39050988875155, "showroomDailyRate": 946671.75, "showroomNeededRate": 833333.3333333334, "showroomPacePct": 113.60060999999999, "showroomProjection": 28400152.5, "showroomProjectionPct": 113.60060999999999, "floorValue": 172804585.0, "floorPct": 66.23403027980069}, "daily": {"dates": ["1 sep", "2 sep", "3 sep", "4 sep", "5 sep", "6 sep", "7 sep", "8 sep"], "propioReal": [1204217.0, 1623773.0, 2316388.0, 7953220.0, 5984387.0, 6746182.0, 10431061.0, 3758392.0], "neededDaily": 3530000.0}, "ytd": {"realValue": 62756130.0, "realUnits": 719.0, "expectedValue": 69573333.33333333, "expectedUnits": 622.4, "paceValue": 90.20141337677272, "paceUnits": 115.52056555269922, "planTotal": 1399000000, "planTotalUnits": 12913, "proj1": 1392182796.6666667, "proj1Pct": 99.51270883964737, "proj2": 1289268705.0, "proj2Pct": 92.15644781987133}, "extraordinary": {"items": [{"date": "2026-09-07", "invoice": "RFEL8320", "partner": "Consorcio Licores de la Sabana Limitada y Otros (FLA — Aguardiente Antioqueño)", "description": "Pago total propuesta co-branding Mompossina x Aguardiente Antioqueño", "value": 64250000, "note": "Pago único de colaboración/co-branding, no ligado a unidades de producto — no está en el plan y no suma a ningún canal ni al % de cumplimiento."}], "total": 64250000.0}};
+const DATA = {"meta": {"period": "Septiembre 2026", "cutoff": "8 sep 2026, 15:44 hora Bogotá", "daysElapsed": 8, "daysInMonth": 30, "pctElapsed": 26.666666666666668, "monthIndex": 1, "monthTotal": 4, "monthLabel": "Septiembre"}, "total": {"budgetValue": 260900000, "realValue": 62756130.0, "pctValue": 24.053710233806054, "budgetUnits": 2334, "realUnits": 719, "pctUnits": 30.80548414738646, "ticketProm": 87282.5173852573, "paceValue": 90.20141337677272, "paceUnits": 115.52056555269922, "breakevenValue": 144300000, "breakevenPctOfBudget": 55.30854733614412, "breakevenReached": false}, "channels": [{"key": "online", "label": "Online", "budgetValue": 80900000, "realValue": 32444246.0, "pctValue": 40.10413597033374, "budgetUnits": 700, "realUnits": 329, "pctUnits": 47.0, "paceValue": 150.39050988875155, "paceUnits": 176.25000000000003, "ticketReal": 98614.72948328267, "ticketPlan": 115595, "ticketDelta": -14.689450682743477, "orders": 123, "semaforoValue": "verde", "semaforoUnits": "verde"}, {"key": "showroom", "label": "Showroom", "budgetValue": 25000000, "realValue": 7573374.0, "pctValue": 30.293495999999998, "budgetUnits": 216, "realUnits": 74, "pctUnits": 34.25925925925926, "paceValue": 113.60060999999999, "paceUnits": 128.4722222222222, "ticketReal": 102342.8918918919, "ticketPlan": 115595, "ticketDelta": -11.464257198069216, "orders": 19, "semaforoValue": "verde", "semaforoUnits": "verde"}, {"key": "nacional", "label": "May. nacionales", "budgetValue": 35000000, "realValue": 22738510.0, "pctValue": 64.96717142857142, "budgetUnits": 530, "realUnits": 316, "pctUnits": 59.62264150943396, "paceValue": 243.62689285714282, "paceUnits": 223.58490566037736, "ticketReal": 71957.31012658228, "ticketPlan": 65979, "ticketDelta": 9.060928669095137, "orders": 3, "semaforoValue": "verde", "semaforoUnits": "verde"}, {"key": "internacional", "label": "May. internacionales", "budgetValue": 120000000, "realValue": 0.0, "pctValue": 0.0, "budgetUnits": 888, "realUnits": 0, "pctUnits": 0.0, "paceValue": 0.0, "paceUnits": 0.0, "ticketReal": null, "ticketPlan": 135121, "ticketDelta": null, "orders": 0, "semaforoValue": "rojo", "semaforoUnits": "rojo"}], "runrate": {"daysElapsed": 8, "daysInMonth": 30, "onlineDailyRate": 4055530.75, "onlineNeededRate": 2696666.6666666665, "onlinePacePct": 150.39050988875155, "onlineProjection": 121665922.5, "onlineProjectionPct": 150.39050988875155, "showroomDailyRate": 946671.75, "showroomNeededRate": 833333.3333333334, "showroomPacePct": 113.60060999999999, "showroomProjection": 28400152.5, "showroomProjectionPct": 113.60060999999999, "floorValue": 172804585.0, "floorPct": 66.23403027980069}, "daily": {"dates": ["1 sep", "2 sep", "3 sep", "4 sep", "5 sep", "6 sep", "7 sep", "8 sep"], "propioReal": [1204217.0, 1623773.0, 2316388.0, 7953220.0, 5984387.0, 6746182.0, 10431061.0, 3758392.0], "neededDaily": 3530000.0}, "ytd": {"realValue": 62756130.0, "realUnits": 719.0, "expectedValue": 69573333.33333333, "expectedUnits": 622.4, "paceValue": 90.20141337677272, "paceUnits": 115.52056555269922, "planTotal": 1399000000, "planTotalUnits": 12913, "proj1": 1392182796.6666667, "proj1Pct": 99.51270883964737, "proj2": 1289268705.0, "proj2Pct": 92.15644781987133}, "extraordinary": {"items": [{"date": "2026-09-07", "invoice": "RFEL8320", "partner": "Consorcio Licores de la Sabana Limitada y Otros (FLA — Aguardiente Antioqueño)", "description": "Pago total propuesta co-branding Mompossina x Aguardiente Antioqueño", "value": 64250000, "note": "Pago único de colaboración/co-branding, no ligado a unidades de producto — no está en el plan y no suma a ningún canal ni al % de cumplimiento."}], "total": 64250000.0}};
 <!-- DATA_END -->
 
 function fmtCOP(x) { return "$" + Math.round(x).toLocaleString('es-CO'); }
@@ -358,6 +361,7 @@ document.addEventListener('DOMContentLoaded', () => {
   document.getElementById('day-progress-label').textContent = dayProgressTxt;
   document.getElementById('pct-elapsed-label').textContent = pctElapsedTxt;
   document.getElementById('pct-elapsed-label-2').textContent = pctElapsedTxt;
+  document.getElementById('pe-value-label').textContent = fmtCOP(DATA.total.breakevenValue);
   document.getElementById('day-progress-label-2').textContent = `día ${dayProgressTxt}`;
   document.getElementById('ytd-month-label').textContent =
     `Estamos en el mes ${DATA.meta.monthIndex} de ${DATA.meta.monthTotal} del plan — el acumulado a hoy incluye ${DATA.meta.monthIndex > 1 ? 'los meses ya cerrados más' : 'sólo'} lo real de ${DATA.meta.monthLabel.toLowerCase()}`;
@@ -394,21 +398,23 @@ document.addEventListener('DOMContentLoaded', () => {
   buildProgress('progress-units', DATA.channels, 'realUnits', 'budgetUnits', 'pctUnits', 'paceUnits', 'und');
 
   // total row for value/units panels (prepend)
-  function prependTotal(containerId, valueKey, budgetKey, pctKey, pacePctKey, unitLabel) {
+  function prependTotal(containerId, valueKey, budgetKey, pctKey, pacePctKey, unitLabel, showBreakeven) {
     const el = document.getElementById(containerId);
     const t = DATA.total;
     const status = stoplight(t[pacePctKey]);
     const fillPct = Math.min(t[pctKey], 100);
+    const dayMarkerPct = DATA.meta.daysElapsed / DATA.meta.daysInMonth * 100;
     const valTxt = unitLabel ? `${fmtNum(t[valueKey])} / ${fmtNum(t[budgetKey])} ${unitLabel}` : `${fmtCOP(t[valueKey])} / ${fmtCOP(t[budgetKey])}`;
-    const row = `<div class="progress-row" style="border-top:none;border-bottom:1px solid var(--border);padding-bottom:14px;margin-bottom:4px;">
+    const peMarker = showBreakeven ? `<div class="pe-marker" style="left:${Math.min(t.breakevenPctOfBudget, 100)}%" title="Punto de equilibrio del mes: ${fmtCOP(t.breakevenValue)}"><span class="pe-label">PE</span><span class="pe-triangle"></span></div>` : '';
+    const row = `<div class="progress-row" style="border-top:none;border-bottom:1px solid var(--border);padding-top:${showBreakeven ? 24 : 10}px;padding-bottom:14px;margin-bottom:4px;">
       <div class="progress-name"><strong>TOTAL</strong><span class="note">${fmtPct(t[pctKey])} de la meta del mes</span></div>
-      <div class="progress-track"><div class="progress-fill ${status}" style="width:${fillPct}%"></div><div class="progress-marker" style="left:23.333%"></div></div>
+      <div class="progress-track">${peMarker}<div class="progress-fill ${status}" style="width:${fillPct}%"></div><div class="progress-marker" style="left:${dayMarkerPct}%"></div></div>
       <div class="progress-value"><b>${valTxt}</b><span class="pct">Ritmo: ${fmtPct(t[pacePctKey])} <span class="badge ${status}">${status}</span></span></div>
     </div>`;
     el.innerHTML = row + el.innerHTML;
   }
-  prependTotal('progress-value', 'realValue', 'budgetValue', 'pctValue', 'paceValue', null);
-  prependTotal('progress-units', 'realUnits', 'budgetUnits', 'pctUnits', 'paceUnits', 'und');
+  prependTotal('progress-value', 'realValue', 'budgetValue', 'pctValue', 'paceValue', null, true);
+  prependTotal('progress-units', 'realUnits', 'budgetUnits', 'pctUnits', 'paceUnits', 'und', false);
 
   // ---- YTD progress ----
   buildProgress('progress-ytd', [

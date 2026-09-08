@@ -234,7 +234,7 @@ def build_channels(plan_month, real):
     return channels
 
 
-def build_total(channels):
+def build_total(channels, breakeven_value):
     budget_value = sum(c["budgetValue"] for c in channels)
     real_value = sum(c["realValue"] for c in channels)
     budget_units = sum(c["budgetUnits"] for c in channels)
@@ -245,11 +245,14 @@ def build_total(channels):
     # ritmo total: ponderado por meta (misma matemática que por canal, sumado)
     weighted_needed_value = sum(c["budgetValue"] for c in channels)
     weighted_needed_units = sum(c["budgetUnits"] for c in channels)
+    breakeven_pct_of_budget = breakeven_value / budget_value * 100 if budget_value else 0.0
     return {
         "budgetValue": budget_value, "realValue": real_value, "pctValue": pct_value,
         "budgetUnits": budget_units, "realUnits": real_units, "pctUnits": pct_units,
         "ticketProm": ticket_prom,
         "paceValue": None, "paceUnits": None,  # se llenan luego (necesitan days_elapsed/daysInMonth)
+        "breakevenValue": breakeven_value, "breakevenPctOfBudget": breakeven_pct_of_budget,
+        "breakevenReached": real_value >= breakeven_value,
     }
 
 
@@ -448,7 +451,7 @@ def main():
     channels = build_channels(plan_month, real)
     channels_by_key = {c["key"]: c for c in channels}
 
-    total = build_total(channels)
+    total = build_total(channels, plan["breakeven_value"])
     expected_frac = plan_month["_daysElapsed"] / plan_month["daysInMonth"]
     total["paceValue"] = total["realValue"] / (total["budgetValue"] * expected_frac) * 100 if total["budgetValue"] and expected_frac else 0.0
     total["paceUnits"] = total["realUnits"] / (total["budgetUnits"] * expected_frac) * 100 if total["budgetUnits"] and expected_frac else 0.0
@@ -494,6 +497,10 @@ def main():
     print()
     print(f"TOTAL: real {money_short(total['realValue'])} / meta {money_short(total['budgetValue'])} "
           f"({total['pctValue']:.1f}% del mes, ritmo {total['paceValue']:.1f}%)")
+    pe_status = "YA SE ALCANZÓ" if total["breakevenReached"] else "aún no se alcanza"
+    print(f"Punto de equilibrio del mes: {money_short(total['breakevenValue'])} "
+          f"({total['breakevenPctOfBudget']:.1f}% de la meta del mes) — {pe_status} "
+          f"(real {money_short(total['realValue'])})")
     print(f"Proyección de cierre (piso, congela mayoristas): {money_short(runrate['floorValue'])} ({runrate['floorPct']:.1f}% de la meta del mes)")
     print(f"Acumulado del periodo: real {money_short(ytd['realValue'])} vs. esperado {money_short(ytd['expectedValue'])} ({ytd['paceValue']:.1f}%)")
     print(f"Proyección método 1 (real + resto del plan tal cual): {money_short(ytd['proj1'])} ({ytd['proj1Pct']:.1f}% de ${plan['plan_total_value']/1e6:.1f}M)")
