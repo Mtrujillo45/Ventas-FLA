@@ -35,6 +35,15 @@ Regla de clasificación Online vs. Showroom (confirmada con el usuario,
     fuera de {PAID, PARTIALLY_PAID, PARTIALLY_REFUNDED, REFUNDED} (p.ej.
     PENDING sin confirmar).
 
+Envío (confirmado con el usuario, 2026-09-08): el envío cobrado en pedidos
+web bajo $280.000 SÍ se contabiliza en la cuenta 4 (Ingresos) del balance
+de prueba — la misma cuenta de la que sale la "venta neta" histórica del
+plan — así que el "valor" de cada pedido para este dashboard es
+`currentSubtotalPriceSet + currentShippingPriceSet` (producto + envío),
+no solo producto. Aplica igual a los 4 canales/fuentes (será $0 donde no
+se cobró envío, p.ej. showroom presencial o pedidos que califican para
+envío gratis).
+
 Uso:
   python3 compute.py \
       --plan plan_2026_2027.json \
@@ -49,14 +58,16 @@ Uso:
   SHOPIFY_GRAPH_QL_QUERY (paginado) con estos campos por pedido:
   id, name, createdAt, tags, sourceName, test, displayFinancialStatus,
   currentSubtotalPriceSet.shopMoney.amount,
+  currentShippingPriceSet.shopMoney.amount,
   lineItems.edges[].node.currentQuantity
   Alternativa --shopify-summary (usar cuando traer el JSON crudo completo al
   disco local no sea práctico, p.ej. si se calculó en un sandbox aparte):
   JSON ya agregado {"online":{"value","units","orders"},
   "showroom":{...}, "daily":{"YYYY-MM-DD":valor combinado,...},
   "excluded":[...]}. Si se usa este camino, la agregación debe replicar
-  EXACTAMENTE `classify_shopify_order()` de este archivo — cópiala tal cual,
-  no la reescribas de memoria.
+  EXACTAMENTE `classify_shopify_order()` y `order_value()` de este archivo
+  — cópialas tal cual, no las reescribas de memoria (`order_value()` es la
+  que suma envío al subtotal).
 
 --wholesale: lista de facturas ya extraídas de Google Drive (National/Intl):
   [{"channel":"nacional"|"internacional","date":"2026-09-07","value":123,
@@ -117,6 +128,14 @@ def bogota_date(created_at_utc_iso):
     return dt_bog.date()
 
 
+def order_value(o):
+    """Producto + envío — el envío cobrado en pedidos web es ingreso (cuenta 4),
+    igual que la venta de producto, confirmado con el usuario 2026-09-08."""
+    subtotal = float(o["currentSubtotalPriceSet"]["shopMoney"]["amount"])
+    shipping = float((o.get("currentShippingPriceSet") or {}).get("shopMoney", {}).get("amount", 0) or 0)
+    return subtotal + shipping
+
+
 def aggregate_shopify(orders):
     buckets = {
         "online": {"value": 0.0, "units": 0, "orders": 0},
@@ -129,7 +148,7 @@ def aggregate_shopify(orders):
         if bucket is None:
             excluded.append(o.get("name"))
             continue
-        value = float(o["currentSubtotalPriceSet"]["shopMoney"]["amount"])
+        value = order_value(o)
         units = sum(int(e["node"]["currentQuantity"]) for e in o["lineItems"]["edges"])
         buckets[bucket]["value"] += value
         buckets[bucket]["units"] += units
