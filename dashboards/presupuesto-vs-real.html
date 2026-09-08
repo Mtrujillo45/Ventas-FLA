@@ -92,9 +92,14 @@
 
   .card { background: var(--surface-1); border: 1px solid var(--border); border-radius: 14px; padding: 20px 22px; }
   section.block { margin-top: 22px; }
-  h2 { font-size: 15px; font-weight: 700; margin: 0 0 4px; }
+  h2 { font-size: 15px; font-weight: 700; margin: 0 0 4px; display: flex; align-items: center; gap: 10px; }
   h3 { font-size: 13px; font-weight: 700; margin: 0 0 10px; color: var(--text-secondary); }
   .section-sub { font-size: 12.5px; color: var(--text-muted); margin: 0 0 16px; }
+
+  /* metric type tag (VALOR / UNIDADES) */
+  .metric-tag { display: inline-flex; align-items: center; font-size: 11.5px; font-weight: 800; letter-spacing: .04em; text-transform: uppercase; padding: 4px 11px; border-radius: 7px; }
+  .metric-tag.value { color: var(--series-1); background: color-mix(in srgb, var(--series-1) 15%, transparent); }
+  .metric-tag.units { color: var(--series-2); background: color-mix(in srgb, var(--series-2) 15%, transparent); }
 
   /* executive summary */
   .exec-list { margin: 0; padding-left: 20px; display: flex; flex-direction: column; gap: 8px; }
@@ -109,18 +114,18 @@
   .kpi .sub { font-size: 11.5px; color: var(--text-muted); margin-top: 5px; line-height: 1.4; }
 
   /* status badge */
-  .badge { display: inline-flex; align-items: center; gap: 5px; font-size: 11px; font-weight: 700; padding: 2px 8px 2px 6px; border-radius: 999px; text-transform: uppercase; letter-spacing: .02em; white-space: nowrap; }
-  .badge::before { content: ""; width: 6px; height: 6px; border-radius: 50%; }
-  .badge.verde { color: color-mix(in srgb, var(--good) 65%, var(--text-primary)); background: var(--good-bg); }
+  .badge { display: inline-flex; align-items: center; gap: 7px; font-size: 13px; font-weight: 800; padding: 5px 13px 5px 10px; border-radius: 999px; text-transform: uppercase; letter-spacing: .03em; white-space: nowrap; border: 1px solid transparent; }
+  .badge::before { content: ""; width: 9px; height: 9px; border-radius: 50%; flex-shrink: 0; }
+  .badge.verde { color: color-mix(in srgb, var(--good) 70%, var(--text-primary)); background: var(--good-bg); border-color: color-mix(in srgb, var(--good) 35%, transparent); }
   .badge.verde::before { background: var(--good); }
-  .badge.amarillo { color: color-mix(in srgb, var(--warning) 55%, var(--text-primary)); background: var(--warning-bg); }
+  .badge.amarillo { color: color-mix(in srgb, var(--warning) 60%, var(--text-primary)); background: var(--warning-bg); border-color: color-mix(in srgb, var(--warning) 45%, transparent); }
   .badge.amarillo::before { background: var(--warning); }
-  .badge.rojo { color: color-mix(in srgb, var(--critical) 55%, var(--text-primary)); background: var(--critical-bg); }
+  .badge.rojo { color: color-mix(in srgb, var(--critical) 60%, var(--text-primary)); background: var(--critical-bg); border-color: color-mix(in srgb, var(--critical) 45%, transparent); box-shadow: 0 0 0 3px color-mix(in srgb, var(--critical) 12%, transparent); }
   .badge.rojo::before { background: var(--critical); }
 
   /* progress bars */
   .progress-list { display: flex; flex-direction: column; }
-  .progress-row { display: grid; grid-template-columns: 168px 1fr 190px; align-items: center; gap: 14px; padding: 10px 0; }
+  .progress-row { display: grid; grid-template-columns: 168px 1fr 220px; align-items: center; gap: 14px; padding: 10px 0; }
   .progress-row + .progress-row { border-top: 1px solid var(--grid); }
   .progress-name { font-size: 13px; font-weight: 600; color: var(--text-primary); }
   .progress-name .note { display: block; font-size: 11px; font-weight: 400; color: var(--text-muted); margin-top: 1px; }
@@ -132,7 +137,7 @@
   .progress-marker { position: absolute; top: -3px; bottom: -3px; width: 2px; background: var(--text-primary); opacity: .55; }
   .progress-value { font-size: 12.5px; text-align: right; font-variant-numeric: tabular-nums; color: var(--text-secondary); }
   .progress-value b { color: var(--text-primary); font-size: 13.5px; }
-  .progress-value .pct { display: block; margin-top: 1px; }
+  .progress-value .pct { display: flex; align-items: center; justify-content: flex-end; gap: 8px; margin-top: 6px; }
 
   /* chart legend */
   .chart-box { position: relative; }
@@ -182,13 +187,6 @@
   .alert-item .txt b { font-weight: 700; }
   .alert-item .txt span { color: var(--text-secondary); }
 
-  /* margin table */
-  table.margin-table { width: 100%; border-collapse: collapse; font-size: 12.5px; }
-  table.margin-table th, table.margin-table td { padding: 8px 10px; text-align: right; font-variant-numeric: tabular-nums; }
-  table.margin-table th:first-child, table.margin-table td:first-child { text-align: left; }
-  table.margin-table thead th { color: var(--text-muted); font-weight: 600; font-size: 11px; text-transform: uppercase; letter-spacing: .03em; border-bottom: 1px solid var(--border); }
-  table.margin-table tbody td { border-bottom: 1px solid var(--grid); color: var(--text-secondary); }
-  table.margin-table tbody tr:last-child td { border-bottom: none; font-weight: 700; color: var(--text-primary); border-top: 1px solid var(--border); }
   .table-scroll { overflow-x: auto; }
 
   /* summary table */
@@ -200,9 +198,6 @@
   table.summary-table tbody tr:last-child td { border-bottom: none; font-weight: 700; color: var(--text-primary); border-top: 1px solid var(--border); background: color-mix(in srgb, var(--series-1) 5%, transparent); }
   table.summary-table td.name { color: var(--text-primary); font-weight: 600; }
 
-  .note-box { border: 1px dashed var(--pending-border); border-radius: 12px; padding: 14px 16px; background: color-mix(in srgb, var(--warning) 6%, var(--surface-1)); font-size: 12.5px; color: var(--text-secondary); line-height: 1.55; }
-  .note-box strong { color: var(--text-primary); }
-
   footer { margin-top: 28px; font-size: 11.5px; color: var(--text-muted); line-height: 1.7; }
   footer p { margin: 0 0 8px; }
 
@@ -213,6 +208,7 @@
     .proj-grid { grid-template-columns: 1fr; }
     .progress-row { grid-template-columns: 1fr; row-gap: 6px; }
     .progress-value { text-align: left; }
+    .progress-value .pct { justify-content: flex-start; }
   }
 </style>
 </head>
@@ -234,38 +230,43 @@
     <h2>Totales del mes</h2>
     <p class="section-sub">Venta neta sin IVA y neta de devoluciones (cuenta 4 — Ingresos), igual base que el presupuesto</p>
     <div class="kpi-grid">
+      <div class="kpi"><div class="label">Ritmo esperado</div><div class="value" id="kpi-ritmo-esperado">—</div><div class="sub">Del mes ya transcurrido — punto de referencia del calendario</div></div>
       <div class="kpi"><div class="label">Venta neta real</div><div class="value" id="kpi-venta">—</div><div class="sub">Meta del mes: <span id="kpi-venta-meta">—</span></div></div>
       <div class="kpi"><div class="label">Unidades reales</div><div class="value" id="kpi-unidades">—</div><div class="sub">Meta del mes: <span id="kpi-unidades-meta">—</span> unidades</div></div>
       <div class="kpi"><div class="label">Ticket promedio real</div><div class="value" id="kpi-ticket">—</div><div class="sub">Todos los canales combinados, venta ÷ unidades</div></div>
       <div class="kpi"><div class="label">% cumplimiento del mes</div><div class="value" id="kpi-cumpl">—</div><div class="sub">Venta real ÷ meta mensual completa (valor)</div></div>
-      <div class="kpi"><div class="label">% del ritmo esperado a la fecha</div><div class="value" id="kpi-ritmo">—</div><div class="sub">Real ÷ (meta × 7/30 días transcurridos) — base del semáforo</div></div>
-      <div class="kpi"><div class="label">Proyección de cierre (piso conservador)</div><div class="value" id="kpi-proy">—</div><div class="sub"><span id="kpi-proy-pct">—</span> de la meta · asume $0 más de mayoristas este mes, no que estén fallando — <a href="#nota-mayoristas" style="color:inherit;">ver por qué</a></div></div>
+      <div class="kpi"><div class="label">% del ritmo esperado a la fecha</div><div class="value" id="kpi-ritmo">—</div><div class="sub">Real ÷ (meta × días transcurridos/días del mes) — base del semáforo</div></div>
     </div>
   </section>
 
   <section class="block card">
-    <h2>Cumplimiento por canal — valor</h2>
+    <h2>Cumplimiento por canal <span class="metric-tag value">$ Valor</span></h2>
     <p class="section-sub">Marca vertical = punto esperado a la fecha (<span id="pct-elapsed-label-2">23.3%</span> del mes). Color de la barra = semáforo sobre el ritmo esperado.</p>
     <div class="progress-list" id="progress-value"></div>
   </section>
 
   <section class="block card">
-    <h2>Cumplimiento por canal — unidades</h2>
+    <h2>Cumplimiento por canal <span class="metric-tag units"># Unidades</span></h2>
     <p class="section-sub">Misma lógica que el panel anterior, en unidades</p>
     <div class="progress-list" id="progress-units"></div>
   </section>
 
   <section class="block card">
+    <h2>Tabla resumen por canal</h2>
+    <div class="table-scroll">
+      <table class="summary-table" id="summary-table"></table>
+    </div>
+  </section>
+
+  <section class="block card">
     <h2>Resumen ejecutivo</h2>
-    <p class="section-sub">Lectura del corte al 7 de septiembre, 14:27 — día 7 de 30 del mes</p>
+    <p class="section-sub" id="exec-summary-label">Lectura del corte al 7 de septiembre, 14:27</p>
     <ul class="exec-list">
-      <li><strong>Corrección de canal (7-sep):</strong> Showroom pasó de reportar 21% del ritmo esperado (rojo) a <strong>116% (verde)</strong> al corregir la regla de clasificación Online/Showroom — 2 de las 4 ventas de mostrador del 7 de septiembre no tenían el tag manual "showroom" y se estaban contando como Online. La regla nueva ya no depende de ese tag (se aplicaba de forma inconsistente): usa si el pedido se creó como venta manual (Draft Order) y excluye los que llevan el tag "REDES SOCIALES" (ventas por WhatsApp/Instagram, que sí se etiquetan siempre). Ver nota de metodología en el footer.</li>
-      <li><strong>20.8% de la meta del mes facturado en 7 días</strong> ($54.2M de $260.9M), equivalente al <strong>89.0% del ritmo esperado a la fecha</strong> (día 7/30 = 23.3% del mes) — el mes va en amarillo, muy cerca de verde.</li>
-      <li><strong>Online y Showroom van por delante del ritmo</strong> (130.6% y 116.0% de lo esperado a la fecha respectivamente), impulsados por el lanzamiento de la colección LOVESSENCE el 4 de septiembre — el ritmo diario puede moderarse una vez pase el pico de lanzamiento.</li>
-      <li><strong>Mayoristas nacionales va muy adelante</strong> (278% del ritmo esperado): dos facturas a Falabella y una a Casa Viva ya suman $22.7M de los $35.0M del mes, con pedidos que siguen siendo irregulares mes a mes.</li>
-      <li><strong>Un solo canal en rojo:</strong> Mayoristas internacionales no registra ninguna factura en lo corrido del mes ($0 de $120M) — el pico de ese canal según el plan es octubre.</li>
-      <li><strong>Proyección de cierre del mes (piso conservador):</strong> ~$157.4M (60.3% de la meta) si Online/Showroom mantienen el ritmo actual y mayoristas no factura nada más — es un piso, no una previsión: casi seguro sube en cuanto se facturen más pedidos confirmados de mayoristas (ver nota metodológica más abajo).</li>
-      <li id="accion-recomendada"><strong>Acción #1 recomendada:</strong> confirmar con el equipo comercial si hay pedidos internacionales de septiembre ya confirmados pero pendientes de facturar — es la brecha más grande en pesos ($120M) y el plan concentra ese canal en octubre, así que hay que verificar si es un problema de timing (factura tardía) o si septiembre realmente no tiene pedidos internacionales.</li>
+      <li><strong>20.8% de la meta del mes facturado en 7 días</strong> ($54.2M de $260.9M) — 89.0% del ritmo esperado a la fecha, el mes va en amarillo.</li>
+      <li><strong>Mayoristas nacionales lidera</strong>, muy por delante del ritmo esperado (278%).</li>
+      <li><strong>Online y Showroom</strong> también van por delante del ritmo, impulsados por el lanzamiento de LOVESSENCE.</li>
+      <li><strong>Mayoristas internacionales</strong> es el único canal en rojo — sin ventas registradas en lo corrido del mes.</li>
+      <li id="accion-recomendada"><strong>Acción recomendada:</strong> confirmar con el equipo comercial si hay pedidos internacionales de septiembre ya confirmados pero pendientes de facturar.</li>
     </ul>
   </section>
 
@@ -277,7 +278,7 @@
 
   <section class="block card">
     <h2>Ritmo diario — canal propio (Online + Showroom)</h2>
-    <p class="section-sub">Mayoristas no se proyectan por ritmo: se miden como facturado vs. pedidos confirmados (backlog), ver nota abajo</p>
+    <p class="section-sub">Mayoristas no se proyectan por ritmo: se miden como facturado vs. pedidos confirmados (backlog)</p>
     <div class="runrate-stats" id="runrate-stats"></div>
     <div class="legend-row">
       <span class="legend-item"><span class="legend-swatch" style="background:var(--series-1)"></span>Venta diaria real (online+showroom)</span>
@@ -287,13 +288,6 @@
       <!-- RUNRATE_SVG_START -->
 <svg viewBox="0 0 880 230" class="svg-chart daily-chart" role="img" aria-label="Ritmo diario canal propio: venta real vs ritmo necesario"><defs><linearGradient id="rrAreaFill" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="var(--series-1)" stop-opacity="0.28"/><stop offset="100%" stop-color="var(--series-1)" stop-opacity="0"/></linearGradient></defs><line x1="50" y1="22.0" x2="860" y2="22.0" class="chart-grid-line"/><text x="42" y="25.0" class="chart-axis-label-y">$8.8M</text><line x1="50" y1="80.0" x2="860" y2="80.0" class="chart-grid-line"/><text x="42" y="83.0" class="chart-axis-label-y">$5.8M</text><line x1="50" y1="138.0" x2="860" y2="138.0" class="chart-grid-line"/><text x="42" y="141.0" class="chart-axis-label-y">$2.9M</text><line x1="50" y1="196.0" x2="860" y2="196.0" class="chart-grid-line"/><text x="42" y="199.0" class="chart-axis-label-y">$0</text><line x1="50" y1="125.9" x2="860" y2="125.9" class="rr-line-needed"/><path d="M 50.0,173.0 L 185.0,165.8 L 320.0,152.1 L 455.0,44.7 L 590.0,81.0 L 725.0,67.4 L 860.0,63.8 L 860.0,196.0 L 50.0,196.0 Z" fill="url(#rrAreaFill)" stroke="none"/><path d="M 50.0,173.0 L 185.0,165.8 L 320.0,152.1 L 455.0,44.7 L 590.0,81.0 L 725.0,67.4 L 860.0,63.8" class="rr-line-real"/><circle cx="50.0" cy="173.0" r="3.5" class="rr-dot"/><text x="50.0" y="163.0" class="rr-point-label">$1.2M</text><circle cx="185.0" cy="165.8" r="3.5" class="rr-dot"/><text x="185.0" y="155.8" class="rr-point-label">$1.5M</text><circle cx="320.0" cy="152.1" r="3.5" class="rr-dot"/><text x="320.0" y="142.1" class="rr-point-label">$2.2M</text><circle cx="455.0" cy="44.7" r="3.5" class="rr-dot"/><text x="455.0" y="34.7" class="rr-point-label">$7.6M</text><circle cx="590.0" cy="81.0" r="3.5" class="rr-dot"/><text x="590.0" y="71.0" class="rr-point-label">$5.8M</text><circle cx="725.0" cy="67.4" r="3.5" class="rr-dot"/><text x="725.0" y="57.4" class="rr-point-label">$6.5M</text><circle cx="860.0" cy="63.8" r="3.5" class="rr-dot"/><text x="860.0" y="53.8" class="rr-point-label">$6.7M</text><text x="50.0" y="222" class="chart-axis-label">1 sep</text><text x="185.0" y="222" class="chart-axis-label">2 sep</text><text x="320.0" y="222" class="chart-axis-label">3 sep</text><text x="455.0" y="222" class="chart-axis-label">4 sep</text><text x="590.0" y="222" class="chart-axis-label">5 sep</text><text x="725.0" y="222" class="chart-axis-label">6 sep</text><text x="860.0" y="222" class="chart-axis-label">7 sep</text></svg>
 <!-- RUNRATE_SVG_END -->
-    </div>
-    <div class="note-box" id="nota-mayoristas" style="margin-top:16px; scroll-margin-top:16px;">
-      <strong>Nota sobre mayoristas — por qué no se proyecta su cierre.</strong> El plan de mayoristas nacionales e internacionales ya no se arma con la fórmula 35%/65% sino con cifras reales de pedidos confirmados (backlog) — así que "real vs. meta" en esos dos canales es <strong>facturado/entregado vs. lo ya comprometido</strong>, no una meta de captación como en Online.
-      <br><br>
-      No es que no se pueda calcular un ritmo diario para mayoristas — es que sería una cifra engañosa. Mayoristas no vende en flujo continuo día a día: llega como pocas órdenes de compra grandes de golpe (ej. la factura del 7 de septiembre a Falabella fueron 296 unidades en una sola operación). Con solo 2-3 facturas en 7 días, un "ritmo diario" no refleja ninguna tendencia real — extrapolarlo sería inventar un número, no proyectarlo. Por eso la "Proyección de cierre (piso)" de arriba congela mayoristas en lo ya facturado, sin sumarle nada más el resto del mes.
-      <br><br>
-      Eso no significa que ambos canales estén igual: <strong>nacionales</strong> ya facturó $22.7M de los $35.0M confirmados para el mes (3 facturas, adelante del backlog) — el "piso" lo subestima porque es muy probable que facture más antes de fin de mes. <strong>Internacionales</strong> no ha facturado nada aún, pero eso tampoco es necesariamente una alerta: el plan concentra ese canal en octubre ($180M), así que septiembre en cero puede ser normal — vale la pena confirmar con el equipo comercial si hay pedidos internacionales ya confirmados pendientes de facturar (ver <a href="#accion-recomendada" style="color:inherit;">acción recomendada</a> arriba).
     </div>
   </section>
 
@@ -324,21 +318,6 @@
     <div class="alert-list" id="alert-list"></div>
   </section>
 
-  <section class="block card">
-    <h2>Márgenes del plan (referencia, presupuestado)</h2>
-    <p class="section-sub">Sólo presupuesto — no hay COGS real disponible todavía para septiembre. Panel secundario, no prioritario.</p>
-    <div class="table-scroll">
-      <table class="margin-table" id="margin-table"></table>
-    </div>
-  </section>
-
-  <section class="block card">
-    <h2>Tabla resumen por canal</h2>
-    <div class="table-scroll">
-      <table class="summary-table" id="summary-table"></table>
-    </div>
-  </section>
-
   <footer>
     <p><strong>Presupuesto:</strong> Dropbox → <code>/Mompossina/Plan Estrategico/Plan_Estrategico_Mompossina_2026_2027.xlsx</code> (versión sin "Ajuste", meta total Sep-Dic 2026 = $1.399M — verificado contra la hoja "Plan Ago-Dic 2026" y "Canales Ago-Dic 2026" antes de calcular).</p>
     <p><strong>Ventas reales:</strong> Online y Showroom = pedidos de Shopify (mompossina.myshopify.com) del 1 al 7 de septiembre de 2026, hora Bogotá, estado de pago PAID/PARTIALLY_PAID/PARTIALLY_REFUNDED/REFUNDED (se excluyó 1 pedido PENDING de $19,900 aún sin confirmar y 1 pedido en $0 que era solo un registro de saldo de bono, no venta de producto). <strong>Regla de clasificación (corregida 2026-09-07):</strong> ya NO se usa el tag <code>SHOWROOM</code> — se aplicaba manualmente al crear el pedido y con frecuencia se omitía (2 de 4 ventas de mostrador del 7-sep no lo tenían, incluida la más grande del día, $2.56M). Ahora Showroom = pedidos creados como venta manual (<code>sourceName = shopify_draft_order</code>, venta en el local con Bold/QR/efectivo/transferencia) que NO llevan tag <code>REDES SOCIALES</code>/<code>Melonn</code>/<code>Melonn-Entregado</code>; esos sí quedan en Online porque son ventas por WhatsApp/Instagram (Redes propias), no de mostrador — ese tag se confirmó 100% consistente sobre ~150 pedidos de muestra. El resto (tienda web y marketplace Falabella sincronizado a Shopify) también cuenta como Online. Venta neta = <code>currentSubtotalPriceSet</code> de cada pedido (ya sin IVA — la tienda maneja precios con impuesto incluido — y ya neto de devoluciones/reembolsos aplicados a la fecha). Regla implementada en <code>.claude/skills/presupuesto-vs-real/compute.py</code> (función <code>classify_shopify_order</code>).</p>
@@ -351,7 +330,7 @@
 
 <script>
 <!-- DATA_START -->
-const DATA = {"meta": {"period": "Septiembre 2026", "cutoff": "7 sep 2026, 14:27 hora Bogotá", "daysElapsed": 7, "daysInMonth": 30, "pctElapsed": 23.333333333333332, "monthIndex": 1, "monthTotal": 4, "monthLabel": "Septiembre"}, "total": {"budgetValue": 260900000, "realValue": 54168145.0, "pctValue": 20.76203334610962, "budgetUnits": 2334, "realUnits": 648, "pctUnits": 27.76349614395887, "ticketProm": 83592.81635802469, "paceValue": 88.98014291189837, "paceUnits": 118.98641204553802}, "channels": [{"key": "online", "label": "Online", "budgetValue": 80900000, "realValue": 24660660.0, "pctValue": 30.48289245982695, "budgetUnits": 700, "realUnits": 266, "pctUnits": 38.0, "paceValue": 130.64096768497262, "paceUnits": 162.85714285714286, "ticketReal": 92709.24812030075, "ticketPlan": 115595, "ticketDelta": -19.798219542107574, "orders": 98, "semaforoValue": "verde", "semaforoUnits": "verde"}, {"key": "showroom", "label": "Showroom", "budgetValue": 25000000, "realValue": 6768975.0, "pctValue": 27.075900000000004, "budgetUnits": 216, "realUnits": 66, "pctUnits": 30.555555555555557, "paceValue": 116.03957142857143, "paceUnits": 130.95238095238096, "ticketReal": 102560.22727272728, "ticketPlan": 115595, "ticketDelta": -11.27624268114773, "orders": 17, "semaforoValue": "verde", "semaforoUnits": "verde"}, {"key": "nacional", "label": "May. nacionales", "budgetValue": 35000000, "realValue": 22738510.0, "pctValue": 64.96717142857142, "budgetUnits": 530, "realUnits": 316, "pctUnits": 59.62264150943396, "paceValue": 278.4307346938776, "paceUnits": 255.52560646900267, "ticketReal": 71957.31012658228, "ticketPlan": 65979, "ticketDelta": 9.060928669095137, "orders": 3, "semaforoValue": "verde", "semaforoUnits": "verde"}, {"key": "internacional", "label": "May. internacionales", "budgetValue": 120000000, "realValue": 0.0, "pctValue": 0.0, "budgetUnits": 888, "realUnits": 0, "pctUnits": 0.0, "paceValue": 0.0, "paceUnits": 0.0, "ticketReal": null, "ticketPlan": 135121, "ticketDelta": null, "orders": 0, "semaforoValue": "rojo", "semaforoUnits": "rojo"}], "runrate": {"daysElapsed": 7, "daysInMonth": 30, "onlineDailyRate": 3522951.4285714286, "onlineNeededRate": 2696666.6666666665, "onlinePacePct": 130.64096768497265, "onlineProjection": 105688542.85714287, "onlineProjectionPct": 130.64096768497265, "showroomDailyRate": 966996.4285714285, "showroomNeededRate": 833333.3333333334, "showroomPacePct": 116.03957142857142, "showroomProjection": 29009892.857142854, "showroomProjectionPct": 116.03957142857142, "floorValue": 157436945.71428573, "floorPct": 60.34378908174999}, "daily": {"dates": ["1 sep", "2 sep", "3 sep", "4 sep", "5 sep", "6 sep", "7 sep"], "propioReal": [1159220.0, 1518780.0, 2211395.0, 7618240.0, 5789400.0, 6476200.0, 6656400.0], "neededDaily": 3530000.0}, "ytd": {"realValue": 54168145.0, "realUnits": 648.0, "expectedValue": 60876666.666666664, "expectedUnits": 544.6, "paceValue": 88.98014291189837, "paceUnits": 118.98641204553802, "planTotal": 1399000000, "planTotalUnits": 12913, "proj1": 1392291478.3333333, "proj1Pct": 99.52047736478437, "proj2": 1226773638.5714285, "proj2Pct": 87.68932370060247}, "margins": [{"mes": "Septiembre", "venta": 260.9, "cogs": 99.7, "margenBruto": 161.2, "mercadeo": 52.2, "personalAdmin": 60.3, "utilidad": 48.7, "margenPct": 18.7}, {"mes": "Octubre", "venta": 309.9, "cogs": 118.4, "margenBruto": 191.5, "mercadeo": 62.0, "personalAdmin": 60.3, "utilidad": 69.2, "margenPct": 22.3}, {"mes": "Noviembre", "venta": 422.9, "cogs": 161.6, "margenBruto": 261.3, "mercadeo": 84.6, "personalAdmin": 60.3, "utilidad": 116.4, "margenPct": 27.5}, {"mes": "Diciembre", "venta": 405.3, "cogs": 154.9, "margenBruto": 250.4, "mercadeo": 81.1, "personalAdmin": 60.3, "utilidad": 109.0, "margenPct": 26.9}, {"mes": "Total", "venta": 1399.0, "cogs": 534.6, "margenBruto": 864.4, "mercadeo": 279.8, "personalAdmin": 241.2, "utilidad": 343.4, "margenPct": 24.5}]};
+const DATA = {"meta": {"period": "Septiembre 2026", "cutoff": "7 sep 2026, 14:27 hora Bogotá", "daysElapsed": 7, "daysInMonth": 30, "pctElapsed": 23.333333333333332, "monthIndex": 1, "monthTotal": 4, "monthLabel": "Septiembre"}, "total": {"budgetValue": 260900000, "realValue": 54168145.0, "pctValue": 20.76203334610962, "budgetUnits": 2334, "realUnits": 648, "pctUnits": 27.76349614395887, "ticketProm": 83592.81635802469, "paceValue": 88.98014291189837, "paceUnits": 118.98641204553802}, "channels": [{"key": "online", "label": "Online", "budgetValue": 80900000, "realValue": 24660660.0, "pctValue": 30.48289245982695, "budgetUnits": 700, "realUnits": 266, "pctUnits": 38.0, "paceValue": 130.64096768497262, "paceUnits": 162.85714285714286, "ticketReal": 92709.24812030075, "ticketPlan": 115595, "ticketDelta": -19.798219542107574, "orders": 98, "semaforoValue": "verde", "semaforoUnits": "verde"}, {"key": "showroom", "label": "Showroom", "budgetValue": 25000000, "realValue": 6768975.0, "pctValue": 27.075900000000004, "budgetUnits": 216, "realUnits": 66, "pctUnits": 30.555555555555557, "paceValue": 116.03957142857143, "paceUnits": 130.95238095238096, "ticketReal": 102560.22727272728, "ticketPlan": 115595, "ticketDelta": -11.27624268114773, "orders": 17, "semaforoValue": "verde", "semaforoUnits": "verde"}, {"key": "nacional", "label": "May. nacionales", "budgetValue": 35000000, "realValue": 22738510.0, "pctValue": 64.96717142857142, "budgetUnits": 530, "realUnits": 316, "pctUnits": 59.62264150943396, "paceValue": 278.4307346938776, "paceUnits": 255.52560646900267, "ticketReal": 71957.31012658228, "ticketPlan": 65979, "ticketDelta": 9.060928669095137, "orders": 3, "semaforoValue": "verde", "semaforoUnits": "verde"}, {"key": "internacional", "label": "May. internacionales", "budgetValue": 120000000, "realValue": 0.0, "pctValue": 0.0, "budgetUnits": 888, "realUnits": 0, "pctUnits": 0.0, "paceValue": 0.0, "paceUnits": 0.0, "ticketReal": null, "ticketPlan": 135121, "ticketDelta": null, "orders": 0, "semaforoValue": "rojo", "semaforoUnits": "rojo"}], "runrate": {"daysElapsed": 7, "daysInMonth": 30, "onlineDailyRate": 3522951.4285714286, "onlineNeededRate": 2696666.6666666665, "onlinePacePct": 130.64096768497265, "onlineProjection": 105688542.85714287, "onlineProjectionPct": 130.64096768497265, "showroomDailyRate": 966996.4285714285, "showroomNeededRate": 833333.3333333334, "showroomPacePct": 116.03957142857142, "showroomProjection": 29009892.857142854, "showroomProjectionPct": 116.03957142857142, "floorValue": 157436945.71428573, "floorPct": 60.34378908174999}, "daily": {"dates": ["1 sep", "2 sep", "3 sep", "4 sep", "5 sep", "6 sep", "7 sep"], "propioReal": [1159220.0, 1518780.0, 2211395.0, 7618240.0, 5789400.0, 6476200.0, 6656400.0], "neededDaily": 3530000.0}, "ytd": {"realValue": 54168145.0, "realUnits": 648.0, "expectedValue": 60876666.666666664, "expectedUnits": 544.6, "paceValue": 88.98014291189837, "paceUnits": 118.98641204553802, "planTotal": 1399000000, "planTotalUnits": 12913, "proj1": 1392291478.3333333, "proj1Pct": 99.52047736478437, "proj2": 1226773638.5714285, "proj2Pct": 87.68932370060247}};
 <!-- DATA_END -->
 
 function fmtCOP(x) { return "$" + Math.round(x).toLocaleString('es-CO'); }
@@ -371,8 +350,10 @@ document.addEventListener('DOMContentLoaded', () => {
   document.getElementById('day-progress-label-2').textContent = `día ${dayProgressTxt}`;
   document.getElementById('ytd-month-label').textContent =
     `Estamos en el mes ${DATA.meta.monthIndex} de ${DATA.meta.monthTotal} del plan — el acumulado a hoy incluye ${DATA.meta.monthIndex > 1 ? 'los meses ya cerrados más' : 'sólo'} lo real de ${DATA.meta.monthLabel.toLowerCase()}`;
+  document.getElementById('exec-summary-label').textContent = `Lectura del corte al ${DATA.meta.cutoff}`;
 
   // ---- total KPIs ----
+  document.getElementById('kpi-ritmo-esperado').textContent = pctElapsedTxt;
   document.getElementById('kpi-venta').textContent = fmtCOP(DATA.total.realValue);
   document.getElementById('kpi-venta-meta').textContent = fmtCOP(DATA.total.budgetValue);
   document.getElementById('kpi-unidades').textContent = fmtNum(DATA.total.realUnits);
@@ -380,8 +361,6 @@ document.addEventListener('DOMContentLoaded', () => {
   document.getElementById('kpi-ticket').textContent = fmtCOP(DATA.total.ticketProm);
   document.getElementById('kpi-cumpl').textContent = fmtPct(DATA.total.pctValue);
   document.getElementById('kpi-ritmo').textContent = fmtPct(DATA.total.paceValue);
-  document.getElementById('kpi-proy').textContent = fmtCOP(DATA.runrate.floorValue);
-  document.getElementById('kpi-proy-pct').textContent = fmtPct(DATA.runrate.floorPct);
 
   // ---- progress bars (value & units) ----
   function buildProgress(containerId, items, valueKey, budgetKey, pctKey, pacePctKey, unitLabel, showMarker) {
@@ -435,7 +414,7 @@ document.addEventListener('DOMContentLoaded', () => {
     return `<div class="ticket-card">
       <div class="ch-name">${c.label}</div>
       <div class="ticket-row"><span>Ticket real</span><b>${hasReal ? fmtCOP(c.ticketReal) : '—'}</b></div>
-      <div class="ticket-row"><span>Precio plan</span><b>${fmtCOP(c.ticketPlan)}</b></div>
+      <div class="ticket-row"><span>Ticket plan</span><b>${fmtCOP(c.ticketPlan)}</b></div>
       <div class="ticket-delta ${deltaClass}">${deltaTxt}</div>
     </div>`;
   }).join('');
@@ -463,11 +442,6 @@ document.addEventListener('DOMContentLoaded', () => {
       : `Sin ventas registradas en ${DATA.meta.monthLabel.toLowerCase()} a la fecha de corte, de una meta mensual de ${fmtCOP(c.budgetValue)}.`;
     return `<div class="alert-item"><div class="dot"></div><div class="txt"><b>${c.label}</b> — <span>${detail}</span></div></div>`;
   }).join('') || '<p style="font-size:13px;color:var(--text-muted);">Sin canales en rojo.</p>';
-
-  // ---- margin table ----
-  const mt = document.getElementById('margin-table');
-  mt.innerHTML = `<thead><tr><th>Mes</th><th>Venta neta</th><th>COGS</th><th>Margen bruto</th><th>Mercadeo</th><th>Personal+Admin</th><th>Utilidad oper.</th><th>Margen oper. %</th></tr></thead>
-    <tbody>${DATA.margins.map(m => `<tr><td>${m.mes}</td><td>$${m.venta.toFixed(1)}M</td><td>$${m.cogs.toFixed(1)}M</td><td>$${m.margenBruto.toFixed(1)}M</td><td>$${m.mercadeo.toFixed(1)}M</td><td>$${m.personalAdmin.toFixed(1)}M</td><td>$${m.utilidad.toFixed(1)}M</td><td>${m.margenPct.toFixed(1)}%</td></tr>`).join('')}</tbody>`;
 
   // ---- summary table ----
   const st = document.getElementById('summary-table');

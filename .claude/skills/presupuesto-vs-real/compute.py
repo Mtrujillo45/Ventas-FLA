@@ -438,7 +438,6 @@ def main():
         "runrate": runrate,
         "daily": daily,
         "ytd": ytd,
-        "margins": plan["margins"],
     }
 
     print(f"=== Presupuesto vs. Real — {plan_month['label']} (corte {data['meta']['cutoff']}) ===")
