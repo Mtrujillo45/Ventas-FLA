@@ -234,7 +234,7 @@
       <div class="kpi"><div class="label">Ritmo esperado</div><div class="value" id="kpi-ritmo-esperado">—</div><div class="sub">Del mes ya transcurrido — punto de referencia del calendario</div></div>
       <div class="kpi"><div class="label">Venta neta real</div><div class="value" id="kpi-venta">—</div><div class="sub">Meta del mes: <span id="kpi-venta-meta">—</span></div></div>
       <div class="kpi"><div class="label">Unidades reales</div><div class="value" id="kpi-unidades">—</div><div class="sub">Meta del mes: <span id="kpi-unidades-meta">—</span> unidades</div></div>
-      <div class="kpi"><div class="label">Ticket promedio — todos los canales</div><div class="value" id="kpi-ticket">—</div><div class="sub">Venta neta total ÷ unidades totales (Online + Showroom + Mayoristas) — no es solo Online, ver ticket por canal más abajo</div></div>
+      <div class="kpi"><div class="label">Precio facturación promedio — todos los canales</div><div class="value" id="kpi-ticket">—</div><div class="sub">Venta neta total ÷ unidades totales</div></div>
       <div class="kpi"><div class="label">% cumplimiento del mes</div><div class="value" id="kpi-cumpl">—</div><div class="sub">Venta real ÷ meta mensual completa (valor)</div></div>
       <div class="kpi"><div class="label">% del ritmo esperado a la fecha</div><div class="value" id="kpi-ritmo">—</div><div class="sub">Real ÷ (meta × días transcurridos/días del mes) — base del semáforo</div></div>
     </div>
@@ -273,8 +273,8 @@
   </section>
 
   <section class="block card">
-    <h2>Ticket promedio real vs. precio de facturación del plan</h2>
-    <p class="section-sub">Venta real del canal ÷ unidades reales, comparado con el precio de facturación promedio usado en el plan (sin IVA)</p>
+    <h2>Precio de facturación promedio — real vs. plan</h2>
+    <p class="section-sub">Venta real del canal ÷ unidades reales, por canal</p>
     <div class="ticket-grid" id="ticket-grid"></div>
   </section>
 
@@ -424,8 +424,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const deltaTxt = !hasReal ? 'Sin ventas en el corte' : `${c.ticketDelta >= 0 ? '+' : ''}${fmtPct(c.ticketDelta)} vs. plan`;
     return `<div class="ticket-card">
       <div class="ch-name">${c.label}</div>
-      <div class="ticket-row"><span>Ticket real</span><b>${hasReal ? fmtCOP(c.ticketReal) : '—'}</b></div>
-      <div class="ticket-row"><span>Ticket plan</span><b>${fmtCOP(c.ticketPlan)}</b></div>
+      <div class="ticket-row"><span>Real</span><b>${hasReal ? fmtCOP(c.ticketReal) : '—'}</b></div>
+      <div class="ticket-row"><span>Plan</span><b>${fmtCOP(c.ticketPlan)}</b></div>
       <div class="ticket-delta ${deltaClass}">${deltaTxt}</div>
     </div>`;
   }).join('');
@@ -478,7 +478,7 @@ document.addEventListener('DOMContentLoaded', () => {
       <td>${fmtCOP(DATA.total.ticketProm)}</td>
       <td><span class="badge ${stoplight(DATA.total.paceValue)}">${stoplight(DATA.total.paceValue)}</span></td>
     </tr>`;
-  st.innerHTML = `<thead><tr><th>Canal</th><th>Meta</th><th>Real</th><th>Cumpl. %</th><th>Unid. meta</th><th>Unid. real</th><th>Cumpl. % und</th><th>Ticket prom.</th><th>Semáforo</th></tr></thead><tbody>${rows}${totalRow}</tbody>`;
+  st.innerHTML = `<thead><tr><th>Canal</th><th>Meta</th><th>Real</th><th>Cumpl. %</th><th>Unid. meta</th><th>Unid. real</th><th>Cumpl. % und</th><th>Precio fact. prom.</th><th>Semáforo</th></tr></thead><tbody>${rows}${totalRow}</tbody>`;
 
   // ---- extraordinary (out-of-budget) invoices ----
   const extra = DATA.extraordinary;
