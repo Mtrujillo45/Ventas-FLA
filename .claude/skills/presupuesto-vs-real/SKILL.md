@@ -118,6 +118,24 @@ internacional)? Si sí → `--wholesale`. Si es un monto fijo por un
 servicio/colaboración/patrocinio sin unidades → `--extraordinary`. Ante la
 duda, preguntarle al usuario en vez de asumir.
 
+**Categorías — confirmado 2026-09-08.** Cada entrada de `--extraordinary`
+lleva un campo `"category"`, una de `EXTRAORDINARY_CATEGORIES` en
+`compute.py`: `"FLA"` (colaboraciones/co-branding con la Fábrica de
+Licores de Antioquia) o `"PAC"` (venta de paquete completo/curado a un
+cliente, fuera del esquema normal por unidad de mayoristas). Estas dos
+categorías **siempre** aparecen como fila en el panel "Cumplimiento por
+canal — $ Valor" (no en el de unidades, no tienen unidades) — con una
+barra al 100% (color neutro gris, no verde/amarillo/rojo) si hubo algo
+facturado ese mes bajo esa categoría, o al 0% si no hubo nada. Es un
+indicador de presencia/ausencia, no de cumplimiento real — no se compara
+contra ninguna meta, por eso no lleva semáforo. Se calculan en
+`build_extraordinary_by_category()` y se renderizan después de las filas
+de canal real (con un divisor "Fuera del presupuesto — no suma al
+cumplimiento") en el JS del HTML. Una categoría nueva que no esté en
+`EXTRAORDINARY_CATEGORIES` igual se refleja en la tabla resumen de abajo,
+pero no genera fila fija en el panel de barras — si aparece un tercer tipo
+recurrente, agregarlo a la constante.
+
 ## Datos de referencia
 
 | Concepto | Valor |
@@ -199,9 +217,11 @@ unidades (colaboraciones, co-branding, patrocinios — ver sección
 "Facturación adicional" arriba) en `extraordinary_<mes>.json` en vez de
 `wholesale_<mes>.json`:
 ```json
-[{"date":"YYYY-MM-DD","invoice":"RFEL...","partner":"...",
+[{"date":"YYYY-MM-DD","invoice":"RFEL...","category":"FLA","partner":"...",
   "description":"...","value":123,"note":"opcional"}]
 ```
+`category` es `"FLA"` o `"PAC"` (ver `EXTRAORDINARY_CATEGORIES` en
+`compute.py`) — determina en qué fila fija del panel "$ Valor" aparece.
 
 **4. Acumulado de meses ya cerrados (sólo relevante desde octubre en
 adelante).** `compute.py` necesita `--prior-real-value`/`--prior-real-units`
