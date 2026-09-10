@@ -1,8 +1,8 @@
 {
   "_source": "Dropbox /Mompossina/Plan Estrategico/Plan_Estrategico_Mompossina_2026_2027.xlsx (version SIN 'Ajuste', 43358 bytes) — hojas 'Canales Ago-Dic 2026' y 'Plan Ago-Dic 2026'. NO usar el archivo con 'Ajuste' en el nombre (48351 bytes) — es una versión distinta que no cuadra con la meta total de $1,399M confirmada por el usuario.",
   "period_order": ["2026-09", "2026-10", "2026-11", "2026-12"],
-  "breakeven_value": 144300000,
-  "_breakeven_note": "Punto de equilibrio mensual = Personal+Admin fijo / (1 - COGS% - Mercadeo%) = 60.3M / (1 - 0.382 - 0.20). Hoja 'Costos y Márgenes' del plan: 'venta neta mínima mensual para no perder dinero'. Es una cifra fija de estructura de costos, NO varía por mes dentro del periodo Sep-Dic 2026 — no confundir con el 'valor unitario del índice' de la hoja Supuestos sección 9 (ese es para el plan 2027 estacional) ni con los $158.76M (PE + 10% capitalización, también solo referenciado para 2027).",
+  "breakeven_value": 152500000,
+  "_breakeven_note": "Punto de equilibrio mensual = Personal+Admin fijo / (1 - COGS% - Mercadeo%) = 63.7M / (1 - 0.382 - 0.20). Hoja 'Costos y Márgenes' del plan: 'venta neta mínima mensual para no perder dinero'. ACTUALIZADO 2026-09-10: Personal+Admin fijo subió de 60.3M a 63.7M por la contratación de Isabella Aponte (Analista de Diseño, desde sep-2026, costo empresa total $3.407M/mes incl. prestaciones) — ver hoja Supuestos sección 12. Esto subió el PE de $144.3M a $152.5M. Sigue siendo una cifra fija de estructura de costos que NO varía por mes dentro del periodo Sep-Dic 2026 (a menos que cambie de nuevo la nómina fija) — no confundir con el 'valor unitario del índice' de la hoja Supuestos sección 9 (para el plan 2027 estacional) ni con los $167.73M (PE + 10% capitalización, también solo referenciado para 2027).",
   "channel_order": ["online", "showroom", "nacional", "internacional"],
   "channel_labels": {
     "online": "Online",

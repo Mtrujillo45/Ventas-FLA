@@ -81,30 +81,50 @@ Online y Showroom (será $0 donde no se cobró envío). Si se usa el camino
 se agrega por pedido también debe incluir el envío — copiar `order_value()`
 igual que se copia `classify_shopify_order()`.
 
-## Marcador de punto de equilibrio (PE) — confirmado 2026-09-08
+## Marcador de punto de equilibrio (PE) — confirmado 2026-09-08, actualizado 2026-09-10
 
 La barra TOTAL del panel "Cumplimiento por canal — $ Valor" (sólo esa,
 no la de unidades ni las de canal individual) lleva un triángulo invertido
 "▽ PE" arriba, marcando la venta neta mínima mensual para no perder
 dinero. Viene de la hoja "Costos y Márgenes" del plan: `Personal+Admin
-fijo mensual / (1 - COGS% - Mercadeo%)` = 60.3M / (1 - 0.382 - 0.20) =
-**$144.3M**. Es una cifra de estructura de costos fija — **no varía por
-mes** dentro del periodo Sep-Dic 2026, a diferencia de la meta de venta
-que sí varía mes a mes. Está en `plan_2026_2027.json` como
-`breakeven_value` (top-level, no por mes) y se computa como
+fijo mensual / (1 - COGS% - Mercadeo%)`. Es una cifra de estructura de
+costos fija — **no varía por mes** dentro del periodo Sep-Dic 2026, a
+diferencia de la meta de venta que sí varía mes a mes. Está en
+`plan_2026_2027.json` como `breakeven_value` (top-level, no por mes) y se
+computa como
 `total.breakevenValue`/`total.breakevenPctOfBudget`/`total.breakevenReached`
 en `build_total()`. Si el plan cambia su estructura de costos fijos
 (Personal+Admin) o sus techos de COGS%/Mercadeo%, este valor hay que
 recalcularlo a mano — no está enlazado a esas hojas automáticamente.
 
-## Facturación adicional (fuera del presupuesto) — confirmado 2026-09-08
+**Historial:** $144.3M (60.3M / (1 - 0.382 - 0.20)) hasta el corte del
+2026-09-08. **Actualizado a $152.5M el 2026-09-10** (63.7M / (1 - 0.382 -
+0.20)) porque el Personal+Admin fijo subió de $60.3M a $63.7M/mes por la
+contratación de Isabella Aponte (Analista de Diseño, desde septiembre de
+2026, costo empresa total $3.407M/mes incl. prestaciones — hoja Supuestos
+sección 12 del plan). Las metas de venta por canal/mes del plan NO
+cambiaron con esta contratación, sólo el PE. Cada vez que se refresque el
+dashboard conviene volver a revisar la hoja de Costos y Márgenes /
+Supuestos del plan por si la nómina fija cambió de nuevo.
+
+## Facturación adicional (fuera del presupuesto) — confirmado 2026-09-08, ampliado 2026-09-10
 
 A veces el mes trae facturas que no son venta recurrente de producto por
 canal: colaboraciones/co-branding con marcas externas, paquetes puntuales,
-patrocinios. Ejemplo: RFEL8320, un pago único de "Consorcio Licores de la
-Sabana Limitada y Otros" (razón social de la Fábrica de Licores de
-Antioquia — FLA) por la propuesta de co-branding Mompossina x Aguardiente
-Antioqueño, $64,250,000 sin IVA, sin unidades de producto.
+patrocinios, servicios de diseño/consultoría. Ejemplos:
+- RFEL8320, un pago único de "Consorcio Licores de la Sabana Limitada y
+  Otros" (razón social de la Fábrica de Licores de Antioquia — FLA) por la
+  propuesta de co-branding Mompossina x Aguardiente Antioqueño,
+  $64,250,000 sin IVA, sin unidades de producto → categoría `"FLA"`.
+- RFEL8325, una factura de servicio de consultoría/diseño a Cristalina
+  Swimwear (cliente mayorista internacional ya existente, facturado en
+  USD), $6,784,469 COP, sin unidades de prenda despachadas → categoría
+  nueva `"SERV"` ("Servicios de diseño"), agregada a
+  `EXTRAORDINARY_CATEGORIES` en `compute.py` el 2026-09-10 como fila fija
+  permanente del panel (igual que FLA/PAC), en vez de dejarla como
+  categoría dinámica de un solo mes — así el panel siempre muestra un
+  label legible en vez de la clave cruda si vuelve a aparecer este tipo de
+  factura.
 
 **Estas facturas NUNCA se suman a `channels`, `total`, `runrate`, `ytd` ni
 al semáforo** — el plan no las contempla y mezclarlas infla el
@@ -116,7 +136,13 @@ marcada como fuera del presupuesto.
 unidades de producto vendido y encaja en un canal (nacional/
 internacional)? Si sí → `--wholesale`. Si es un monto fijo por un
 servicio/colaboración/patrocinio sin unidades → `--extraordinary`. Ante la
-duda, preguntarle al usuario en vez de asumir.
+duda, preguntarle al usuario en vez de asumir. Si aparece una categoría
+nueva de `--extraordinary` que parece que se va a repetir (no un caso
+totalmente aislado), agregarla a `EXTRAORDINARY_CATEGORIES` en
+`compute.py` con un label legible — si parece un caso verdaderamente
+aislado, se puede dejar sin agregar (igual aparece ese mes en el panel y
+en la tabla resumen, sólo que con la clave cruda como label; conviene
+avisarle al usuario de la decisión tomada).
 
 **Categorías — confirmado 2026-09-08.** Cada entrada de `--extraordinary`
 lleva un campo `"category"`, una de `EXTRAORDINARY_CATEGORIES` en

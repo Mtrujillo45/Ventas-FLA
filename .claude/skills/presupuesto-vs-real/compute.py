@@ -94,8 +94,10 @@ Uso:
   "category" es una de EXTRAORDINARY_CATEGORIES (ver constante más abajo:
   "FLA" = colaboraciones/co-branding con la Fábrica de Licores de Antioquia,
   "PAC" = ventas de paquete completo/curado a un cliente, fuera del esquema
-  normal por unidad de mayoristas). Estas dos categorías SIEMPRE aparecen
-  como fila en el panel "Cumplimiento por canal — $ Valor" del dashboard
+  normal por unidad de mayoristas, "SERV" = servicios de diseño/consultoría
+  facturados a un cliente mayorista existente, sin unidades de prenda —
+  ej. RFEL8325, Cristalina Swimwear, sep-2026). Estas categorías SIEMPRE
+  aparecen como fila en el panel "Cumplimiento por canal — $ Valor" del dashboard
   (barra al 100% si hubo algo facturado ese mes bajo esa categoría, 0% si
   no) — es un indicador visual de presencia/ausencia, no de cumplimiento
   real, así que no se compara contra ninguna meta. Una categoría nueva que
@@ -116,6 +118,7 @@ VALID_STATUS = {"PAID", "PARTIALLY_PAID", "PARTIALLY_REFUNDED", "REFUNDED"}
 EXTRAORDINARY_CATEGORIES = [
     ("FLA", "Colaboración FLA"),
     ("PAC", "Paquete completo (PAC)"),
+    ("SERV", "Servicios de diseño"),
 ]
 
 
