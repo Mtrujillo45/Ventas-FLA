@@ -1,0 +1,226 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Mompossina — Panel de Dashboards</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🧭</text></svg>">
+<style>
+  :root {
+    color-scheme: light;
+    --surface-1:      #fcfcfb;
+    --page:           #f9f9f7;
+    --text-primary:   #0b0b0b;
+    --text-secondary: #52514e;
+    --text-muted:     #898781;
+    --grid:           #e1e0d9;
+    --border:         rgba(11,11,11,0.10);
+    --series-1:       #2a78d6;
+    --series-2:       #eb6834;
+    --good:           #0ca30c;
+    --warning:        #fab219;
+    --critical:       #d03b3b;
+    --good-bg:        #eaf7ea;
+    --warning-bg:     #fff6e2;
+    --critical-bg:    #fbe9e9;
+    --pending-border: #d99a4e;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:where(:not([data-theme="light"])) {
+      color-scheme: dark;
+      --surface-1:      #1a1a19;
+      --page:           #0d0d0d;
+      --text-primary:   #ffffff;
+      --text-secondary: #c3c2b7;
+      --text-muted:     #898781;
+      --grid:           #2c2c2a;
+      --border:         rgba(255,255,255,0.10);
+      --series-1:       #3987e5;
+      --series-2:       #d95926;
+      --good:           #0ca30c;
+      --warning:        #fab219;
+      --critical:       #e66767;
+      --good-bg:        rgba(12,163,12,0.14);
+      --warning-bg:     rgba(250,178,25,0.14);
+      --critical-bg:    rgba(230,103,103,0.14);
+      --pending-border: #b3823f;
+    }
+  }
+  :root[data-theme="dark"] {
+    color-scheme: dark;
+    --surface-1:      #1a1a19;
+    --page:           #0d0d0d;
+    --text-primary:   #ffffff;
+    --text-secondary: #c3c2b7;
+    --text-muted:     #898781;
+    --grid:           #2c2c2a;
+    --border:         rgba(255,255,255,0.10);
+    --series-1:       #3987e5;
+    --series-2:       #d95926;
+    --good:           #0ca30c;
+    --warning:        #fab219;
+    --critical:       #e66767;
+    --good-bg:        rgba(12,163,12,0.14);
+    --warning-bg:     rgba(250,178,25,0.14);
+    --critical-bg:    rgba(230,103,103,0.14);
+    --pending-border: #b3823f;
+  }
+
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--page);
+    color: var(--text-primary);
+    font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+  .wrap { max-width: 1180px; margin: 0 auto; padding: 28px 20px 64px; }
+
+  header.top { margin-bottom: 28px; }
+  .eyebrow {
+    display: inline-flex; align-items: center; gap: 8px;
+    font-size: 12px; font-weight: 600; letter-spacing: .04em; text-transform: uppercase;
+    color: var(--series-1);
+    background: color-mix(in srgb, var(--series-1) 12%, transparent);
+    padding: 4px 10px; border-radius: 999px; margin-bottom: 10px;
+  }
+  h1 { font-size: 28px; font-weight: 700; margin: 0 0 6px; letter-spacing: -0.01em; text-wrap: balance; }
+  .subtitle { font-size: 14px; color: var(--text-secondary); margin: 0 0 4px; max-width: 62ch; }
+  .meta { font-size: 12.5px; color: var(--text-muted); }
+
+  /* tile grid */
+  .tile-grid {
+    display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px;
+  }
+  .tile {
+    display: flex; flex-direction: column; gap: 10px;
+    background: var(--surface-1); border: 1px solid var(--border); border-radius: 14px;
+    padding: 20px 22px; text-decoration: none; color: inherit;
+    transition: border-color .15s ease, box-shadow .15s ease, transform .08s ease;
+  }
+  .tile:hover { border-color: var(--series-1); box-shadow: 0 4px 16px rgba(11,11,11,0.06); }
+  .tile:active { transform: scale(0.99); }
+  .tile-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 10px; }
+  .tile-icon {
+    font-size: 22px; line-height: 1; width: 40px; height: 40px; flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center;
+    background: var(--grid); border-radius: 10px;
+  }
+  .tile-tag {
+    font-size: 10.5px; font-weight: 700; letter-spacing: .04em; text-transform: uppercase;
+    color: var(--text-muted); background: var(--grid); padding: 3px 8px; border-radius: 999px;
+    white-space: nowrap; margin-top: 2px;
+  }
+  .tile-title { font-size: 16px; font-weight: 700; margin: 2px 0 0; letter-spacing: -0.005em; }
+  .tile-desc { font-size: 13px; color: var(--text-secondary); line-height: 1.55; margin: 0; flex: 1; }
+  .tile-cta {
+    font-size: 12.5px; font-weight: 600; color: var(--series-1);
+    display: inline-flex; align-items: center; gap: 5px; margin-top: 2px;
+  }
+  .tile-cta::after { content: "→"; transition: transform .15s ease; }
+  .tile:hover .tile-cta::after { transform: translateX(3px); }
+
+  footer { margin-top: 32px; font-size: 11.5px; color: var(--text-muted); line-height: 1.6; }
+
+  @media (max-width: 900px) {
+    .tile-grid { grid-template-columns: repeat(2, 1fr); }
+  }
+  @media (max-width: 600px) {
+    .tile-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="top">
+    <div class="eyebrow">● Acceso directo · Gerencia</div>
+    <h1>Mompossina — Panel de Dashboards</h1>
+    <p class="subtitle">Un solo lugar con acceso directo a todos los dashboards y herramientas de la operación. Haz clic en cualquier recuadro para abrirlo.</p>
+    <p class="meta">Esta página no muestra datos propios: cada recuadro enlaza al dashboard correspondiente, que se actualiza por separado.</p>
+  </header>
+
+  <section class="tile-grid">
+
+    <a class="tile" href="https://mtrujillo45.github.io/Ventas-FLA/dashboards/flujo-caja.html" target="_blank" rel="noopener">
+      <div class="tile-top">
+        <div class="tile-icon">💧</div>
+        <div class="tile-tag">Finanzas</div>
+      </div>
+      <h2 class="tile-title">Mompossina — Flujo de Caja</h2>
+      <p class="tile-desc">Saldo proyectado de banco + fiducuenta (Sep-26 a Dic-27), ajustado con la venta real del mes, cuentas por pagar con vencimientos y alertas de colchón mínimo.</p>
+      <span class="tile-cta">Abrir dashboard</span>
+    </a>
+
+    <a class="tile" href="https://mtrujillo45.github.io/Ventas-FLA/dashboards/presupuesto-vs-real.html#nota-mayoristas" target="_blank" rel="noopener">
+      <div class="tile-top">
+        <div class="tile-icon">🎯</div>
+        <div class="tile-tag">Ventas</div>
+      </div>
+      <h2 class="tile-title">Presupuesto vs. Real</h2>
+      <p class="tile-desc">Venta del mes en curso frente a la meta del Plan Estratégico, por canal (Online, Showroom, Mayoristas nacionales e internacionales): cumplimiento, ritmo diario y proyección de cierre.</p>
+      <span class="tile-cta">Abrir dashboard</span>
+    </a>
+
+    <a class="tile" href="https://mtrujillo45.github.io/Web/" target="_blank" rel="noopener">
+      <div class="tile-top">
+        <div class="tile-icon">🏙️</div>
+        <div class="tile-tag">Campaña</div>
+      </div>
+      <h2 class="tile-title">Monitor de Ventas — Medellín Mi Amor</h2>
+      <p class="tile-desc">Seguimiento en vivo de la cápsula "Medellín Mi Amor": ventas, unidades e inventario de la colección.</p>
+      <span class="tile-cta">Abrir dashboard</span>
+    </a>
+
+    <a class="tile" href="https://mtrujillo45.github.io/Ventas-FLA/dashboards/lovessence.html" target="_blank" rel="noopener">
+      <div class="tile-top">
+        <div class="tile-icon">💖</div>
+        <div class="tile-tag">Colección</div>
+      </div>
+      <h2 class="tile-title">LOVESSENCE — Dashboard</h2>
+      <p class="tile-desc">Pedidos, unidades por referencia y talla, inventario disponible y alertas de stock, ciudades de compra y ticket promedio de la colección permanente LOVESSENCE.</p>
+      <span class="tile-cta">Abrir dashboard</span>
+    </a>
+
+    <a class="tile" href="https://claude.ai/code/artifact/6efd7cab-5bd6-4cbd-aa26-810146669d7e" target="_blank" rel="noopener">
+      <div class="tile-top">
+        <div class="tile-icon">🛍️</div>
+        <div class="tile-tag">Herramienta</div>
+      </div>
+      <h2 class="tile-title">Simulador de Transacción Shopify</h2>
+      <p class="tile-desc">Calcula cuánto queda realmente de cada pedido después de IVA, comisiones de pago, pauta, envío, fulfillment y devoluciones. Útil para decidir precios y envío gratis.</p>
+      <span class="tile-cta">Abrir simulador</span>
+    </a>
+
+    <a class="tile" href="https://claude.ai/code/artifact/ce8059aa-d415-4c2f-8018-2002523eb283" target="_blank" rel="noopener">
+      <div class="tile-top">
+        <div class="tile-icon">🌊</div>
+        <div class="tile-tag">Herramienta</div>
+      </div>
+      <h2 class="tile-title">Simulador de Margen Bruto</h2>
+      <p class="tile-desc">Antes de cerrar con un mayorista, calcula el margen bruto real después de su comisión, el descuento ofrecido y el IVA.</p>
+      <span class="tile-cta">Abrir simulador</span>
+    </a>
+
+    <a class="tile" href="../dashboard/cierre-mensual.html" target="_blank" rel="noopener">
+      <div class="tile-top">
+        <div class="tile-icon">🧾</div>
+        <div class="tile-tag">Cierre mensual</div>
+      </div>
+      <h2 class="tile-title">Cierre Mensual de Ventas</h2>
+      <p class="tile-desc">Consolidado financiero del mes: subtotal, IVA y envío por separado, ventas diarias y top 20 productos. Solo venta real, sin proyección.</p>
+      <span class="tile-cta">Abrir dashboard</span>
+    </a>
+
+  </section>
+
+  <footer>
+    Los recuadros con ícono 🛍️ y 🌊 abren herramientas publicadas como Artifact de Claude (no GitHub Pages); no requieren iniciar sesión para verse, pero viven fuera de este repositorio.
+    Cada dashboard mantiene su propia fecha de actualización — revísala dentro de cada uno.
+    Para agregar un nuevo dashboard a este panel, edita <code>dashboards/index.html</code> en el repositorio <strong>ventas-fla</strong>.
+  </footer>
+
+</div>
+</body>
+</html>

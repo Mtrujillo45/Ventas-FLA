@@ -2,6 +2,10 @@
 
 Dashboards de rendimiento de campañas de Mompossina Swimwear, alimentados con datos de Shopify a través del conector de Composio.
 
+## Panel de Dashboards
+
+[`dashboards/index.html`](dashboards/index.html) — página pública (también en [`https://mtrujillo45.github.io/Ventas-FLA/dashboards/`](https://mtrujillo45.github.io/Ventas-FLA/dashboards/)) con acceso directo, a un clic, a todos los dashboards y herramientas de la operación — pensada para que gerencia no pierda el seguimiento a medida que se agreguen más. Para sumar un dashboard nuevo, agrega un recuadro (`<a class="tile">`) en ese archivo.
+
 ## Dashboards
 
 - [`dashboards/medellin-mi-amor.html`](dashboards/medellin-mi-amor.html) — Cápsula **Medellín Mi Amor** (colección `medellin-mi-amor`, 12 productos con tag `MEDELLIN`): ingresos, unidades, tendencia diaria, mezcla de clientes nuevos vs. recurrentes, canal de venta y cobertura de inventario por producto.
