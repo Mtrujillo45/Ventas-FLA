@@ -1,6 +1,6 @@
 ---
 name: flujo-caja
-description: "Refresca el dashboard de Flujo de Caja de Mompossina: saldo de banco+fiducuenta proyectado Sep-26 a Dic-27 (Plan Estratégico), ajustado con la venta real del mes en curso (cruzado con Presupuesto vs. Real para no doblar venta), cuentas por pagar reales con vencimientos (CONTROL DE PAGOS 2026.xlsx) y alertas de colchón mínimo, piso dinámico y excedente de caja. Republica el Artifact y la página pública (GitHub Pages). Usar siempre que el usuario pida: actualiza el flujo de caja, cómo va la caja, cuánta plata tenemos, refresca el flujo de caja, qué se vence de cuentas por pagar, o cuando se ejecute automáticamente por el scheduler semanal."
+description: "Refresca el dashboard de Flujo de Caja de Mompossina: saldo de banco+fiducuenta proyectado Sep-26 a Dic-27 (Plan Estratégico), ajustado con la venta real del mes en curso (cruzado con Presupuesto vs. Real para no doblar venta), cuentas por pagar reales con vencimientos (CONTROL DE PAGOS 2026.xlsx) y alertas de colchón mínimo dinámico (ligado a la estructura real de Personal+Admin), desviación vs. plan y excedente de caja. Republica el Artifact y la página pública (GitHub Pages). Usar siempre que el usuario pida: actualiza el flujo de caja, cómo va la caja, cuánta plata tenemos, refresca el flujo de caja, qué se vence de cuentas por pagar, o cuando se ejecute automáticamente por el scheduler semanal."
 ---
 
 ## Qué hace
@@ -26,7 +26,7 @@ Salidas que mantiene sincronizadas:
   repo (confirmar con `git remote show origin` si cambia), queda en
   `https://mtrujillo45.github.io/Ventas-FLA/dashboards/flujo-caja.html`
 
-## Decisiones confirmadas con el usuario (2026-09-08 — no cambiar sin re-confirmar)
+## Decisiones confirmadas con el usuario (2026-09-08, actualizado 2026-09-11 — no cambiar sin re-confirmar)
 
 - **Horizonte**: los 16 meses completos del plan (Sep-26 a Dic-27), no sólo
   Sep-Dic 2026 — el usuario quería visibilidad del runway completo para la
@@ -44,25 +44,70 @@ Salidas que mantiene sincronizadas:
   da, el dashboard se publica igual, dejando claro en el texto que es
   proyección, no saldo bancario confirmado — **nunca inventar un saldo real**.
 - **Alertas — dos capas independientes** (pedido explícito del usuario):
-  - **Piso dinámico**: saldo ajustado del mes en curso por debajo de lo que
-    el plan proyectaba para ese mismo mes. Sólo aplica al mes en curso (los
-    meses futuros son iguales al plan hasta que tengan su propio ajuste).
-  - **Colchón fijo**: `--cushion-months` = **6 meses** de Personal+Admin fijo
-    (~$60.3M/mes según el plan) = $361.8M. Alerta si cualquier mes de la
-    trayectoria cae por debajo.
+  - **Desviación vs. plan**: siempre visible (no sólo cuando hay problema) —
+    compara el saldo del mes en curso (real si el usuario lo confirmó,
+    ajustado si no) contra lo que el plan proyectaba para ese mismo mes.
+    **Verde** si está por encima, **rojo** si está por debajo, mostrando
+    siempre el monto de la diferencia. Reemplaza el antiguo "piso dinámico"
+    (que sólo alertaba en rojo y no mostraba nada si todo iba bien — el
+    usuario pidió ver también cuando vamos mejor que el plan).
+  - **Colchón — ahora dinámico** (cambio del 2026-09-11, pedido explícito del
+    usuario): ya NO es 6 × Personal+Admin fijo del plan ($60.3M/mes,
+    estático). Se calcula como 6 × el promedio real de los últimos 2 meses
+    calendario **completos** de GASTOS PERSONAL + GASTOS ADMINISTRATIVOS del
+    ledger `CONTROL DE PAGOS 2026.xlsx` (ver `--personal-admin-ledger` abajo
+    y el docstring de `compute.py` para la limpieza de datos necesaria). La
+    razón: la estructura de personal cambia (ej. contratación de Isabella
+    Aponte en sep-2026) y el colchón debe reflejar el gasto fijo real, no un
+    número congelado del plan de hace meses. Si no se pasa
+    `--personal-admin-ledger`, cae de vuelta al valor estático del plan
+    (dejando explícito en el texto que es fallback, no el cálculo real).
+    Alerta si cualquier mes de la trayectoria cae por debajo del colchón así
+    calculado.
   - **Excedente**: NO se lista como alerta individual por mes (con la
     trayectoria tan holgada del plan, casi todos los meses calificaban y le
     restaba señal a las alertas que sí importan) — vive como panel de
     tendencia aparte ("Caja libre proyectada por mes"), calculado como
     saldo − colchón − obligaciones conocidas de ~60 días. Ver docstring de
-    `compute.py` para el criterio exacto (1x colchón fijo de holgura
-    adicional) — es una propuesta inicial, ajustable si el usuario pide otro
-    múltiplo.
+    `compute.py` para el criterio exacto (1x colchón de holgura adicional) —
+    es una propuesta inicial, ajustable si el usuario pide otro múltiplo.
 - **CxP se muestra APARTE de la trayectoria de 16 meses**, no restada del
-  saldo mes a mes — el ledger de `CONTROL DE PAGOS 2026.xlsx` sólo captura lo
-  PENDIENTE (lo ya pagado no aparece), así que mezclarlo subestimaría el
+  saldo mes a mes — este registro (`CONTROL DE PAGOS 2026.xlsx`) sólo captura
+  lo PENDIENTE (lo ya pagado no aparece), así que mezclarlo subestimaría el
   gasto real del mes. Sirve como vista táctica "qué se vence y cuándo", no
-  como insumo de la trayectoria macro (que viene del plan).
+  como insumo de la trayectoria macro (que viene del plan). Evitar la palabra
+  "ledger" en el HTML/labels visibles al usuario — causaba confusión
+  ("¿ledger, qué es eso?"); usar "registro real de pagos" o similar.
+- **Panel de CxP simplificado** (pedido explícito 2026-09-11): se quitaron
+  del dashboard las tablas "Próximos 30 días" (detalle factura por factura)
+  y "Top proveedores por saldo pendiente" — con el ledger creciendo, esas
+  tablas alargaban demasiado la página y le quitaban interés a la junta. El
+  panel de CxP quedó sólo con: buckets por antigüedad, por categoría, y
+  facturas vencidas (las que sí importan con urgencia). `compute.py` ya no
+  calcula ni retorna `topProveedores` ni `proximos30`.
+- **Nuevo panel "Pagos proyectados por categoría"** (pedido 2026-09-11): tabla
+  con los últimos ~4 meses de `pagos` del plan desagregados por categoría
+  (Producción, Mercadeo y Ventas, Personal + Administrativos, IVA bimestral)
+  — responde visualmente a la pregunta de si la proyección de flujo
+  contempla todos los costos de producción/mercadeo/ventas/personal (sí, los
+  4 están ahí). Generado por `build_pagos_breakdown()` en `compute.py`, va en
+  `DATA.pagosBreakdown`.
+- **Orden de secciones del HTML** (ajustado 2026-09-11): Estado de caja hoy →
+  Semáforo de alertas → Trayectoria de caja → **Resumen ejecutivo** (subido,
+  antes estaba casi al final) → Ajuste por venta real → Venta del mes en
+  curso vs. plan → Cuentas por pagar → Pagos proyectados por categoría →
+  Caja libre proyectada por mes.
+- **Semáforo de alertas sin descripciones fijas de rojo/amarillo**: se quitó
+  la leyenda estática ("🔴 significa esto, 🟡 significa esto") — sólo se
+  listan alertas reales cuando existen (vencidas, colchón, desviación).
+- **Etiquetas de KPI** (ajustadas 2026-09-11): "Saldo de caja" ahora dice
+  explícitamente "Real" o "Planeado" según haya saldo confirmado por el
+  usuario o no (antes decía "plan original" de forma genérica); "Piso más
+  ajustado del periodo" pasó a llamarse "Saldo mínimo del periodo"; "CxP
+  pendiente (real, ledger)" pasó a "CxP pendiente (real)". "Colchón fijo
+  mínimo" se mantuvo igual (el usuario confirmó que ese label está bien —
+  "fijo" se refiere a la política de 6 meses, no a que el monto esté
+  congelado).
 - **Ajuste por venta real**: Online/Showroom usan la proyección de cierre por
   ritmo diario cuando van por delante del presupuesto (mismo método que
   `presupuesto-vs-real`); Mayoristas nacionales/internacionales usan "Método
@@ -85,8 +130,9 @@ Salidas que mantiene sincronizadas:
 |---|---|
 | Trayectoria de 16 meses | `.claude/skills/flujo-caja/plan_flujo_caja.json` — extraído una sola vez de la hoja "Flujo de Caja" de `Plan_Estrategico_Mompossina_2026_2027.xlsx` (Dropbox, versión SIN "Ajuste"). Estático dentro del periodo salvo que el usuario avise de un ajuste al plan. |
 | Caja inicial del plan | $1,018M (banco $41M + fiducuenta $977M) |
-| Colchón fijo | 6 × Personal+Admin fijo mensual ($60.3M) = $361.8M |
-| CxP (ledger real) | `CONTROL DE PAGOS 2026.xlsx` (Google Drive) — se re-extrae cada corrida, no es estático como el plan |
+| Colchón (dinámico desde 2026-09-11) | 6 × promedio real de los últimos 2 meses completos de Personal+Admin (`--personal-admin-ledger`). Fallback estático si no se pasa: 6 × $60.3M/mes del plan = $361.8M |
+| CxP (registro real) | `CONTROL DE PAGOS 2026.xlsx` (Google Drive) — se re-extrae cada corrida, no es estático como el plan |
+| Personal+Admin (registro real) | Mismo archivo `CONTROL DE PAGOS 2026.xlsx`, categorías GASTOS PERSONAL + GASTOS ADMINISTRATIVOS — se re-extrae cada corrida junto con CxP (ver limpieza obligatoria en el paso 4) |
 | Venta del mes en curso | Reusa el `DATA` ya publicado en `dashboards/presupuesto-vs-real.html` (no se vuelve a consultar Shopify/mayoristas si ese dashboard ya se corrió hoy) |
 | Script de cómputo | `.claude/skills/flujo-caja/compute.py` |
 | Cuenta Google Drive | `googledrive_secern-burl` u operaciones@mompossina.com — el archivo CxP también es visible desde la cuenta personal del usuario |
@@ -124,21 +170,44 @@ filas con `TOTAL PEND*PAGO` (columna M) > 0. Guardar como `cxp_pendientes.json`:
 Ignorar pestañas que no sean meses del año en curso (ej. "ADP LA 49" es un
 acuerdo de pago puntual ya vencido, no una categoría de gasto mensual).
 
+**4b. Traer también Personal+Admin fresco para el colchón dinámico** (mismo
+archivo, mismo recorrido de pestañas que el paso 4, pero esta vez **TODAS**
+las filas de GASTOS PERSONAL + GASTOS ADMINISTRATIVOS de los últimos ~3
+meses — no filtrar por pendiente > 0, aquí interesa el gasto total incurrido,
+pagado o no). Guardar como `personal_admin_ledger.json`, incluyendo
+`fecha_llego` (columna A) además de `fecha_pago`/`mes_tab`/`empresa`/`valor`:
+```json
+[{"mes_tab":"AGOSTO","categoria":"GASTOS PERSONAL","empresa":"...",
+  "valor_factura":123,"fecha_llego":"2026-08-05T00:00:00", ...}]
+```
+`compute.py` hace la limpieza pesada (excluir filas de IVA/RT mal
+clasificadas bajo GASTOS ADMINISTRATIVOS, y de-duplicar facturas viejas
+re-listadas en varias pestañas por seguimiento manual — sólo cuenta filas
+nativas de la pestaña de su propio mes). Ver el docstring de `compute.py`
+antes de tocar esta lógica; es fácil reintroducir el bug de doble conteo si
+se relaja el filtro de "nativo de su pestaña".
+
 **5. Calcular y parchear el dashboard:**
 ```
 python3 .claude/skills/flujo-caja/compute.py \
   --plan-cashflow .claude/skills/flujo-caja/plan_flujo_caja.json \
   --ventas-mes $SCRATCH/flujo-caja/ventas_mes.json \
   --cxp $SCRATCH/flujo-caja/cxp_pendientes.json \
+  --personal-admin-ledger $SCRATCH/flujo-caja/personal_admin_ledger.json \
   --now "<hora ISO Bogotá del paso 1>" \
   --cushion-months 6 \
   --html dashboards/flujo-caja.html \
   [--saldo-real <monto si el usuario lo dio en el paso 2>]
 ```
-Revisa el resumen impreso (saldo hoy, ajuste por canal, colchón, piso mínimo,
-CxP pendiente/vencida, caja libre, alertas). Si algo se ve fuera de lugar (un
-ajuste absurdamente grande, CxP vencida que no cuadra), no publiques — revisa
-los JSON de entrada antes de tocar `compute.py`.
+Si se omite `--personal-admin-ledger`, el colchón cae de vuelta al valor
+estático del plan ($60.3M/mes) — sólo aceptable si el ledger no está
+disponible ese corte, y hay que decírselo explícitamente al usuario.
+
+Revisa el resumen impreso (saldo hoy, ajuste por canal, colchón y su fuente
+—dinámica o fallback—, desviación vs. plan, CxP pendiente/vencida, caja
+libre, alertas). Si algo se ve fuera de lugar (un ajuste absurdamente grande,
+CxP vencida que no cuadra, un mes de Personal+Admin que parece duplicado),
+no publiques — revisa los JSON de entrada antes de tocar `compute.py`.
 
 **6. Reescribir a mano el Resumen ejecutivo** (`<ul class="exec-list">`),
 usando los números que imprimió el script: saldo hoy y si es real o
