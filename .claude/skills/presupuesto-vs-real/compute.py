@@ -94,16 +94,25 @@ Uso:
   "category" es una de EXTRAORDINARY_CATEGORIES (ver constante más abajo:
   "FLA" = colaboraciones/co-branding con la Fábrica de Licores de Antioquia,
   "PAC" = ventas de paquete completo/curado a un cliente, fuera del esquema
-  normal por unidad de mayoristas, "SERV" = servicios de diseño/consultoría
-  facturados a un cliente mayorista existente, sin unidades de prenda —
-  ej. RFEL8325, Cristalina Swimwear, sep-2026). Estas categorías SIEMPRE
-  aparecen como fila en el panel "Cumplimiento por canal — $ Valor" del dashboard
+  normal por unidad de mayoristas). Estas categorías fijas SIEMPRE aparecen
+  como fila en el panel "Cumplimiento por canal — $ Valor" del dashboard
   (barra al 100% si hubo algo facturado ese mes bajo esa categoría, 0% si
   no) — es un indicador visual de presencia/ausencia, no de cumplimiento
   real, así que no se compara contra ninguna meta. Una categoría nueva que
-  no esté en EXTRAORDINARY_CATEGORIES igual se agrega a la tabla resumen de
-  abajo, pero no genera fila fija en el panel de barras a menos que se
-  agregue a esa constante.
+  no esté en EXTRAORDINARY_CATEGORIES igual se agrega a la tabla resumen y
+  al panel de barras de ese mes (usando `category_label` si se provee, ver
+  build_extraordinary_by_category), pero no está garantizado que aparezca en
+  meses futuros sin datos — solo agregarla a la constante si es un patrón
+  claramente recurrente.
+  IMPORTANTE — facturas de "servicios" a mayoristas existentes (ej.
+  Cristalina Swimwear): a veces un mayorista pide subfacturar producto
+  despachado para pagar menos impuesto, y el valor restante se factura
+  después como si fuera un "servicio" (ej. RFEL8325, sep-2026, en realidad
+  fue un cuadre de cuentas de ventas de agosto no facturadas — NO un
+  servicio de diseño real). Confirmado con el usuario 2026-09-12: ANTES de
+  categorizar una factura así, siempre preguntarle al usuario cómo
+  tratarla — nunca asumir "servicio" ni aplicar automáticamente el
+  tratamiento de una factura anterior, aunque parezca el mismo patrón.
 """
 import json
 import argparse
@@ -118,7 +127,6 @@ VALID_STATUS = {"PAID", "PARTIALLY_PAID", "PARTIALLY_REFUNDED", "REFUNDED"}
 EXTRAORDINARY_CATEGORIES = [
     ("FLA", "Colaboración FLA"),
     ("PAC", "Paquete completo (PAC)"),
-    ("SERV", "Servicios de diseño"),
 ]
 
 
@@ -213,13 +221,18 @@ def build_extraordinary_by_category(entries):
     total 0 / hasInvoice False si no hubo factura ese mes) para que el panel
     de barras tenga una fila estable mes a mes; una categoría nueva que
     aparezca en `entries` pero no esté en la lista fija también se agrega
-    (al final), pero no está garantizado que se muestre en meses sin datos."""
+    (al final), pero no está garantizado que se muestre en meses sin datos.
+    Una categoría dinámica (no fija) puede traer un `category_label` legible
+    por entrada — se usa como label en vez de la clave cruda, sin necesidad
+    de comprometerse a que sea una categoría permanente del panel (útil para
+    casos puntuales que no se sabe todavía si se van a repetir)."""
     by_key = {key: {"key": key, "label": label, "total": 0.0, "items": [], "hasInvoice": False}
               for key, label in EXTRAORDINARY_CATEGORIES}
     for e in entries:
         key = e.get("category") or "OTRO"
         if key not in by_key:
-            by_key[key] = {"key": key, "label": key, "total": 0.0, "items": [], "hasInvoice": False}
+            label = e.get("category_label") or key
+            by_key[key] = {"key": key, "label": label, "total": 0.0, "items": [], "hasInvoice": False}
         by_key[key]["total"] += float(e["value"])
         by_key[key]["items"].append(e)
         by_key[key]["hasInvoice"] = True

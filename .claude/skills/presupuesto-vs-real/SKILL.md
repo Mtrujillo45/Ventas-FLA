@@ -107,24 +107,19 @@ cambiaron con esta contratación, sólo el PE. Cada vez que se refresque el
 dashboard conviene volver a revisar la hoja de Costos y Márgenes /
 Supuestos del plan por si la nómina fija cambió de nuevo.
 
-## Facturación adicional (fuera del presupuesto) — confirmado 2026-09-08, ampliado 2026-09-10
+## Facturación adicional (fuera del presupuesto) — confirmado 2026-09-08, corregido 2026-09-12
 
 A veces el mes trae facturas que no son venta recurrente de producto por
 canal: colaboraciones/co-branding con marcas externas, paquetes puntuales,
-patrocinios, servicios de diseño/consultoría. Ejemplos:
+patrocinios, ajustes de facturación anterior. Ejemplos:
 - RFEL8320, un pago único de "Consorcio Licores de la Sabana Limitada y
   Otros" (razón social de la Fábrica de Licores de Antioquia — FLA) por la
   propuesta de co-branding Mompossina x Aguardiente Antioqueño,
   $64,250,000 sin IVA, sin unidades de producto → categoría `"FLA"`.
-- RFEL8325, una factura de servicio de consultoría/diseño a Cristalina
-  Swimwear (cliente mayorista internacional ya existente, facturado en
-  USD), $6,784,469 COP, sin unidades de prenda despachadas → categoría
-  nueva `"SERV"` ("Servicios de diseño"), agregada a
-  `EXTRAORDINARY_CATEGORIES` en `compute.py` el 2026-09-10 como fila fija
-  permanente del panel (igual que FLA/PAC), en vez de dejarla como
-  categoría dinámica de un solo mes — así el panel siempre muestra un
-  label legible en vez de la clave cruda si vuelve a aparecer este tipo de
-  factura.
+- RFEL8325 (Cristalina Swimwear, $6,784,469 COP, sin unidades de prenda) —
+  ver el recuadro de advertencia más abajo. **NO es un servicio de
+  diseño**, es un cuadre de cuentas de ventas de agosto subfacturadas →
+  categoría `"AJUSTE"` ("Regularización de facturación anterior").
 
 **Estas facturas NUNCA se suman a `channels`, `total`, `runrate`, `ytd` ni
 al semáforo** — el plan no las contempla y mezclarlas infla el
@@ -137,30 +132,52 @@ unidades de producto vendido y encaja en un canal (nacional/
 internacional)? Si sí → `--wholesale`. Si es un monto fijo por un
 servicio/colaboración/patrocinio sin unidades → `--extraordinary`. Ante la
 duda, preguntarle al usuario en vez de asumir. Si aparece una categoría
-nueva de `--extraordinary` que parece que se va a repetir (no un caso
-totalmente aislado), agregarla a `EXTRAORDINARY_CATEGORIES` en
-`compute.py` con un label legible — si parece un caso verdaderamente
-aislado, se puede dejar sin agregar (igual aparece ese mes en el panel y
-en la tabla resumen, sólo que con la clave cruda como label; conviene
-avisarle al usuario de la decisión tomada).
+nueva de `--extraordinary` que parece que se va a repetir (un patrón
+recurrente confirmado por el usuario), agregarla a
+`EXTRAORDINARY_CATEGORIES` en `compute.py` con un label legible — si NO
+está confirmado que sea recurrente, dejarla como categoría dinámica: cada
+entrada puede llevar un campo opcional `"category_label"` con el texto
+legible a mostrar (ver `build_extraordinary_by_category()`), sin
+necesidad de comprometerse a una fila fija permanente del panel para
+meses futuros.
 
-**Categorías — confirmado 2026-09-08.** Cada entrada de `--extraordinary`
-lleva un campo `"category"`, una de `EXTRAORDINARY_CATEGORIES` en
-`compute.py`: `"FLA"` (colaboraciones/co-branding con la Fábrica de
-Licores de Antioquia) o `"PAC"` (venta de paquete completo/curado a un
-cliente, fuera del esquema normal por unidad de mayoristas). Estas dos
-categorías **siempre** aparecen como fila en el panel "Cumplimiento por
-canal — $ Valor" (no en el de unidades, no tienen unidades) — con una
-barra al 100% (color neutro gris, no verde/amarillo/rojo) si hubo algo
-facturado ese mes bajo esa categoría, o al 0% si no hubo nada. Es un
-indicador de presencia/ausencia, no de cumplimiento real — no se compara
-contra ninguna meta, por eso no lleva semáforo. Se calculan en
-`build_extraordinary_by_category()` y se renderizan después de las filas
-de canal real (con un divisor "Fuera del presupuesto — no suma al
-cumplimiento") en el JS del HTML. Una categoría nueva que no esté en
-`EXTRAORDINARY_CATEGORIES` igual se refleja en la tabla resumen de abajo,
-pero no genera fila fija en el panel de barras — si aparece un tercer tipo
-recurrente, agregarlo a la constante.
+> ⚠️ **Facturas de "servicios" a mayoristas existentes — confirmado con el
+> usuario 2026-09-12, NUNCA asumir.** Algunos mayoristas (en particular
+> Cristalina Swimwear) a veces piden subfacturar el producto realmente
+> despachado para pagar menos impuesto, y facturan el valor restante
+> después como si fuera un "servicio" (de diseño, consultoría, etc.).
+> RFEL8325 (sep-2026) es un ejemplo: se había registrado como "servicio de
+> diseño" pero en realidad era un cuadre de cuentas de ventas de agosto
+> 2026 no facturadas por completo. **Antes de categorizar cualquier
+> factura así — descripción vaga tipo "servicio"/"consultoría" sin
+> referencias de prenda, tallas ni HS code por línea, facturada a un
+> cliente mayorista ya existente — siempre preguntarle al usuario cómo
+> tratarla.** Nunca asumir que es un servicio real, y nunca aplicar
+> automáticamente el mismo tratamiento de una factura anterior aunque
+> parezca el mismo patrón — se pregunta caso por caso. En cambio, una
+> factura con líneas de producto detalladas (referencia, talla, HS code,
+> cantidad — como RFEL8329/8331/8333 de sep-2026) sí es venta real de
+> producto sin ambigüedad y va directo a `--wholesale`.
+
+**Categorías fijas — confirmado 2026-09-08, actualizado 2026-09-12.** Cada
+entrada de `--extraordinary` lleva un campo `"category"`. Las categorías
+fijas en `EXTRAORDINARY_CATEGORIES` en `compute.py` son `"FLA"`
+(colaboraciones/co-branding con la Fábrica de Licores de Antioquia) y
+`"PAC"` (venta de paquete completo/curado a un cliente, fuera del esquema
+normal por unidad de mayoristas) — (`"SERV"` se agregó el 2026-09-10 y se
+quitó el 2026-09-12 al confirmarse que RFEL8325 no era un servicio real ni
+un patrón recurrente confirmado). Las categorías fijas **siempre**
+aparecen como fila en el panel "Cumplimiento por canal — $ Valor" (no en
+el de unidades, no tienen unidades) — con una barra al 100% (color neutro
+gris, no verde/amarillo/rojo) si hubo algo facturado ese mes bajo esa
+categoría, o al 0% si no hubo nada. Es un indicador de presencia/ausencia,
+no de cumplimiento real — no se compara contra ninguna meta, por eso no
+lleva semáforo. Se calculan en `build_extraordinary_by_category()` y se
+renderizan después de las filas de canal real (con un divisor "Fuera del
+presupuesto — no suma al cumplimiento") en el JS del HTML. Una categoría
+dinámica (no fija) también aparece ese mes en el panel de barras y en la
+tabla resumen, usando su `category_label` si lo trae (o la clave cruda si
+no) — solo no está garantizado que se muestre en meses sin datos.
 
 ## Datos de referencia
 
