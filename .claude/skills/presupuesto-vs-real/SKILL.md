@@ -22,7 +22,7 @@ footer — informado por el resumen que `compute.py` imprime en stdout. Eso es
 interpretación, no aritmética.
 
 Salidas que mantiene sincronizadas:
-- **Artifact privado**: https://claude.ai/code/artifact/7c2de969-18d9-4d3e-bf27-37505c48196b
+- **Artifact privado**: https://claude.ai/artifact/GLPEPUuAWn1C6FoPSB8JrN
   (reusar esta URL con `url:` en corridas siguientes)
 - **Web pública (GitHub Pages)**: `dashboards/presupuesto-vs-real.html` dentro
   de `mtrujillo45/ventas-fla` → una vez fusionado a la rama por defecto del
@@ -315,7 +315,7 @@ se vean bien — un marcador mal cerrado rompe todo el `DATA` silenciosamente.
 
 **8. Republicar el Artifact:**
 - `file_path`: `dashboards/presupuesto-vs-real.html`
-- `url`: `https://claude.ai/code/artifact/7c2de969-18d9-4d3e-bf27-37505c48196b`
+- `url`: `https://claude.ai/artifact/GLPEPUuAWn1C6FoPSB8JrN`
 - `favicon`: omitir en redeploys (ya quedó fijado como 🎯)
 
 **9. Publicar/actualizar como página pública (GitHub Pages)**, dentro de
