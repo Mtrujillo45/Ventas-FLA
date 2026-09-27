@@ -52,13 +52,17 @@ showroom (pago con Bold/QR/efectivo/transferencia en el local) casi nunca
 llevan tag. Regla implementada en `classify_shopify_order()`:
 
 ```
+tags contiene "falabella" (marketplace de Falabella
+  sincronizado a Shopify, sourceName propio tipo
+  "3441759", casi siempre también trae tag "B2C")  -> Mayoristas nacionales
+  (NO Online — ver corrección 2026-09-27 abajo)
 sourceName == "web"                              -> Online
 sourceName == "shopify_draft_order":
   tags contiene "redes sociales"/"melonn"/
   "melonn-entregado"                              -> Online (Redes propias)
   si no                                           -> Showroom
-cualquier otro sourceName (marketplace sincronizado,
-  ej. Falabella)                                  -> Online
+cualquier otro sourceName (otro marketplace
+  sincronizado)                                   -> Online
 pedido test, financial status fuera de {PAID,
   PARTIALLY_PAID, PARTIALLY_REFUNDED, REFUNDED},
   o valor $0 (saldo de bono, regalo, pago UGC)     -> excluido
@@ -68,6 +72,21 @@ pedido test, financial status fuera de {PAID,
 reportado. Si en el futuro Shopify habilita `staffMember`/`retailLocation`
 para esta cuenta, sería una señal más limpia — reevaluar en ese momento,
 pero no es necesario mientras el patrón de tags siga siendo consistente.
+
+**Corrección 2026-09-27 — pedidos de Falabella NO son Online.** El usuario
+detectó que el marketplace de Falabella sincroniza sus pedidos a Shopify
+(con `sourceName` propio, ej. `"3441759"`, y tags `Falabella`/`B2C`) y que
+la regla genérica "cualquier otro sourceName -> Online" los estaba
+clasificando mal. Son venta mayorista (Falabella revende), no venta propia
+— van a **Mayoristas nacionales**, no a Online. Distintos de las facturas
+RFEL manuales de Falabella (RFEL8314/8315/8339 etc., pedidos mayoristas en
+firme facturados directamente) — ambos son Falabella pero por flujos
+distintos: hay que sumar los dos al canal nacional sin duplicar. Al armar
+`--shopify-summary`/`--shopify-orders`, excluir del agregado de Online los
+pedidos con tag `Falabella`/`B2C` y agregarlos como una entrada aparte de
+`--wholesale` (canal `"nacional"`, ver ejemplo en `wholesale_2026-09.json`
+del corte 2026-09-27). Revisar cada corrida si aparecen pedidos con este
+patrón — no son frecuentes (4 en todo septiembre) pero sí recurrentes.
 
 ## Envío — confirmado con el usuario, 2026-09-08
 
@@ -178,6 +197,51 @@ presupuesto — no suma al cumplimiento") en el JS del HTML. Una categoría
 dinámica (no fija) también aparece ese mes en el panel de barras y en la
 tabla resumen, usando su `category_label` si lo trae (o la clave cruda si
 no) — solo no está garantizado que se muestre en meses sin datos.
+
+**PAC por sufijo de archivo — confirmado 2026-09-27.** El usuario empezó a
+renombrar en Drive las facturas de paquete completo agregando el sufijo
+`PAC` al final del nombre del archivo (ej. `RFEL8373 CRISTALINA PAC.pdf`).
+Antes de este cambio, `"PAC"` ya existía como categoría fija en
+`EXTRAORDINARY_CATEGORIES` pero sin ninguna factura real registrada — a
+partir de este corte, **revisar el nombre de archivo de cada factura de
+mayoristas en Drive al descargarla**: si termina en `PAC` (con o sin
+espacio, ej. `"...PAC.pdf"` o `"...SV PAC.pdf"`), va directo a
+`--extraordinary` con `"category": "PAC"`, sale de `--wholesale`, sin
+necesidad de preguntarle al usuario aunque la descripción de la factura
+sea ambigua tipo "servicio" (el sufijo PAC ya es la confirmación). El
+renombrado puede aplicarse también a facturas de meses anteriores para
+llevar registro histórico — si el nombre cambia para una factura ya
+registrada como wholesale en una corrida anterior, reclasificarla en la
+corrida actual (ver ejemplo RFEL8344 en el corte 2026-09-27, que pasó de
+`--wholesale` internacional a `--extraordinary` PAC al renombrarse el
+archivo).
+
+## Cristalina Swimwear vende en consignación, no en firme — confirmado 2026-09-27
+
+El usuario confirmó que las facturas de Cristalina Swimwear (Miami) NO son
+venta en firme — Cristalina recibe la mercancía en **consignación** y las
+facturas de exportación son solo el trámite necesario para poder sacar la
+mercancía del país, no un hecho de venta real. Por esto, **toda factura de
+Cristalina del mes sale del cumplimiento de mayoristas internacionales**,
+tenga o no el sufijo `PAC` en el nombre de archivo:
+- Si el archivo termina en `PAC` → categoría `"PAC"` (ver arriba).
+- Si NO termina en `PAC` (despacho normal en consignación) → categoría fija
+  `"CONSIGNACION"` (`EXTRAORDINARY_CATEGORIES`, label "Consignación
+  (Cristalina)"), agregada a `compute.py` en este corte. El usuario pidió
+  explícitamente que esta categoría no genere ruido en el cumplimiento —
+  igual que FLA/PAC, nunca se suma a `channels`/`total`/`runrate`/`ytd`/
+  semáforo, solo aparece en el panel "Fuera del presupuesto".
+
+Esto es distinto del caso RFEL8325 (cuadre de cuentas de agosto,
+categoría `"AJUSTE"`) — ese es un problema de un mes ya cerrado, mientras
+que la consignación es la naturaleza de la relación comercial completa con
+Cristalina, aplica a toda factura suya hacia adelante. **No preguntar de
+nuevo caso por caso si una factura nueva de Cristalina es "servicio
+subfacturado"** (como se hacía antes, ver recuadro de advertencia arriba)
+— cualquier factura de Cristalina en la carpeta de exportación va a PAC o
+CONSIGNACION según el sufijo del archivo, no a `--wholesale`. Si Cristalina
+alguna vez vuelve a comprar en firme (no en consignación), el usuario
+avisará explícitamente — no asumir el cambio por cuenta propia.
 
 ## Datos de referencia
 
