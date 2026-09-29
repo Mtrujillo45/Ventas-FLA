@@ -118,6 +118,7 @@ import json
 import argparse
 import re
 import datetime
+import os
 
 MESES_ES = ["ene", "feb", "mar", "abr", "may", "jun", "jul", "ago", "sep", "oct", "nov", "dic"]
 MESES_ES_LARGO = ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio",
@@ -214,6 +215,84 @@ def aggregate_wholesale(entries):
         buckets[ch]["units"] += int(e.get("units", 0))
         buckets[ch]["orders"] += 1
     return buckets
+
+
+def build_template_month(plan, month_key):
+    """Genera un objeto tipo DATA para un mes del plan que aún no ha comenzado
+    (o para el que no hay historico/ ni es el mes --month actual): solo metas
+    del plan, todo lo real en 0, sin ritmo/semáforo/gráfico (no tiene sentido
+    dividir por días transcurridos=0). El dashboard lo muestra en versión
+    simplificada — confirmado con el usuario 2026-09-29."""
+    plan_month = plan["months"][month_key]
+    channel_order = ["online", "showroom", "nacional", "internacional"]
+    labels = {"online": "Online", "showroom": "Showroom", "nacional": "May. nacionales", "internacional": "May. internacionales"}
+    channels = []
+    for key in channel_order:
+        budget = plan_month["channels"][key]
+        ticket_plan = plan["ticket_plan"][key]
+        channels.append({
+            "key": key, "label": labels[key],
+            "budgetValue": budget["budgetValue"], "realValue": 0.0, "pctValue": 0.0,
+            "budgetUnits": budget["budgetUnits"], "realUnits": 0, "pctUnits": 0.0,
+            "paceValue": None, "paceUnits": None,
+            "ticketReal": None, "ticketPlan": ticket_plan, "ticketDelta": None,
+            "orders": 0,
+            "semaforoValue": None, "semaforoUnits": None,
+        })
+    budget_value_total = sum(c["budgetValue"] for c in channels)
+    budget_units_total = sum(c["budgetUnits"] for c in channels)
+    breakeven_value = plan["breakeven_value"]
+    total = {
+        "budgetValue": budget_value_total, "realValue": 0.0, "pctValue": 0.0,
+        "budgetUnits": budget_units_total, "realUnits": 0, "pctUnits": 0.0,
+        "ticketProm": 0.0, "paceValue": None, "paceUnits": None,
+        "breakevenValue": breakeven_value,
+        "breakevenPctOfBudget": breakeven_value / budget_value_total * 100 if budget_value_total else 0.0,
+        "breakevenReached": False,
+    }
+    month_idx = plan["period_order"].index(month_key) + 1
+    placeholder_li = (
+        "<li>Este mes aún no ha comenzado — las cifras mostradas son únicamente "
+        "las metas del Plan Estratégico 2026-2027, sin venta real todavía.</li>"
+    )
+    return {
+        "status": "template",
+        "meta": {
+            "period": plan_month["label"],
+            "cutoff": "Mes aún no iniciado",
+            "daysElapsed": 0, "daysInMonth": plan_month["daysInMonth"],
+            "pctElapsed": 0.0, "monthIndex": month_idx, "monthTotal": len(plan["period_order"]),
+            "monthLabel": plan_month["label"].split()[0],
+        },
+        "total": total,
+        "channels": channels,
+        "runrate": None,
+        "daily": None,
+        "runrateSvg": None,
+        "extraordinary": {"items": [], "total": 0.0, "byCategory": build_extraordinary_by_category([])},
+        "narrativeHtml": (
+            f'<p class="section-sub">Mes aún no iniciado — vista previa de metas del plan</p>'
+            f'<ul class="exec-list">{placeholder_li}</ul>'
+        ),
+    }
+
+
+def load_historico(historico_dir):
+    """Carga los snapshots congelados de meses ya cerrados desde archivos
+    historico/YYYY-MM.json (uno por mes, escritos por freeze_month.py). Cada
+    archivo ya trae el objeto completo tipo DATA (status="closed") incluida
+    la narrativa congelada (`narrativeHtml`) y el SVG de ritmo diario ya
+    generado — se cargan tal cual, sin recalcular nada."""
+    result = {}
+    if not os.path.isdir(historico_dir):
+        return result
+    for fname in sorted(os.listdir(historico_dir)):
+        if not fname.endswith(".json"):
+            continue
+        month_key = fname[:-5]
+        with open(os.path.join(historico_dir, fname), encoding="utf-8") as f:
+            result[month_key] = json.load(f)
+    return result
 
 
 def build_extraordinary_by_category(entries):
@@ -448,7 +527,12 @@ def patch_html(path, data_js):
         html = f.read()
     pattern = r"<!-- DATA_START -->.*?<!-- DATA_END -->"
     wrapped = f"<!-- DATA_START -->\n{data_js}\n<!-- DATA_END -->"
-    new_html, count = re.subn(pattern, wrapped, html, count=1, flags=re.S)
+    # OJO: pasar `wrapped` como función de reemplazo, no como string — si se pasa
+    # como string, re.subn interpreta secuencias tipo \n dentro del JSON (p.ej. un
+    # narrativeHtml de un mes congelado con saltos de línea reales, escapados como
+    # \n por json.dumps) como caracteres de control literales, insertando un salto
+    # de línea real dentro de un string JS de una sola línea y rompiendo el parseo.
+    new_html, count = re.subn(pattern, lambda m: wrapped, html, count=1, flags=re.S)
     if count == 0:
         raise SystemExit("ERROR: no se encontró el marcador DATA_START/DATA_END en el HTML.")
     with open(path, "w", encoding="utf-8") as f:
@@ -467,6 +551,8 @@ def main():
     ap.add_argument("--prior-real-value", type=float, default=0.0)
     ap.add_argument("--prior-real-units", type=float, default=0.0)
     ap.add_argument("--html")
+    ap.add_argument("--historical-dir", default=os.path.join(os.path.dirname(os.path.abspath(__file__)), "historico"),
+                     help="Carpeta con snapshots congelados YYYY-MM.json de meses ya cerrados (ver freeze_month.py)")
     args = ap.parse_args()
 
     if bool(args.shopify_orders) == bool(args.shopify_summary):
@@ -519,7 +605,10 @@ def main():
     month_idx = plan["period_order"].index(args.month) + 1
     month_total = len(plan["period_order"])
 
+    runrate_svg = build_runrate_svg(daily["dates"], daily["propioReal"], daily["neededDaily"])
+
     data = {
+        "status": "current",
         "meta": {
             "period": plan_month["label"],
             "cutoff": f'{now.day} {MESES_ES[now.month-1]} {now.year}, {now.strftime("%H:%M")} hora Bogotá',
@@ -531,12 +620,13 @@ def main():
         "channels": channels,
         "runrate": runrate,
         "daily": daily,
-        "ytd": ytd,
+        "runrateSvg": runrate_svg,
         "extraordinary": {
             "items": extraordinary_entries,
             "total": sum(float(e["value"]) for e in extraordinary_entries),
             "byCategory": build_extraordinary_by_category(extraordinary_entries),
         },
+        "narrativeHtml": None,  # el mes actual usa el HTML editado a mano en #exec-summary-body, no este campo
     }
 
     print(f"=== Presupuesto vs. Real — {plan_month['label']} (corte {data['meta']['cutoff']}) ===")
@@ -569,20 +659,31 @@ def main():
           ", ".join(f"{c['label']}={'sí, ' + money_short(c['total']) if c['hasInvoice'] else 'sin facturación'}"
                      for c in data["extraordinary"]["byCategory"]))
 
-    if args.html:
-        data_js = "const DATA = " + json.dumps(data, ensure_ascii=False) + ";"
-        patch_html(args.html, data_js)
+    # ---- ensamblar DATA_BY_MONTH: plantilla para cada mes del plan, sobrescrita
+    # por los snapshots congelados de historico/ (meses cerrados), sobrescrita a
+    # su vez por el mes actual (--month) recién calculado arriba.
+    data_by_month = {mkey: build_template_month(plan, mkey) for mkey in plan["period_order"]}
+    historico = load_historico(args.historical_dir)
+    unknown_historico = [mkey for mkey in historico if mkey not in plan["period_order"]]
+    if unknown_historico:
+        raise SystemExit(f"ERROR: historico/ tiene snapshots de meses fuera de plan.period_order: {unknown_historico}")
+    data_by_month.update(historico)
+    data_by_month[args.month] = data
 
-        runrate_svg = build_runrate_svg(daily["dates"], daily["propioReal"], daily["neededDaily"])
-        with open(args.html, encoding="utf-8") as f:
-            html = f.read()
-        html, n = re.subn(r"<!-- RUNRATE_SVG_START -->.*?<!-- RUNRATE_SVG_END -->",
-                           f"<!-- RUNRATE_SVG_START -->\n{runrate_svg}\n<!-- RUNRATE_SVG_END -->",
-                           html, count=1, flags=re.S)
-        if n == 0:
-            raise SystemExit("ERROR: no se encontró el marcador RUNRATE_SVG_START/END en el HTML.")
-        with open(args.html, "w", encoding="utf-8") as f:
-            f.write(html)
+    months_status = ", ".join(f"{mkey}={data_by_month[mkey]['status']}" for mkey in plan["period_order"])
+    print(f"\nPestañas del dashboard (DATA_BY_MONTH): {months_status}")
+    if historico:
+        print(f"Meses cargados desde historico/ ({args.historical_dir}): {sorted(historico.keys())}")
+
+    if args.html:
+        blob = {
+            "byMonth": data_by_month,
+            "currentMonthKey": args.month,
+            "periodOrder": plan["period_order"],
+            "ytd": ytd,
+        }
+        data_js = "const DATA_BUNDLE = " + json.dumps(blob, ensure_ascii=False) + ";"
+        patch_html(args.html, data_js)
         print(f"\nHTML actualizado: {args.html}")
     else:
         print("\n(--html no indicado, no se parcheó ningún archivo)")

@@ -243,6 +243,71 @@ CONSIGNACION según el sufijo del archivo, no a `--wholesale`. Si Cristalina
 alguna vez vuelve a comprar en firme (no en consignación), el usuario
 avisará explícitamente — no asumir el cambio por cuenta propia.
 
+## Pestañas por mes (histórico + mes en curso + vista previa de meses futuros) — agregado 2026-09-29
+
+A pedido del usuario, el dashboard muestra una pestaña por cada mes del
+periodo Sep-Dic 2026 (`plan.period_order`), no solo el mes en curso. Cada
+mes tiene un `status`:
+- `"current"` — el mes que se está calculando en esta corrida (`--month`).
+  Se actualiza en cada corte, igual que siempre.
+- `"closed"` — un mes ya cerrado, cargado desde
+  `.claude/skills/presupuesto-vs-real/historico/<mes>.json`. Es una foto
+  fija del último corte real de ese mes — **nunca se recalcula**, se
+  muestra tal cual quedó congelado (incluida su narrativa del resumen
+  ejecutivo, su gráfico de ritmo diario y su tabla de facturación
+  adicional).
+- `"template"` — un mes del plan que todavía no ha empezado (no es el
+  `--month` actual ni tiene archivo en `historico/`). `compute.py` lo
+  genera automáticamente en cada corrida a partir de
+  `build_template_month()`: solo las metas del plan por canal, todo lo
+  real en $0/0 unidades, sin ritmo/semáforo (dividir por 0 días
+  transcurridos no tiene sentido). El dashboard lo muestra en **versión
+  simplificada** (confirmado con el usuario 2026-09-29): se ocultan la
+  sección "Ritmo diario" y "Semáforo", las barras quedan en gris
+  "pendiente" al 0%, y el resumen ejecutivo es un placeholder genérico de
+  una sola viñeta — no hace falta escribir nada a mano para estos meses,
+  se generan solos con cada corrida mientras no tengan `historico/`.
+
+**Cómo se arma cada corrida** (en `compute.py::main`): se parte de una
+plantilla para cada mes de `plan.period_order`, se sobrescribe con lo que
+haya en `historico/` (meses cerrados), y se sobrescribe otra vez con el
+mes recién calculado (`--month`, siempre gana). El resultado se manda al
+HTML como `DATA_BUNDLE = {byMonth: {...}, currentMonthKey, periodOrder,
+ytd}`, reemplazando lo que antes era un `DATA` de un solo mes. El JS del
+dashboard (`renderMonth(monthKey)`) puebla todas las secciones a partir de
+`DATA_BUNDLE.byMonth[monthKey]` cada vez que se hace click en una pestaña
+— no hay que tocar nada a mano para que las pestañas funcionen, solo
+mantener el flujo normal de cada corte (correr `compute.py`, editar la
+narrativa del mes en curso).
+
+**Cerrar un mes (`freeze_month.py`)** — ver paso 4bis del procedimiento.
+Congela `DATA_BUNDLE.byMonth[<mes>]` tal como quedó en el último corte
+real (incluye `runrateSvg` ya generado, no hace falta recalcularlo) más el
+HTML de `#exec-summary-body` (la narrativa hand-edited), y lo guarda en
+`historico/<mes>.json` — este archivo queda **versionado en git**, se
+puede auditar/corregir a mano si hace falta. No recalcula nada; si el
+corte que se congela no era en realidad el último día del mes completo
+(p.ej. se congela con datos de medio mes por error), corregirlo a mano en
+el JSON o volver a correr con `--force` después de un corte más
+actualizado.
+
+**Qué NO cambia por pestaña** — sigue reflejando siempre el estado real de
+hoy, sin importar qué mes esté seleccionado arriba: la sección "Acumulado
+del periodo Sep-Dic 2026" (`DATA_BUNDLE.ytd`, fuera de `#month-panels` en
+el HTML) y el footer completo (fuentes de datos, metodología). Son
+period-level / siempre-vigentes, no tiene sentido que cambien al mirar un
+mes distinto.
+
+**Bug ya corregido, no reintroducir:** `patch_html()` usa
+`re.subn(pattern, lambda m: wrapped, html, ...)` — el reemplazo va
+envuelto en una función, NO como string directo. Si se pasa `wrapped`
+como string, el módulo `re` interpreta secuencias como `\n` dentro del
+JSON (que aparecen legítimamente al congelar un `narrativeHtml` con
+saltos de línea reales) como caracteres de control literales, insertando
+un salto de línea real dentro de un string JS de una sola línea y
+rompiendo el parseo silenciosamente (el dashboard se ve en blanco, con un
+`SyntaxError` en la consola del navegador). Verificado 2026-09-29.
+
 ## Datos de referencia
 
 | Concepto | Valor |
@@ -337,6 +402,22 @@ mes que se está calculando (0 en septiembre, el mes 1). Llevar este
 acumulado en un archivo simple del scratchpad o preguntarle al usuario el
 real definitivo del mes anterior si no quedó registrado — no inventarlo.
 
+**4bis. Si el mes cambió desde el corte anterior (el `--month` de hoy es
+distinto al de la última corrida), congelar el mes que se cierra ANTES de
+correr `compute.py` con el `--month` nuevo** (ver sección "Pestañas por
+mes" más abajo):
+```
+python3 .claude/skills/presupuesto-vs-real/freeze_month.py \
+  --html dashboards/presupuesto-vs-real.html \
+  --month 2026-09
+```
+Esto lee el último corte real de septiembre (que sigue en el HTML porque
+todavía no se ha corrido `compute.py` para octubre) y lo guarda en
+`.claude/skills/presupuesto-vs-real/historico/2026-09.json`, congelado tal
+cual — recién ahí correr `compute.py --month 2026-10 ...`, que carga ese
+archivo automático y lo muestra como pestaña cerrada. Si el corte de hoy
+sigue siendo del mismo mes que el corte anterior, saltar este paso.
+
 **5. Calcular y parchear el dashboard:**
 ```
 python3 .claude/skills/presupuesto-vs-real/compute.py \
@@ -360,17 +441,23 @@ publiques — revisa los JSON de entrada antes de tocar `compute.py`.
 
 **6. Reescribir a mano la narrativa**, usando los números que imprimió el
 script:
-- `<ul class="exec-list">` (Resumen ejecutivo): 4-6 bullets — cumplimiento
-  total, canal(es) que más se destacan por delante/atrás del ritmo, canales
-  en rojo, proyección de cierre, y la viñeta `id="accion-recomendada"` con
-  la acción #1 recomendada del mes.
+- `<ul class="exec-list">` dentro de `<div id="exec-summary-body">`
+  (Resumen ejecutivo): 4-6 bullets — cumplimiento total, canal(es) que más
+  se destacan por delante/atrás del ritmo, canales en rojo, proyección de
+  cierre, y la viñeta `id="accion-recomendada"` con la acción #1
+  recomendada del mes. Este bloque es el que `freeze_month.py` congela tal
+  cual cuando el mes cierra — no hace falta hacer nada especial para que
+  quede guardado, solo mantenerlo actualizado en cada corte del mes en
+  curso.
 - Nota de mayoristas (`id="nota-mayoristas"`) si cambia la historia de
   nacional/internacional (facturó más, sigue en cero, etc.) — la explicación
   metodológica de por qué mayoristas no se proyecta por ritmo generalmente
   NO cambia, sólo los números específicos del párrafo final.
-- Footer: fechas y facturas específicas de mayoristas del mes.
+- Footer: fechas y facturas específicas de mayoristas del mes (el footer
+  siempre describe el mes en curso, no cambia por pestaña — ver sección
+  "Pestañas por mes" más abajo).
 No toques el resto del HTML — todo lo demás ya se recalcula solo desde
-`DATA`.
+`DATA_BUNDLE`.
 
 **7. Screenshot antes de publicar.** Playwright/Chromium
 (`/opt/pw-browsers/chromium`, `NODE_PATH=$(npm root -g)`), claro y oscuro,
