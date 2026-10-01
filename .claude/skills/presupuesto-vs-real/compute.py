@@ -94,11 +94,12 @@ Uso:
   "category" es una de EXTRAORDINARY_CATEGORIES (ver constante más abajo:
   "FLA" = colaboraciones/co-branding con la Fábrica de Licores de Antioquia,
   "PAC" = ventas de paquete completo/curado a un cliente, fuera del esquema
-  normal por unidad de mayoristas). Estas categorías fijas SIEMPRE aparecen
-  como fila en el panel "Cumplimiento por canal — $ Valor" del dashboard
-  (barra al 100% si hubo algo facturado ese mes bajo esa categoría, 0% si
-  no) — es un indicador visual de presencia/ausencia, no de cumplimiento
-  real, así que no se compara contra ninguna meta. Una categoría nueva que
+  normal por unidad de mayoristas). En el panel "Cumplimiento por canal —
+  $ Valor" del dashboard solo se muestran las categorías con factura ese mes
+  (barra al 100%); las que no tienen factura se ocultan, y si no hay
+  ninguna se oculta el bloque completo (regla del usuario 2026-10-01 — el
+  filtro está en el JS del HTML). Es un indicador visual de presencia, no de
+  cumplimiento real, así que no se compara contra ninguna meta. Una categoría nueva que
   no esté en EXTRAORDINARY_CATEGORIES igual se agrega a la tabla resumen y
   al panel de barras de ese mes (usando `category_label` si se provee, ver
   build_extraordinary_by_category), pero no está garantizado que aparezca en
@@ -297,9 +298,9 @@ def load_historico(historico_dir):
 
 def build_extraordinary_by_category(entries):
     """Agrupa las facturas fuera de presupuesto por categoría (FLA/PAC/...).
-    Las categorías fijas en EXTRAORDINARY_CATEGORIES SIEMPRE aparecen (con
-    total 0 / hasInvoice False si no hubo factura ese mes) para que el panel
-    de barras tenga una fila estable mes a mes; una categoría nueva que
+    Las categorías fijas en EXTRAORDINARY_CATEGORIES siempre se generan (con
+    total 0 / hasInvoice False si no hubo factura ese mes); el JS del
+    dashboard oculta las que tienen hasInvoice False (regla 2026-10-01). Una categoría nueva que
     aparezca en `entries` pero no esté en la lista fija también se agrega
     (al final), pero no está garantizado que se muestre en meses sin datos.
     Una categoría dinámica (no fija) puede traer un `category_label` legible
