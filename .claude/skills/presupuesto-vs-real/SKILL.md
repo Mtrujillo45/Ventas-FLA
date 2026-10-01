@@ -185,18 +185,25 @@ fijas en `EXTRAORDINARY_CATEGORIES` en `compute.py` son `"FLA"`
 `"PAC"` (venta de paquete completo/curado a un cliente, fuera del esquema
 normal por unidad de mayoristas) — (`"SERV"` se agregó el 2026-09-10 y se
 quitó el 2026-09-12 al confirmarse que RFEL8325 no era un servicio real ni
-un patrón recurrente confirmado). Las categorías fijas **siempre**
-aparecen como fila en el panel "Cumplimiento por canal — $ Valor" (no en
-el de unidades, no tienen unidades) — con una barra al 100% (color neutro
-gris, no verde/amarillo/rojo) si hubo algo facturado ese mes bajo esa
-categoría, o al 0% si no hubo nada. Es un indicador de presencia/ausencia,
-no de cumplimiento real — no se compara contra ninguna meta, por eso no
-lleva semáforo. Se calculan en `build_extraordinary_by_category()` y se
-renderizan después de las filas de canal real (con un divisor "Fuera del
-presupuesto — no suma al cumplimiento") en el JS del HTML. Una categoría
-dinámica (no fija) también aparece ese mes en el panel de barras y en la
-tabla resumen, usando su `category_label` si lo trae (o la clave cruda si
-no) — solo no está garantizado que se muestre en meses sin datos.
+un patrón recurrente confirmado). En el panel "Cumplimiento por canal — $
+Valor" (no en el de unidades, no tienen unidades) cada categoría con
+factura ese mes aparece como fila con una barra al 100% (color neutro, no
+verde/amarillo/rojo). Es un indicador de presencia, no de cumplimiento
+real — no se compara contra ninguna meta, por eso no lleva semáforo. Se
+calculan en `build_extraordinary_by_category()` y se renderizan después de
+las filas de canal real (con un divisor "Fuera del presupuesto — no suma al
+cumplimiento") en el JS del HTML. Una categoría dinámica (no fija) se
+muestra igual, usando su `category_label` si lo trae (o la clave cruda si
+no).
+
+**Solo se muestra lo que tiene factura — regla del usuario 2026-10-01.**
+Las categorías sin factura en el mes (p.ej. "Colaboración FLA", que ya no
+se espera para oct-dic 2026) NO se muestran en el panel de barras: no hay
+filas en $0 ni "Sin facturar". Si el mes no tiene ninguna factura fuera del
+presupuesto, el bloque completo (divisor incluido) queda oculto, igual que
+la sección "Facturación adicional" de más abajo. `compute.py` sigue
+generando las categorías fijas con `hasInvoice: false` en el `DATA`; el
+filtro vive en el JS del HTML (`.filter(c => c.hasInvoice)`), no en Python.
 
 **PAC por sufijo de archivo — confirmado 2026-09-27.** El usuario empezó a
 renombrar en Drive las facturas de paquete completo agregando el sufijo

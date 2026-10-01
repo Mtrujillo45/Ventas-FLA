@@ -463,17 +463,16 @@ function renderMonth(monthKey) {
     `▽ PE en la barra TOTAL = punto de equilibrio del mes (${fmtCOP(entry.total.breakevenValue)}) — venta mínima para no perder dinero.${peNote}`;
 
   // ---- extraordinary categories as informational rows (value panel only) ----
-  const byCategory = (entry.extraordinary && entry.extraordinary.byCategory) || [];
+  // Solo las categorías con factura en el mes; sin ninguna, el bloque completo
+  // (divisor incluido) no se muestra — regla del usuario 2026-10-01.
+  const byCategory = ((entry.extraordinary && entry.extraordinary.byCategory) || []).filter(c => c.hasInvoice);
   if (byCategory.length) {
     const divider = `<div class="extra-divider">Fuera del presupuesto — no suma al cumplimiento</div>`;
     const extraRows = byCategory.map(c => {
-      const fillPct = c.hasInvoice ? 100 : 0;
-      const valTxt = c.hasInvoice ? fmtCOP(c.total) : '—';
-      const statusTxt = c.hasInvoice ? 'Facturado' : 'Sin facturar';
       return `<div class="progress-row">
         <div class="progress-name">${c.label}<span class="note">Sin meta — indicador de presencia</span></div>
-        <div class="progress-track"><div class="progress-fill neutral" style="width:${fillPct}%"></div></div>
-        <div class="progress-value"><b>${valTxt}</b><span class="pct">${statusTxt} <span class="badge info">EXTRA</span></span></div>
+        <div class="progress-track"><div class="progress-fill neutral" style="width:100%"></div></div>
+        <div class="progress-value"><b>${fmtCOP(c.total)}</b><span class="pct">Facturado <span class="badge info">EXTRA</span></span></div>
       </div>`;
     }).join('');
     document.getElementById('progress-value').insertAdjacentHTML('beforeend', divider + extraRows);
