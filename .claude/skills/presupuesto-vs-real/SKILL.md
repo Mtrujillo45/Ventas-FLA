@@ -313,7 +313,7 @@ rompiendo el parseo silenciosamente (el dashboard se ve en blanco, con un
 | Concepto | Valor |
 |---|---|
 | Plan de referencia | `.claude/skills/presupuesto-vs-real/plan_2026_2027.json` — meta por canal y mes (Sep-Dic 2026), precios de facturación, márgenes. Extraído una sola vez de Dropbox (`/Mompossina/Plan Estrategico/Plan_Estrategico_Mompossina_2026_2027.xlsx`, versión **SIN** "Ajuste" — 43,358 bytes, NO la de 48,351 bytes). No hace falta re-leer el Excel cada corrida: el plan no cambia dentro del periodo Sep-Dic salvo que el usuario avise de un ajuste. |
-| Meta total del periodo | $1,399.0M (Sep-Dic 2026), 12,913 unidades |
+| Meta total del periodo | $1,399.0M (Sep-Dic 2026), 13,093 unidades (con el ajuste de octubre del 29-sep-2026: Online $100.9M, Nacional $44M, Internacional $140M — ver `_source` en el plan) |
 | Canales | Online (Web/Redes propias), Showroom (Retail), Mayoristas nacionales (Multimarcas), Mayoristas internacionales (Internacional directo) |
 | Mayoristas | Facturas electrónicas en Google Drive, carpetas "FACTURAS NACIONALES" y "FACTURA EXPOR" (no automatizado — se extrae a mano cada corrida, ver paso 3) |
 | Script de cómputo | `.claude/skills/presupuesto-vs-real/compute.py` |
