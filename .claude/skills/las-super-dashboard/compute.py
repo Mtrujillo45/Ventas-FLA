@@ -410,8 +410,14 @@ def build_alerts(agg, er_rows, breakeven, txs):
             detail=(f"{money(retiros_ytd)} retirados de {money(utilidad_operativa_ytd)} de utilidad operativa. "
                     "Recomendación: limitar retiros al 30% para dejar caja de reinversión.")))
 
-    if len(er_rows) >= 2:
-        ultimo, anterior = er_rows[-1], er_rows[-2]
+    # Comparación mes contra mes: solo entre meses ya CERRADOS. Si se
+    # compara el mes en curso (apenas unos días) contra el mes anterior
+    # completo, cualquier mes recién empezado parece una caída enorme
+    # aunque no sea real — por eso se excluye el mes de "mes_actual" (el
+    # mismo que usan las tarjetas "mes en curso") de esta comparación.
+    meses_completos = [r for r in er_rows if r["mes"] != mes_actual]
+    if len(meses_completos) >= 2:
+        ultimo, anterior = meses_completos[-1], meses_completos[-2]
         if anterior["ventas"] > 0:
             var = pct(ultimo["ventas"] - anterior["ventas"], anterior["ventas"])
             if var <= -15:
