@@ -64,6 +64,17 @@ Salidas que mantiene sincronizadas:
     (dejando explícito en el texto que es fallback, no el cálculo real).
     Alerta si cualquier mes de la trayectoria cae por debajo del colchón así
     calculado.
+  - **Pagos puntuales/donaciones excluidos del promedio** (actualizado
+    2026-10-05, pedido explícito del usuario): pagos no recurrentes que
+    caigan bajo GASTOS PERSONAL/ADMINISTRATIVOS en el ledger pero que NO
+    sean gasto estructural (ej. "FNDACION ZONA J" $25M en septiembre-2026 —
+    una donación puntual acordada de antemano como % de ventas de una fecha
+    específica, no un aumento de nómina/gastos fijos) se excluyen del
+    promedio de 2 meses antes de calcular el colchón — de lo contrario
+    inflan el colchón de forma permanente por un pago que no se repite. Ver
+    `NON_RECURRING_ENTRIES` en `compute.py`; si aparece un nuevo pago de
+    este tipo, agregar el nombre exacto del proveedor a ese set (confirmar
+    primero con el usuario que es puntual y no estructural).
   - **Excedente**: NO se lista como alerta individual por mes (con la
     trayectoria tan holgada del plan, casi todos los meses calificaban y le
     restaba señal a las alertas que sí importan) — vive como panel de
