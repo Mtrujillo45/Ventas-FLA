@@ -78,6 +78,15 @@ generado en Python como SVG inline, sin dependencias externas).
      de impuestos/retenciones, NO son estructura de personal/admin — se
      encontró un caso real de $142M de IVA mal clasificado bajo "GASTOS
      ADMINISTRATIVOS" en julio-2026 que distorsionaba el mes por completo).
+   - Se excluyen filas cuyo proveedor esté en `NON_RECURRING_ENTRIES`
+     (confirmado con el usuario, 2026-10-05): pagos puntuales no
+     recurrentes que no son gasto estructural de personal/admin, aunque
+     estén registrados bajo esas categorías en el ledger. Caso real:
+     "FNDACION ZONA J" $25M en septiembre-2026 — una donación puntual de
+     la empresa (% de ventas de una fecha específica, ya acordada de
+     antemano), no un aumento de la nómina/gastos fijos. Sin esta
+     exclusión, un pago de este tipo infla el promedio y, con él, el
+     colchón dinámico de los meses siguientes, pese a no ser repetible.
    - Se excluyen filas cuya "FECHA LLEGO" (o "FECHA PARA PAGO" si la
      primera está vacía) NO caiga dentro del mes que se está sumando — esto
      saca deuda vieja arrastrada de meses anteriores (ej. PADILLO, una
@@ -167,6 +176,9 @@ BUCKET_DEFS = [
 
 TAX_ENTRY_RE = re.compile(r"^\s*(IVA|RT)\s*$", re.IGNORECASE)
 PERSONAL_ADMIN_CATS = ("GASTOS PERSONAL", "GASTOS ADMINISTRATIVOS")
+# Pagos puntuales/no recurrentes confirmados con el usuario que NO deben
+# inflar el promedio de Personal+Admin (ver docstring del módulo, punto 4).
+NON_RECURRING_ENTRIES = {"FNDACION ZONA J"}
 
 
 def month_label(key):
@@ -187,7 +199,8 @@ def money_short(n):
 
 def clean_personal_admin_month(ledger_rows, target_ym):
     """Suma GASTOS PERSONAL + GASTOS ADMINISTRATIVOS de un mes (YYYY-MM),
-    excluyendo pagos de impuestos (IVA/RT) y facturas cuyo origen (FECHA
+    excluyendo pagos de impuestos (IVA/RT), donaciones/pagos puntuales no
+    recurrentes (`NON_RECURRING_ENTRIES`) y facturas cuyo origen (FECHA
     LLEGO, o FECHA PARA PAGO si la primera falta) sea de un mes distinto —
     deuda vieja arrastrada en la pestaña del mes en curso. También exige
     que la fila viva en la pestaña PROPIA de ese mes (`mes_tab`) — el
@@ -206,6 +219,8 @@ def clean_personal_admin_month(ledger_rows, target_ym):
             continue
         empresa = (r.get("empresa") or "").strip()
         if TAX_ENTRY_RE.match(empresa):
+            continue
+        if empresa.upper() in NON_RECURRING_ENTRIES:
             continue
         ref_date = r.get("fecha_llego") or r.get("fecha_pago")
         if not ref_date or ref_date[:7] != target_ym:
