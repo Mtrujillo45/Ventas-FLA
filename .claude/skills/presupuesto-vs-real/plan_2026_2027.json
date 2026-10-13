@@ -24,6 +24,8 @@
     "2026-10": {
       "label": "Octubre 2026",
       "daysInMonth": 31,
+      "pacEnMeta": "internacional",
+      "_pacEnMeta_note": "Confirmado por el usuario 2026-10-13: la meta de Mayoristas internacionales de octubre ($140M) ya incluye un despacho de paquete completo (PAC) de ~USD 39.000. Por eso las facturas PAC de octubre suman al cumplimiento de internacional (compute.py las pasa de extraordinary a wholesale) en vez de quedar en fuera del presupuesto. Solo aplica a los meses con pacEnMeta.",
       "channels": {
         "online": { "budgetValue": 100900000, "budgetUnits": 873 },
         "showroom": { "budgetValue": 25000000, "budgetUnits": 216 },
