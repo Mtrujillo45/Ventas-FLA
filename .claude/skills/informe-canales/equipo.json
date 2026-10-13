@@ -1,11 +1,48 @@
 {
-  "_nota": "Responsables por canal (definido por el usuario 2026-10-13). Los correos van en 'email'; mientras estén vacíos el informe no se puede enviar.",
+  "_nota": "Responsables por canal (definido por el usuario 2026-10-13). Los CORREOS NO van aquí: este repo es público. Viven en el prompt (privado) de las dos Routines 'Informe por canal' (lunes y miércoles); para cambiarlos se actualizan ambas Routines. En una corrida manual fuera de las Routines, pedirle los correos al usuario.",
   "grupos": [
-    {"id": "online", "titulo": "Online", "canales": ["online"],
-     "responsables": [{"nombre": "Verónica", "email": ""}, {"nombre": "Laura", "email": ""}]},
-    {"id": "showroom", "titulo": "Showroom", "canales": ["showroom"],
-     "responsables": [{"nombre": "Greisy", "email": ""}]},
-    {"id": "mayoristas", "titulo": "Mayoristas nacionales e internacionales", "canales": ["nacional", "internacional"],
-     "responsables": [{"nombre": "Camila", "email": ""}, {"nombre": "Natalia", "email": ""}]}
+    {
+      "id": "online",
+      "titulo": "Online",
+      "canales": [
+        "online"
+      ],
+      "responsables": [
+        {
+          "nombre": "Verónica"
+        },
+        {
+          "nombre": "Laura"
+        }
+      ]
+    },
+    {
+      "id": "showroom",
+      "titulo": "Showroom",
+      "canales": [
+        "showroom"
+      ],
+      "responsables": [
+        {
+          "nombre": "Greisy"
+        }
+      ]
+    },
+    {
+      "id": "mayoristas",
+      "titulo": "Mayoristas nacionales e internacionales",
+      "canales": [
+        "nacional",
+        "internacional"
+      ],
+      "responsables": [
+        {
+          "nombre": "Camila"
+        },
+        {
+          "nombre": "Natalia"
+        }
+      ]
+    }
   ]
 }

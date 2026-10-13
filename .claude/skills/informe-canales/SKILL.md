@@ -20,10 +20,14 @@ partir de su `DATA_BUNDLE`, arma y **envía** un correo al equipo comercial:
 | Showroom | `showroom` | Greisy |
 | Mayoristas nacionales e internacionales | `nacional`, `internacional` | Camila y Natalia |
 
-Responsables y correos en `equipo.json` (definido por el usuario 2026-10-13).
-**Si algún responsable no tiene `email`, no se envía al equipo**: se manda solo a
-operaciones@mompossina.com con el asunto prefijado `[FALTAN CORREOS]` para que el
-usuario los complete.
+Grupos y nombres de responsables en `equipo.json` (definido por el usuario
+2026-10-13). **Los correos NO están en el repo** (es público, y tres son correos
+personales): viven en el prompt privado de las dos Routines "Informe por canal"
+(lunes `trig_01L5K7qA74pk1hTVs1pbsh8x`, miércoles `trig_01DvmN5uCCJ9puppmKw5vWhZ`),
+decidido con el usuario 2026-10-13. Para cambiar un correo se actualizan ambas
+Routines (`update_trigger` con el prompt completo). Nunca escribir los correos en
+archivos del repo, commits ni PRs. En una corrida manual fuera de las Routines,
+pedirle los correos al usuario.
 
 ## Horario (confirmado 2026-10-13)
 
@@ -86,8 +90,9 @@ usuario los complete.
    Si hubo facturas pendientes de clasificar o algo fuera de lo normal (p.ej. no
    se pudo leer Drive), agregar un párrafo corto al inicio del correo diciéndolo.
    Enviar con `GMAIL_SEND_EMAIL` (Composio), cuenta `gmail_rebold-risp`,
-   `is_html: true`, asunto de `$OUT/asunto.txt`, `recipient_email` = primer
-   responsable y `extra_recipients` = el resto (todas las de `equipo.json`).
+   `is_html: true`, asunto de `$OUT/asunto.txt`, `recipient_email` = primera
+   responsable y `extra_recipients` = el resto (correos del directorio del prompt
+   de la Routine).
    Enviar **una sola vez**: no reintentar si la respuesta trae id de mensaje.
 
 6. **Reportar** en la sesión: asunto, destinatarios, ritmo total y canales en rojo.
