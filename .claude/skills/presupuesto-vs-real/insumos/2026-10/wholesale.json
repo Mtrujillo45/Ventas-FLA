@@ -1,0 +1,28 @@
+[
+ {
+  "channel": "nacional",
+  "date": "2026-10-05",
+  "value": 13400102,
+  "units": 175,
+  "invoice": "RFEL8398",
+  "partner": "Falabella de Colombia SAS",
+  "note": "Subtotal sin IVA, sin descuento"
+ },
+ {
+  "channel": "nacional",
+  "date": "2026-10-05",
+  "value": 74202,
+  "units": 0,
+  "invoice": "RFEL8399",
+  "partner": "Falabella de Colombia SAS",
+  "note": "Cargo por servicio de descuento no autorizado — suma al valor, no a unidades (igual que RFEL8339 en sep)"
+ },
+ {
+  "channel": "nacional",
+  "date": "2026-10-07",
+  "value": 139900,
+  "units": 1,
+  "invoice": "#34808",
+  "partner": "Falabella (marketplace vía Shopify)"
+ }
+]

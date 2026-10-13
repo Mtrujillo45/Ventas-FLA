@@ -1,0 +1,48 @@
+{
+ "cutoff": "12 oct 2026, 23:59 hora Bogotá",
+ "month": "Octubre 2026",
+ "grupos": [
+  {
+   "id": "online",
+   "titulo": "Online",
+   "responsables": "Verónica y Laura",
+   "textos": [
+    {
+     "canal": "Online",
+     "texto": "En rojo: $27.8M de $100.9M (27.5% de la meta, ritmo 71.2%) y 234 de 873 unidades (ritmo 69.2%). Para cumplir faltan $73.1M: $3.8M y 34 unidades por día en los 19 días restantes."
+    }
+   ]
+  },
+  {
+   "id": "showroom",
+   "titulo": "Showroom",
+   "responsables": "Greisy",
+   "textos": [
+    {
+     "canal": "Showroom",
+     "texto": "En rojo: $8.1M de $25.0M (32.3% de la meta, ritmo 83.4%) y 74 de 216 unidades (ritmo 88.5%). Para cumplir faltan $16.9M: $891K y 7 unidades por día en los 19 días restantes."
+    }
+   ]
+  },
+  {
+   "id": "mayoristas",
+   "titulo": "Mayoristas nacionales e internacionales",
+   "responsables": "Camila y Natalia",
+   "textos": [
+    {
+     "canal": "May. nacionales",
+     "texto": "En rojo: $13.6M de $44.0M (30.9% de la meta, ritmo 79.9%) y 176 de 667 unidades (ritmo 68.2%). Para cumplir faltan $30.4M: $1.6M y 26 unidades por día en los 19 días restantes."
+    },
+    {
+     "canal": "May. internacionales",
+     "texto": "En rojo: $0 de $140.0M (0.0% de la meta, ritmo 0.0%) y 0 de 1.036 unidades (ritmo 0.0%). Para cumplir faltan $140.0M: $7.4M y 55 unidades por día en los 19 días restantes."
+    }
+   ]
+  }
+ ],
+ "total": {
+  "realValue": 49485412.0,
+  "budgetValue": 309900000,
+  "paceValue": 41.2511501559643
+ }
+}
