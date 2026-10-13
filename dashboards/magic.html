@@ -1,0 +1,385 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>MAGIC — Dashboard de Colección</title>
+<style>
+  :root {
+    color-scheme: light;
+    --page:           #FBF1E4;
+    --surface-1:      #FEFBF6;
+    --text-primary:   #2E211D;
+    --text-secondary: #6B564C;
+    --text-muted:     #9C8579;
+    --grid:           #ECDFCF;
+    --border:         rgba(46,33,29,0.10);
+    --series-1:       #7B52B8; /* violeta MAGIC (provisional, sin screenshots de campaña aún) — referencia / clientes existentes */
+    --series-2:       #2A78D6; /* azul — tráfico / clientes nuevos */
+    --good:           #3F8F45;
+    --warning:        #D98A2E;
+    --critical:       #B23B3B;
+    --good-bg:        #E9F5EA;
+    --warning-bg:     #FBF0DF;
+    --critical-bg:    #F8E7E5;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:where(:not([data-theme="light"])) {
+      color-scheme: dark;
+      --page:           #1E1613;
+      --surface-1:      #271D18;
+      --text-primary:   #FBF1E4;
+      --text-secondary: #D6C2B5;
+      --text-muted:     #A6907F;
+      --grid:           #3B2D25;
+      --border:         rgba(255,255,255,0.10);
+      --series-1:       #9A74D6;
+      --series-2:       #3987E5;
+      --good:           #5FB566;
+      --warning:        #E3A754;
+      --critical:       #E2726E;
+      --good-bg:        rgba(95,181,102,0.15);
+      --warning-bg:     rgba(227,167,84,0.15);
+      --critical-bg:    rgba(226,114,106,0.15);
+    }
+  }
+  :root[data-theme="dark"] {
+    color-scheme: dark;
+    --page:           #1E1613;
+    --surface-1:      #271D18;
+    --text-primary:   #FBF1E4;
+    --text-secondary: #D6C2B5;
+    --text-muted:     #A6907F;
+    --grid:           #3B2D25;
+    --border:         rgba(255,255,255,0.10);
+    --series-1:       #9A74D6;
+    --series-2:       #3987E5;
+    --good:           #5FB566;
+    --warning:        #E3A754;
+    --critical:       #E2726E;
+    --good-bg:        rgba(95,181,102,0.15);
+    --warning-bg:     rgba(227,167,84,0.15);
+    --critical-bg:    rgba(226,114,106,0.15);
+  }
+
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--page);
+    color: var(--text-primary);
+    font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+  .wrap { max-width: 1180px; margin: 0 auto; padding: 28px 20px 64px; }
+
+  header.top { margin-bottom: 24px; }
+  .eyebrow {
+    display: inline-flex; align-items: center; gap: 8px;
+    font-size: 12px; font-weight: 600; letter-spacing: .04em; text-transform: uppercase;
+    color: var(--series-1);
+    background: color-mix(in srgb, var(--series-1) 14%, transparent);
+    padding: 4px 10px; border-radius: 999px; margin-bottom: 10px;
+  }
+  h1 { font-size: 28px; font-weight: 700; margin: 0 0 6px; letter-spacing: -0.01em; }
+  .subtitle { font-size: 14px; color: var(--text-secondary); margin: 0 0 4px; }
+  .meta { font-size: 12.5px; color: var(--text-muted); }
+  .meta code { background: var(--grid); padding: 1px 5px; border-radius: 4px; font-size: 11.5px; }
+
+  .card {
+    background: var(--surface-1);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 20px 22px;
+  }
+  section { margin-top: 22px; }
+  h2 { font-size: 15px; font-weight: 700; margin: 0 0 4px; }
+  .section-sub { font-size: 12.5px; color: var(--text-muted); margin: 0 0 16px; }
+  .section-scope {
+    display: inline-block; font-size: 11px; font-weight: 600; letter-spacing: .03em;
+    color: var(--series-2); background: color-mix(in srgb, var(--series-2) 14%, transparent);
+    padding: 2px 8px; border-radius: 999px; margin-bottom: 8px;
+  }
+
+  /* KPI tiles */
+  .kpi-grid {
+    display: grid; grid-template-columns: repeat(6, 1fr); gap: 14px;
+  }
+  .kpi {
+    background: var(--surface-1); border: 1px solid var(--border); border-radius: 14px;
+    padding: 16px 16px 14px;
+  }
+  .kpi .label { font-size: 12px; color: var(--text-secondary); margin-bottom: 8px; }
+  .kpi .value { font-size: 22px; font-weight: 700; letter-spacing: -0.01em; font-variant-numeric: tabular-nums; }
+  .kpi .sub { font-size: 11.5px; color: var(--text-muted); margin-top: 4px; line-height: 1.4; }
+
+  /* ranked horizontal bars */
+  .hbar-list { display: flex; flex-direction: column; }
+  .hbar-row { display: grid; grid-template-columns: 26px 200px 1fr 130px; align-items: center; gap: 12px; padding: 7px 0; }
+  .hbar-row.traffic-row { grid-template-columns: 1fr 1fr 130px; }
+  .hbar-row + .hbar-row { border-top: 1px solid var(--grid); }
+  .hbar-rank { font-size: 12px; color: var(--text-muted); font-variant-numeric: tabular-nums; }
+  .hbar-name { font-size: 13px; color: var(--text-primary); }
+  .hbar-track { position: relative; height: 14px; background: var(--grid); border-radius: 4px; overflow: hidden; }
+  .hbar-fill { position: absolute; inset: 0 auto 0 0; background: var(--series-1); border-radius: 4px; }
+  .traffic-row .hbar-fill { background: var(--series-2); }
+  .hbar-value { font-size: 12.5px; text-align: right; font-variant-numeric: tabular-nums; color: var(--text-secondary); }
+  .hbar-value .units { color: var(--text-muted); font-size: 11.5px; display: block; }
+
+  /* composition stacked bars */
+  .comp-block { margin-bottom: 18px; }
+  .comp-title { font-size: 12.5px; color: var(--text-secondary); margin-bottom: 8px; display: flex; justify-content: space-between; }
+  .stack { display: flex; height: 22px; border-radius: 6px; overflow: hidden; }
+  .stack > div { display: flex; align-items: center; justify-content: center; font-size: 11px; color: #fff; font-weight: 600; }
+  .seg-1 { background: var(--series-1); }
+  .seg-2 { background: var(--series-2); }
+  .legend { display: flex; gap: 16px; margin-top: 8px; font-size: 12px; color: var(--text-secondary); }
+  .legend span { display: inline-flex; align-items: center; gap: 6px; }
+  .legend i { width: 10px; height: 10px; border-radius: 3px; display: inline-block; }
+
+  /* table */
+  table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  thead th {
+    text-align: left; font-weight: 600; color: var(--text-muted); font-size: 11.5px;
+    text-transform: uppercase; letter-spacing: .03em; padding: 8px 10px; border-bottom: 1px solid var(--grid);
+  }
+  tbody td { padding: 9px 10px; border-bottom: 1px solid var(--grid); vertical-align: middle; }
+  tbody tr:last-child td { border-bottom: none; }
+  td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; }
+  td.talla { font-weight: 600; color: var(--text-secondary); }
+  td.sku-code { font-size: 11.5px; color: var(--text-muted); font-family: ui-monospace, "SF Mono", Menlo, monospace; }
+  tr.group-row td {
+    background: var(--grid); font-weight: 700; font-size: 12.5px;
+    padding: 8px 10px; border-bottom: 1px solid var(--border);
+  }
+  tr.group-row .group-total { font-weight: 500; color: var(--text-secondary); float: right; font-size: 11.5px; }
+  .badge {
+    display: inline-flex; align-items: center; gap: 5px; font-size: 11px; font-weight: 600;
+    padding: 3px 8px; border-radius: 999px; white-space: nowrap;
+  }
+  .badge.critical { background: var(--critical-bg); color: var(--critical); }
+  .badge.warning  { background: var(--warning-bg); color: color-mix(in srgb, var(--warning) 55%, var(--text-primary)); }
+  .badge.good     { background: var(--good-bg); color: var(--good); }
+  .badge.flat     { background: var(--grid); color: var(--text-secondary); }
+  .cohort-cell { color: var(--text-primary); font-weight: 600; border-radius: 4px; }
+  .cohort-pending { color: var(--text-muted); font-style: italic; font-weight: 400; }
+
+  .table-scroll { overflow-x: auto; }
+  .card { min-width: 0; overflow-x: auto; }
+
+  .two-col { display: grid; grid-template-columns: 1.2fr 1fr; gap: 16px; align-items: start; }
+
+  .callout {
+    display: flex; gap: 12px; align-items: flex-start;
+    border-radius: 12px; padding: 14px 16px; font-size: 13px; line-height: 1.55;
+  }
+  .callout.critical { background: var(--critical-bg); color: var(--text-primary); }
+  .callout.info { background: color-mix(in srgb, var(--series-2) 10%, var(--surface-1)); color: var(--text-primary); }
+  .callout .dot { width: 8px; height: 8px; border-radius: 50%; margin-top: 6px; flex-shrink: 0; }
+  .callout.critical .dot { background: var(--critical); }
+  .callout.info .dot { background: var(--series-2); }
+  .callout b { display: block; margin-bottom: 2px; }
+  .callout ul { margin: 6px 0 0; padding-left: 18px; }
+  .callout-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 14px; }
+
+  footer { margin-top: 28px; font-size: 11.5px; color: var(--text-muted); line-height: 1.7; }
+  footer p { margin: 0 0 8px; }
+
+  @media (max-width: 900px) {
+    .kpi-grid { grid-template-columns: repeat(2, 1fr); }
+    .two-col { grid-template-columns: 1fr; }
+    .callout-grid { grid-template-columns: 1fr; }
+    .hbar-row { grid-template-columns: 20px 110px 1fr 90px; }
+    .hbar-row.traffic-row { grid-template-columns: 1fr 1fr 90px; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="top">
+    <div class="eyebrow">● Conectado vía Composio · Shopify Admin API</div>
+    <h1>MAGIC — Dashboard de Colección</h1>
+    <p class="subtitle">Mompossina Swimwear (mompossina.com) · Colección lanzada el 30 de septiembre de 2026 · 6 referencias / 17 variantes</p>
+    <p class="meta">
+      Periodo analizado: <code><span id="period-label"></span></code> ·
+      Última actualización de datos: <code><span id="generated-at"></span></code>
+    </p>
+  </header>
+
+  <!-- KPIS_START -->
+  <section class="kpi-grid">
+    <div class="kpi"><div class="label">Pedidos con MAGIC</div><div class="value">37</div><div class="sub">26.8% de los 138 pedidos de la tienda en el período</div></div>
+    <div class="kpi"><div class="label">Unidades vendidas</div><div class="value">57</div><div class="sub">en 17 SKUs / 6 referencias</div></div>
+    <div class="kpi"><div class="label">Ingresos netos</div><div class="value">$7.8M</div><div class="sub">bruto $7.8M · línea de producto, sin envío</div></div>
+    <div class="kpi"><div class="label">Ticket promedio</div><div class="value">$281,145</div><div class="sub">vs. $220,303 promedio general de la tienda (mismo período)</div></div>
+    <div class="kpi"><div class="label">Clientes ya existentes</div><div class="value">54.3%</div><div class="sub">19 de 35 compradores identificados ya habían comprado antes</div></div>
+    <div class="kpi"><div class="label">Clientes nuevos</div><div class="value">45.7%</div><div class="sub">16 compradores cuya primera compra fue MAGIC</div></div>
+  </section>
+  <!-- KPIS_END -->
+
+  <section class="card">
+    <h2>Ventas por referencia</h2>
+    <p class="section-sub">Ingresos brutos por referencia desde el lanzamiento, todas las tallas combinadas</p>
+    <!-- PRODUCTS_START -->
+  <div class="hbar-list">
+    <div class="hbar-row"><div class="hbar-rank">1</div><div class="hbar-name">MAGIC MESH SHIRT</div><div class="hbar-track"><div class="hbar-fill" style="width:100.0%"></div></div><div class="hbar-value">$2.7M<span class="units">19 uds</span></div></div>
+    <div class="hbar-row"><div class="hbar-rank">2</div><div class="hbar-name">MAGIC PAREO</div><div class="hbar-track"><div class="hbar-fill" style="width:53.2%"></div></div><div class="hbar-value">$1.4M<span class="units">10 uds</span></div></div>
+    <div class="hbar-row"><div class="hbar-rank">3</div><div class="hbar-name">MAGIC STRAPLESS TOP</div><div class="hbar-track"><div class="hbar-fill" style="width:37.2%"></div></div><div class="hbar-value">$989K<span class="units">9 uds</span></div></div>
+    <div class="hbar-row"><div class="hbar-rank">4</div><div class="hbar-name">MAGIC ONE SHOULDER ONE PIECE</div><div class="hbar-track"><div class="hbar-fill" style="width:35.3%"></div></div><div class="hbar-value">$940K<span class="units">5 uds</span></div></div>
+    <div class="hbar-row"><div class="hbar-rank">5</div><div class="hbar-name">MAGIC TRIANGLE TOP</div><div class="hbar-track"><div class="hbar-fill" style="width:34.2%"></div></div><div class="hbar-value">$909K<span class="units">7 uds</span></div></div>
+    <div class="hbar-row"><div class="hbar-rank">6</div><div class="hbar-name">MAGIC STRAP TIE SIDE BOTTOM</div><div class="hbar-track"><div class="hbar-fill" style="width:31.6%"></div></div><div class="hbar-value">$839K<span class="units">7 uds</span></div></div>
+  </div>
+  <!-- PRODUCTS_END -->
+  </section>
+
+  <section class="card">
+    <h2>Detalle e inventario por referencia y talla</h2>
+    <p class="section-sub">Alertas por stock disponible absoluto (no por velocidad de venta — con ~10 días de historial la velocidad por talla todavía es muy ruidosa para estimar cobertura)</p>
+    <div class="table-scroll">
+      <!-- SKUTABLE_START -->
+  <table>
+    <thead><tr>
+<th>Talla</th><th>SKU</th><th class="num">Precio</th>
+<th class="num">Uds. vendidas</th><th class="num">Ingresos</th>
+<th class="num">Stock disponible</th><th>Estado</th>
+</tr></thead>
+    <tbody>
+      <tr class="group-row"><td colspan="7">MAGIC MESH SHIRT<span class="group-total">19 uds vendidas · 138 en stock</span></td></tr>
+      <tr><td class="talla">S</td><td class="sku-code">32CA36/MAG-S</td><td class="num">$139,900</td><td class="num">4</td><td class="num">$559,600</td><td class="num">29</td><td><span class="badge good">saludable</span></td></tr>
+      <tr><td class="talla">M</td><td class="sku-code">32CA36/MAG-M</td><td class="num">$139,900</td><td class="num">9</td><td class="num">$1,259,100</td><td class="num">63</td><td><span class="badge good">saludable</span></td></tr>
+      <tr><td class="talla">L</td><td class="sku-code">32CA36/MAG-L</td><td class="num">$139,900</td><td class="num">5</td><td class="num">$699,500</td><td class="num">23</td><td><span class="badge good">saludable</span></td></tr>
+      <tr><td class="talla">XL</td><td class="sku-code">32CA36/MAG-XL</td><td class="num">$139,900</td><td class="num">1</td><td class="num">$139,900</td><td class="num">23</td><td><span class="badge good">saludable</span></td></tr>
+      <tr class="group-row"><td colspan="7">MAGIC STRAPLESS TOP<span class="group-total">9 uds vendidas · 36 en stock</span></td></tr>
+      <tr><td class="talla">S</td><td class="sku-code">325122/MAG-S</td><td class="num">$109,900</td><td class="num">5</td><td class="num">$549,500</td><td class="num">6</td><td><span class="badge warning">vigilar</span></td></tr>
+      <tr><td class="talla">M</td><td class="sku-code">325122/MAG-M</td><td class="num">$109,900</td><td class="num">3</td><td class="num">$329,700</td><td class="num">19</td><td><span class="badge good">saludable</span></td></tr>
+      <tr><td class="talla">L</td><td class="sku-code">325122/MAG-L</td><td class="num">$109,900</td><td class="num">1</td><td class="num">$109,900</td><td class="num">11</td><td><span class="badge warning">vigilar</span></td></tr>
+      <tr class="group-row"><td colspan="7">MAGIC PAREO<span class="group-total">10 uds vendidas · 124 en stock</span></td></tr>
+      <tr><td class="talla">Único</td><td class="sku-code">32RE22/MAG</td><td class="num">$145,900</td><td class="num">10</td><td class="num">$1,415,230</td><td class="num">124</td><td><span class="badge good">saludable</span></td></tr>
+      <tr class="group-row"><td colspan="7">MAGIC ONE SHOULDER ONE PIECE<span class="group-total">5 uds vendidas · 48 en stock</span></td></tr>
+      <tr><td class="talla">S</td><td class="sku-code">323326/MAG-S</td><td class="num">$199,900</td><td class="num">0</td><td class="num">$0</td><td class="num">18</td><td><span class="badge good">saludable</span></td></tr>
+      <tr><td class="talla">M</td><td class="sku-code">323326/MAG-M</td><td class="num">$199,900</td><td class="num">2</td><td class="num">$369,815</td><td class="num">22</td><td><span class="badge good">saludable</span></td></tr>
+      <tr><td class="talla">L</td><td class="sku-code">323326/MAG-L</td><td class="num">$199,900</td><td class="num">3</td><td class="num">$569,715</td><td class="num">8</td><td><span class="badge warning">vigilar</span></td></tr>
+      <tr class="group-row"><td colspan="7">MAGIC TRIANGLE TOP<span class="group-total">7 uds vendidas · 32 en stock</span></td></tr>
+      <tr><td class="talla">S</td><td class="sku-code">323135/MAG-S</td><td class="num">$129,900</td><td class="num">2</td><td class="num">$259,800</td><td class="num">10</td><td><span class="badge warning">vigilar</span></td></tr>
+      <tr><td class="talla">M</td><td class="sku-code">323135/MAG-M</td><td class="num">$129,900</td><td class="num">3</td><td class="num">$389,700</td><td class="num">18</td><td><span class="badge good">saludable</span></td></tr>
+      <tr><td class="talla">L</td><td class="sku-code">323135/MAG-L</td><td class="num">$129,900</td><td class="num">2</td><td class="num">$259,800</td><td class="num">4</td><td><span class="badge critical">stock crítico</span></td></tr>
+      <tr class="group-row"><td colspan="7">MAGIC STRAP TIE SIDE BOTTOM<span class="group-total">7 uds vendidas · 33 en stock</span></td></tr>
+      <tr><td class="talla">S</td><td class="sku-code">323236/MAG-S</td><td class="num">$119,900</td><td class="num">3</td><td class="num">$359,700</td><td class="num">9</td><td><span class="badge warning">vigilar</span></td></tr>
+      <tr><td class="talla">M</td><td class="sku-code">323236/MAG-M</td><td class="num">$119,900</td><td class="num">3</td><td class="num">$359,700</td><td class="num">19</td><td><span class="badge good">saludable</span></td></tr>
+      <tr><td class="talla">L</td><td class="sku-code">323236/MAG-L</td><td class="num">$119,900</td><td class="num">1</td><td class="num">$119,900</td><td class="num">5</td><td><span class="badge critical">stock crítico</span></td></tr>
+    </tbody>
+  </table>
+  <!-- SKUTABLE_END -->
+    </div>
+    <!-- ALERTS_START -->
+  <div class="callout-grid">
+    <div class="callout critical"><div class="dot"></div><div><b>2 talla(s) en stock crítico (≤5 unidades)</b><ul><li>MAGIC TRIANGLE TOP — talla L (323135/MAG-L) — quedan 4</li><li>MAGIC STRAP TIE SIDE BOTTOM — talla L (323236/MAG-L) — quedan 5</li></ul></div></div>
+    <div class="callout info"><div class="dot"></div><div><b>Mayor tracción desde el lanzamiento</b>Vender rápido con pocos días de historial: <ul><li>MAGIC PAREO — talla Único (32RE22/MAG) — 10 uds vendidas, quedan 124</li><li>MAGIC MESH SHIRT — talla M (32CA36/MAG-M) — 9 uds vendidas, quedan 63</li></ul></div></div>
+  </div>
+  <!-- ALERTS_END -->
+  </section>
+
+  <section class="two-col">
+    <div class="card">
+      <h2>Ciudades de compra</h2>
+      <p class="section-sub">Pedidos con MAGIC por ciudad de envío (o facturación si no hay envío)</p>
+      <div class="table-scroll">
+        <!-- CITIES_START -->
+  <table>
+    <thead><tr>
+<th>#</th><th>Ciudad</th><th class="num">Pedidos</th>
+<th class="num">Valor total</th><th class="num">Ticket promedio</th>
+</tr></thead>
+    <tbody>
+      <tr><td class="num">1</td><td>Bogotá</td><td class="num">9</td><td class="num">$2,383,553</td><td class="num">$264,839</td></tr>
+      <tr><td class="num">2</td><td>Sin ciudad registrada</td><td class="num">6</td><td class="num">$2,064,354</td><td class="num">$344,059</td></tr>
+      <tr><td class="num">3</td><td>Envigado</td><td class="num">5</td><td class="num">$1,270,126</td><td class="num">$254,025</td></tr>
+      <tr><td class="num">4</td><td>Medellín</td><td class="num">4</td><td class="num">$634,497</td><td class="num">$158,624</td></tr>
+      <tr><td class="num">5</td><td>Cali</td><td class="num">2</td><td class="num">$885,329</td><td class="num">$442,664</td></tr>
+      <tr><td class="num">6</td><td>Otras 11 ciudades (Yopal, Bello, Pereira, Cartagena, Sabaneta, Girardota, Ocaña, Barranquilla, entre otras)</td><td class="num">11</td><td class="num">$3,164,510</td><td class="num">$287,683</td></tr>
+    </tbody>
+  </table>
+  <!-- CITIES_END -->
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>Comportamiento de compradores</h2>
+      <p class="section-sub">Composición de quienes compraron MAGIC</p>
+      <!-- CUSTOMERS_START -->
+  <div class="comp-block" style="margin-bottom:0">
+    <div class="comp-title"><span>Ya eran clientes vs. primera compra</span><span>35 identificados · 2 sin cuenta (excluidos)</span></div>
+    <div class="stack">
+      <div class="seg-1" style="width:54.3%">54.3%</div>
+      <div class="seg-2" style="width:45.7%">45.7%</div>
+    </div>
+    <div class="legend">
+      <span><i style="background:var(--series-1)"></i>Ya eran clientes (19)</span>
+      <span><i style="background:var(--series-2)"></i>Primera compra (16)</span>
+    </div>
+  </div>
+  <!-- CUSTOMERS_END -->
+      <h2 style="margin-top:18px">Fuente de tráfico</h2>
+      <p class="section-sub">Primer canal de llegada, pedidos de la tienda online</p>
+      <!-- TRAFFIC_START -->
+  <div class="hbar-list">
+    <div class="hbar-row traffic-row"><div class="hbar-name">Instagram</div><div class="hbar-track"><div class="hbar-fill" style="width:100.0%"></div></div><div class="hbar-value">15 pedidos<span class="units">40.5%</span></div></div>
+    <div class="hbar-row traffic-row"><div class="hbar-name">Pedido manual (sin recorrido web)</div><div class="hbar-track"><div class="hbar-fill" style="width:53.3%"></div></div><div class="hbar-value">8 pedidos<span class="units">21.6%</span></div></div>
+    <div class="hbar-row traffic-row"><div class="hbar-name">Fuente desconocida</div><div class="hbar-track"><div class="hbar-fill" style="width:40.0%"></div></div><div class="hbar-value">6 pedidos<span class="units">16.2%</span></div></div>
+    <div class="hbar-row traffic-row"><div class="hbar-name">Google</div><div class="hbar-track"><div class="hbar-fill" style="width:33.3%"></div></div><div class="hbar-value">5 pedidos<span class="units">13.5%</span></div></div>
+    <div class="hbar-row traffic-row"><div class="hbar-name">Directo</div><div class="hbar-track"><div class="hbar-fill" style="width:20.0%"></div></div><div class="hbar-value">3 pedidos<span class="units">8.1%</span></div></div>
+  </div>
+  <!-- TRAFFIC_END -->
+    </div>
+  </section>
+
+  <section class="card">
+    <span class="section-scope">Toda la tienda, no solo MAGIC</span>
+    <h2>Recompra y cohortes de clientes</h2>
+    <p class="section-sub">Clientes agrupados por el mes de su primera compra en Mompossina — qué porcentaje de cada cohorte volvió a comprar. MAGIC todavía no tiene un ciclo completo de recompra propio, así que esta vista mide el comportamiento general de la tienda, no específico de la colección.</p>
+    <!-- COHORT_START -->
+  <div class="kpi-grid" style="grid-template-columns:repeat(3,1fr)">
+    <div class="kpi"><div class="label">Tasa de recompra histórica</div><div class="value">17.2%</div><div class="sub">% de todos los clientes (2021–hoy) que han comprado más de una vez</div></div>
+    <div class="kpi"><div class="label">Recompra en ventana reciente</div><div class="value">28.8%</div><div class="sub">% de compradores de los últimos 90 días que ya eran clientes antes</div></div>
+    <div class="kpi"><div class="label">Tiempo entre 1ª y 2ª compra</div><div class="value">97 días</div><div class="sub">mediana histórica (promedio 228 días, con cola larga)</div></div>
+  </div>
+  <table>
+    <thead><tr>
+<th>Cohorte (mes de 1ª compra)</th><th class="num">Nuevos clientes</th>
+<th class="num">Recompra ≤30d</th><th class="num">≤60d</th><th class="num">≤90d</th>
+</tr></thead>
+    <tbody>
+      <tr><td>Oct 2025</td><td class="num">505</td><td class="num cohort-cell" style="background:color-mix(in srgb, var(--series-1) 20%, var(--surface-1))">5.0%</td><td class="num cohort-cell" style="background:color-mix(in srgb, var(--series-1) 42%, var(--surface-1))">10.5%</td><td class="num cohort-cell" style="background:color-mix(in srgb, var(--series-1) 43%, var(--surface-1))">10.7%</td></tr>
+      <tr><td>Nov 2025</td><td class="num">685</td><td class="num cohort-cell" style="background:color-mix(in srgb, var(--series-1) 30%, var(--surface-1))">7.4%</td><td class="num cohort-cell" style="background:color-mix(in srgb, var(--series-1) 33%, var(--surface-1))">8.2%</td><td class="num cohort-cell" style="background:color-mix(in srgb, var(--series-1) 46%, var(--surface-1))">11.5%</td></tr>
+      <tr><td>Dic 2025</td><td class="num">282</td><td class="num cohort-cell" style="background:color-mix(in srgb, var(--series-1) 26%, var(--surface-1))">6.4%</td><td class="num cohort-cell" style="background:color-mix(in srgb, var(--series-1) 36%, var(--surface-1))">8.9%</td><td class="num cohort-cell" style="background:color-mix(in srgb, var(--series-1) 41%, var(--surface-1))">10.3%</td></tr>
+      <tr><td>Ene 2026</td><td class="num">239</td><td class="num cohort-cell" style="background:color-mix(in srgb, var(--series-1) 35%, var(--surface-1))">8.8%</td><td class="num cohort-cell" style="background:color-mix(in srgb, var(--series-1) 62%, var(--surface-1))">15.5%</td><td class="num cohort-cell" style="background:color-mix(in srgb, var(--series-1) 65%, var(--surface-1))">16.3%</td></tr>
+      <tr><td>Feb 2026</td><td class="num">215</td><td class="num cohort-cell" style="background:color-mix(in srgb, var(--series-1) 19%, var(--surface-1))">4.7%</td><td class="num cohort-cell" style="background:color-mix(in srgb, var(--series-1) 22%, var(--surface-1))">5.6%</td><td class="num cohort-cell" style="background:color-mix(in srgb, var(--series-1) 34%, var(--surface-1))">8.4%</td></tr>
+      <tr><td>Mar 2026</td><td class="num">160</td><td class="num cohort-cell" style="background:color-mix(in srgb, var(--series-1) 25%, var(--surface-1))">6.2%</td><td class="num cohort-cell" style="background:color-mix(in srgb, var(--series-1) 38%, var(--surface-1))">9.4%</td><td class="num cohort-cell" style="background:color-mix(in srgb, var(--series-1) 62%, var(--surface-1))">15.6%</td></tr>
+      <tr><td>Abr 2026</td><td class="num">194</td><td class="num cohort-cell" style="background:color-mix(in srgb, var(--series-1) 45%, var(--surface-1))">11.3%</td><td class="num cohort-cell" style="background:color-mix(in srgb, var(--series-1) 78%, var(--surface-1))">19.6%</td><td class="num cohort-cell" style="background:color-mix(in srgb, var(--series-1) 84%, var(--surface-1))">21.1%</td></tr>
+      <tr><td>May 2026 <span class="badge flat">campaña Colombia</span></td><td class="num">4,586</td><td class="num cohort-cell" style="background:color-mix(in srgb, var(--series-1) 21%, var(--surface-1))">5.2%</td><td class="num cohort-cell" style="background:color-mix(in srgb, var(--series-1) 26%, var(--surface-1))">6.6%</td><td class="num cohort-cell" style="background:color-mix(in srgb, var(--series-1) 32%, var(--surface-1))">8.0%</td></tr>
+      <tr><td>Jun 2026 <span class="badge flat">campaña Colombia</span></td><td class="num">5,277</td><td class="num cohort-cell" style="background:color-mix(in srgb, var(--series-1) 12%, var(--surface-1))">3.0%</td><td class="num cohort-cell" style="background:color-mix(in srgb, var(--series-1) 17%, var(--surface-1))">4.3%</td><td class="num cohort-cell" style="background:color-mix(in srgb, var(--series-1) 22%, var(--surface-1))">5.4%</td></tr>
+      <tr><td>Jul 2026 <span class="badge flat">cola de campaña</span></td><td class="num">934</td><td class="num cohort-cell" style="background:color-mix(in srgb, var(--series-1) 16%, var(--surface-1))">4.0%</td><td class="num cohort-cell" style="background:color-mix(in srgb, var(--series-1) 26%, var(--surface-1))">6.5%</td><td class="num cohort-pending">pendiente</td></tr>
+      <tr><td>Ago 2026</td><td class="num">1,044</td><td class="num cohort-cell" style="background:color-mix(in srgb, var(--series-1) 18%, var(--surface-1))">4.5%</td><td class="num cohort-pending">pendiente</td><td class="num cohort-pending">pendiente</td></tr>
+      <tr><td>Sep 2026 <span class="badge flat">mes cerrado, aún muy reciente para medir recompra</span></td><td class="num">315</td><td class="num cohort-pending">pendiente</td><td class="num cohort-pending">pendiente</td><td class="num cohort-pending">pendiente</td></tr>
+      <tr><td>Oct 2026 <span class="badge flat">mes en curso, incluye compradoras de MAGIC y LOVESSENCE</span></td><td class="num">72</td><td class="num cohort-pending">pendiente</td><td class="num cohort-pending">pendiente</td><td class="num cohort-pending">pendiente</td></tr>
+    </tbody>
+  </table>
+  <p class="section-sub" style="margin-top:14px">Mayo y junio 2026 corresponden a la campaña de la colección "Colombia" (miles de clientes nuevos en pocas semanas), confirmado por el equipo — no es ruido de datos. Sus tasas de recompra a 30 días (5.2% y 3.0%) siguen entre las más bajas de la tabla, consistente con tráfico impulsado por campaña más que compradoras recurrentes. Julio 2026 ya tiene recompra a 60 días medible (6.5%, similar al patrón pos-campaña) pero su recompra a 90 días todavía está pendiente de madurar. La recompra en la ventana reciente de 90 días (28.8%) sigue sin estar diluida por ese pico, consistente con el refresco anterior.</p>
+  <!-- COHORT_END -->
+  </section>
+
+  <footer>
+    <p>Fuente: Shopify Admin API (tienda <strong>mompossina.myshopify.com</strong>) consultada en vivo a través del conector de <strong>Composio</strong>. MAGIC se identifica por los 6 productos de la colección <code>magic</code> con SKU <code>/MAG</code> (Mesh Shirt, Strapless Top, Pareo, One Shoulder One Piece, Triangle Top, Strap Tie Side Bottom — 17 variantes). Los charms que también llevan el tag <code>MAGIC</code> (Caribe Charm y Medellín Mi Amor Primavera Charm) quedan <strong>fuera</strong> porque pertenecen a las colecciones Colombia y Medellín. Ingresos de producto = valor de línea bruto/neto de descuentos (<code>originalTotalSet</code> / <code>discountedTotalSet</code>), sin envío; se excluyen órdenes de prueba. "Ya era cliente" = su primer pedido en la tienda es anterior a su compra de MAGIC; se excluyen de ese cálculo los pedidos sin cuenta de cliente. Las alertas de inventario usan stock disponible absoluto, no velocidad de venta, mientras se acumulan más días de historial. La sección de recompra/cohortes cubre <strong>toda la tienda</strong> desde marzo de 2021 (histórico completo), no solo MAGIC. Este archivo es una foto fija; para refrescar los números pide "actualiza el dashboard de MAGIC".</p>
+  </footer>
+
+</div>
+<script>
+  const GENERATED_AT = "2026-10-09T13:00:00-05:00";
+  const PERIOD_LABEL = "30 sep – 9 oct 2026 (desde el lanzamiento)";
+  (function () {
+    var pl = document.getElementById('period-label'); if (pl) pl.textContent = PERIOD_LABEL;
+    var ga = document.getElementById('generated-at'); if (ga) ga.textContent = GENERATED_AT;
+  })();
+</script>
+</body>
+</html>
