@@ -223,6 +223,29 @@ corrida actual (ver ejemplo RFEL8344 en el corte 2026-09-27, que pasó de
 `--wholesale` internacional a `--extraordinary` PAC al renombrarse el
 archivo).
 
+## PAC presupuestado cuenta en la meta — confirmado 2026-10-13
+
+Cuando la meta de un canal **ya incluye** un despacho de paquete completo, la factura
+PAC de ese mes **sí suma al cumplimiento** de ese canal (no va a "fuera del
+presupuesto"). Se marca en el plan con `months[<mes>].pacEnMeta = "<canal>"`, y
+`compute.py` mueve solas las entradas `"category": "PAC"` del `extraordinary.json`
+a ese canal. Registrar la factura igual que siempre (sufijo `PAC` → `extraordinary`
+con `"category": "PAC"`); no hay que moverla a mano.
+- **Octubre 2026:** `pacEnMeta = "internacional"`. La meta de $140M de Mayoristas
+  internacionales incluye un despacho PAC de ~USD 39.000 previsto para el mes.
+- Los meses sin `pacEnMeta` siguen la regla de siempre (PAC fuera del cumplimiento).
+
+## Sin "ritmo" en textos — pedido del usuario 2026-10-13
+
+El "% del ritmo esperado" confundía al equipo. En la narrativa, el dashboard y el
+correo **no** se habla de "ritmo": se muestran el **cumplimiento** (real ÷ meta del
+mes) y el **esperado a la fecha** en pesos (meta × días transcurridos ÷ días del
+mes), más la diferencia en pesos. Ejemplo: "16,0% de la meta ($49,5M de $309,9M) vs.
+38,7% esperado a la fecha ($120,0M) — faltan $70,5M frente a lo esperado". El
+semáforo sigue igual por dentro (`paceValue`), pero se explica como "verde: en o por
+encima de lo esperado; amarillo: hasta 15% por debajo; rojo: más de 15% por debajo".
+Para el promedio diario se dice "venta diaria", no "ritmo diario".
+
 ## Cristalina Swimwear vende en consignación, no en firme — confirmado 2026-09-27
 
 El usuario confirmó que las facturas de Cristalina Swimwear (Miami) NO son

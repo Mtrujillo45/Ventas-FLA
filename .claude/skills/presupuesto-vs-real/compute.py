@@ -510,7 +510,7 @@ def build_runrate_svg(dates, values, needed_daily, width=880, height=230):
 
     svg = (
         f'<svg viewBox="0 0 {width} {height}" class="svg-chart daily-chart" role="img" '
-        'aria-label="Ritmo diario canal propio: venta real vs ritmo necesario">'
+        'aria-label="Venta diaria canal propio: venta real vs venta diaria necesaria">'
         '<defs><linearGradient id="rrAreaFill" x1="0" y1="0" x2="0" y2="1">'
         '<stop offset="0%" stop-color="var(--series-1)" stop-opacity="0.28"/>'
         '<stop offset="100%" stop-color="var(--series-1)" stop-opacity="0"/></linearGradient></defs>'
@@ -567,6 +567,15 @@ def main():
     if args.extraordinary:
         with open(args.extraordinary, encoding="utf-8") as f:
             extraordinary_entries = json.load(f)
+    # PAC presupuestado: si la meta del mes ya incluye un paquete completo (plan.months[mes].pacEnMeta = canal),
+    # las facturas PAC del mes suman al cumplimiento de ese canal en vez de ir a "fuera del presupuesto".
+    pac_channel = plan["months"][args.month].get("pacEnMeta")
+    if pac_channel:
+        pac_in_budget = [e for e in extraordinary_entries if e.get("category") == "PAC"]
+        extraordinary_entries = [e for e in extraordinary_entries if e.get("category") != "PAC"]
+        for e in pac_in_budget:
+            wholesale_entries.append({**e, "channel": pac_channel, "units": e.get("units", 0),
+                                      "note": (e.get("note", "") + " · PAC presupuestado: cuenta en la meta").strip(" ·")})
 
     now = datetime.datetime.fromisoformat(args.now)
     plan_month = dict(plan["months"][args.month])

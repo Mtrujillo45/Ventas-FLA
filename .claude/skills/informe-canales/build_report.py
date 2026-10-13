@@ -15,9 +15,10 @@ Lee el objeto DATA_BUNDLE ya calculado dentro de dashboards/presupuesto-vs-real.
   asunto.txt     — asunto del correo.
   resumen.json   — los textos y cifras usados (para revisar o reusar).
 
-No hace aritmética de negocio propia: toma real/meta/ritmo/semáforo tal cual del
-DATA_BUNDLE. Lo único que calcula es lo que falta por día para cumplir la meta
-((meta - real) / días restantes), que es una resta y una división sobre esas cifras.
+No hace aritmética de negocio propia: toma real/meta/cumplimiento/semáforo tal cual
+del DATA_BUNDLE. Solo calcula el esperado a la fecha (meta × % del mes transcurrido)
+y lo que falta por día para cumplir la meta ((meta - real) / días restantes).
+No muestra "ritmo": confundía al equipo (pedido del usuario 2026-10-13).
 
 Uso:
   python3 build_report.py --html dashboards/presupuesto-vs-real.html \
@@ -41,6 +42,8 @@ INK = "#1f1f1e"
 INK_2 = "#5c5c58"
 INK_3 = "#8a8a85"
 BORDER = "#e4e2dc"
+# Canales que se facturan por despachos puntuales: no se les calcula "faltan $X por día".
+BY_SHIPMENT = {"internacional"}
 MESES = ["ene", "feb", "mar", "abr", "may", "jun", "jul", "ago", "sep", "oct", "nov", "dic"]
 
 
@@ -80,7 +83,7 @@ def needed_per_day(budget, real, days_left):
     return max(budget - real, 0) / days_left
 
 
-def meter(label, real_txt, budget_txt, pct_month, pace, pct_elapsed, status_key, expected_txt):
+def meter(label, real_txt, budget_txt, pct_month, pct_elapsed, status_key, expected_txt):
     s = STATUS[status_key]
     fill = max(0.0, min(pct_month, 100.0))
     marker = max(0.0, min(pct_elapsed, 100.0))
@@ -88,7 +91,7 @@ def meter(label, real_txt, budget_txt, pct_month, pace, pct_elapsed, status_key,
     <div class="metric">
       <div class="metric-head">
         <span class="metric-label">{label}</span>
-        <span class="metric-pace">Ritmo <b>{pct(pace)}</b>
+        <span class="metric-pace">Esperado a la fecha <b>{expected_txt}</b>
           <span class="chip" style="color:{s['color']};border-color:{s['color']}">{s['icon']} {s['label']}</span></span>
       </div>
       <div class="metric-value"><b>{real_txt}</b> <span class="of">de {budget_txt}</span>
@@ -97,7 +100,7 @@ def meter(label, real_txt, budget_txt, pct_month, pace, pct_elapsed, status_key,
         <div class="fill" style="width:{fill:.2f}%;background:{s['color']}"></div>
         <div class="marker" style="left:{marker:.2f}%"></div>
       </div>
-      <div class="marker-note">Esperado a la fecha: {expected_txt} (línea vertical)</div>
+      <div class="marker-note">Línea vertical = esperado a la fecha ({pct(pct_elapsed)} de la meta)</div>
     </div>"""
 
 
@@ -110,19 +113,21 @@ def channel_block(c, meta, show_title):
     exp_u = c["budgetUnits"] * pe / 100
     title = f'<div class="sub-title">{html_lib.escape(c["label"])}</div>' if show_title else ""
     return title + meter("Ventas en pesos", money_short(c["realValue"]), money_short(c["budgetValue"]),
-                         c["pctValue"], c["paceValue"], pe, st_v, money_short(exp_v)) + \
+                         c["pctValue"], pe, st_v, money_short(exp_v)) + \
         meter("Unidades", num(c["realUnits"]), num(c["budgetUnits"]),
-              c["pctUnits"], c["paceUnits"], pe, st_u, num(exp_u))
+              c["pctUnits"], pe, st_u, num(exp_u))
 
 
 def summary_text(c, meta):
     """Resumen de 1-2 frases por canal, solo con cifras del DATA_BUNDLE."""
     days_left = meta["daysInMonth"] - meta["daysElapsed"]
     st = c.get("semaforoValue") or stoplight(c["paceValue"])
+    pe = meta["pctElapsed"]
     parts = [
         f"En {STATUS[st]['label'].lower()}: {money_short(c['realValue'])} de {money_short(c['budgetValue'])} "
-        f"({pct(c['pctValue'])} de la meta, ritmo {pct(c['paceValue'])}) y {num(c['realUnits'])} de "
-        f"{num(c['budgetUnits'])} unidades (ritmo {pct(c['paceUnits'])})."
+        f"({pct(c['pctValue'])} de la meta); a la fecha deberíamos llevar "
+        f"{money_short(c['budgetValue'] * pe / 100)} ({pct(pe)}). Unidades: {num(c['realUnits'])} de "
+        f"{num(c['budgetUnits'])} (esperado a la fecha: {num(c['budgetUnits'] * pe / 100)})."
     ]
     nv = needed_per_day(c["budgetValue"], c["realValue"], days_left)
     nu = needed_per_day(c["budgetUnits"], c["realUnits"], days_left)
@@ -130,6 +135,9 @@ def summary_text(c, meta):
         parts.append("Mes cerrado.")
     elif nv == 0:
         parts.append("Meta del mes ya cumplida.")
+    elif c["key"] in BY_SHIPMENT:
+        parts.append(f"Para cumplir faltan {money_short(c['budgetValue'] - c['realValue'])}. "
+                     f"Este canal se factura por despachos, no a diario.")
     else:
         parts.append(f"Para cumplir faltan {money_short(c['budgetValue'] - c['realValue'])}: "
                      f"{money_short(nv)} y {num(nu)} unidades por día en los {days_left} días restantes.")
@@ -172,6 +180,9 @@ def need_line(c, meta):
         return "Mes cerrado."
     if nv == 0:
         return "Meta del mes cumplida."
+    if c["key"] in BY_SHIPMENT:
+        return (f"Faltan <b>{money_short(c['budgetValue'] - c['realValue'])}</b> para la meta del mes. "
+                f"Se factura por despachos, no a diario.")
     return (f"Para cumplir: <b>{money_short(nv)}/día</b> y <b>{num(nu)} und/día</b> "
             f"en los {days_left} días restantes.")
 
@@ -234,12 +245,15 @@ def main():
 
     t = month["total"]
     st_t = stoplight(t["paceValue"])
+    exp_t = t["budgetValue"] * meta["pctElapsed"] / 100
     intro = (f"Así vamos en {meta['monthLabel'].lower()} al corte del {cut.split(',')[0]} "
              f"(día {meta['daysElapsed']} de {meta['daysInMonth']}, {pct(meta['pctElapsed'])} del mes): "
              f"<b>{money_short(t['realValue'])}</b> de {money_short(t['budgetValue'])} "
-             f"({pct(t['pctValue'])} de la meta), ritmo <b>{pct(t['paceValue'])}</b> "
+             f"(<b>{pct(t['pctValue'])}</b> de la meta). Esperado a la fecha: <b>{money_short(exp_t)}</b> "
+             f"({pct(meta['pctElapsed'])} de la meta) "
              f"<span style='color:{STATUS[st_t]['color']};font-weight:700'>{STATUS[st_t]['icon']} {STATUS[st_t]['label']}</span>.")
-    resumen["total"] = {"realValue": t["realValue"], "budgetValue": t["budgetValue"], "paceValue": t["paceValue"]}
+    resumen["total"] = {"realValue": t["realValue"], "budgetValue": t["budgetValue"], "pctValue": t["pctValue"],
+                        "expectedValue": exp_t, "pctElapsed": meta["pctElapsed"]}
     correo = f"""<!doctype html><html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"></head>
 <body style="margin:0;padding:0;background:#f4f3ef">
   <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#f4f3ef"><tr><td align="center" style="padding:20px 12px">
@@ -249,7 +263,7 @@ def main():
         <div style="font-size:21px;font-weight:700;color:{INK};margin:4px 0 12px">Alertas de cumplimiento — {meta['period']}</div>
         <p style="margin:0 0 6px;font-size:14px;line-height:1.5;color:{INK}">Hola equipo,</p>
         <p style="margin:0 0 6px;font-size:14px;line-height:1.5;color:{INK}">{intro}</p>
-        <p style="margin:0 0 4px;font-size:13px;line-height:1.5;color:{INK_2}">El <b>ritmo</b> compara lo vendido contra lo que deberíamos llevar a la fecha (meta × días transcurridos). Semáforo: verde ≥100%, amarillo 85–99%, rojo &lt;85%.</p>
+        <p style="margin:0 0 4px;font-size:13px;line-height:1.5;color:{INK_2}"><b>Esperado a la fecha</b> = lo que deberíamos llevar hoy si la meta del mes se repartiera pareja en los días del mes. Semáforo: verde si vamos en o por encima de lo esperado; amarillo hasta 15% por debajo; rojo más de 15% por debajo.</p>
       </td></tr>
       <tr><td style="padding:0 20px"><table role="presentation" width="100%" cellpadding="0" cellspacing="0">{''.join(sections)}</table></td></tr>
       <tr><td style="padding:14px 20px 24px;font-size:12px;color:{INK_3};line-height:1.5;border-top:1px solid {BORDER}">
@@ -262,7 +276,8 @@ def main():
     with open(os.path.join(args.out, "correo.html"), "w", encoding="utf-8") as f:
         f.write(correo)
     d = meta["cutoff"].split(" ")
-    asunto = f"Ventas vs. meta por canal — corte {d[0]} {d[1]} · ritmo {pct(t['paceValue'])} ({STATUS[st_t]['label'].lower()})"
+    asunto = (f"Ventas vs. meta por canal — corte {d[0]} {d[1]} · {pct(t['pctValue'])} de la meta "
+              f"vs. {pct(meta['pctElapsed'])} esperado ({STATUS[st_t]['label'].lower()})")
     with open(os.path.join(args.out, "asunto.txt"), "w", encoding="utf-8") as f:
         f.write(asunto)
     with open(os.path.join(args.out, "resumen.json"), "w", encoding="utf-8") as f:

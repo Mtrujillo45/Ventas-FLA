@@ -1,6 +1,6 @@
 ---
 name: informe-canales
-description: Envía por correo el informe de alertas de cumplimiento por canal de Mompossina al equipo comercial (Online, Showroom, Mayoristas nacionales e internacionales), con una imagen por canal ($ y unidades vs. meta del mes, ritmo y semáforo) y un resumen corto. Corre automáticamente los lunes 8:00 am y miércoles 4:00 pm (hora Bogotá). Usar siempre que el usuario pida: informe por canal, alertas por canal, enviar el informe al equipo, correo de cumplimiento a las responsables, o cuando lo dispare el scheduler.
+description: Envía por correo el informe de alertas de cumplimiento por canal de Mompossina al equipo comercial (Online, Showroom, Mayoristas nacionales e internacionales), con una imagen por canal ($ y unidades vs. meta del mes, esperado a la fecha y semáforo) y un resumen corto. Corre automáticamente los lunes 8:00 am y miércoles 4:00 pm (hora Bogotá). Usar siempre que el usuario pida: informe por canal, alertas por canal, enviar el informe al equipo, correo de cumplimiento a las responsables, o cuando lo dispare el scheduler.
 ---
 
 ## Qué hace
@@ -12,7 +12,7 @@ partir de su `DATA_BUNDLE`, arma y **envía** un correo al equipo comercial:
   **operaciones@mompossina.com** (cuenta Composio Gmail `gmail_rebold-risp`).
 - Una sección por grupo de responsables, con un resumen de 1-2 frases y una
   imagen (tarjeta) con ventas en pesos y unidades vs. la meta del mes, la marca
-  de lo esperado a la fecha, el ritmo y el semáforo:
+  de lo esperado a la fecha y el semáforo (sin "ritmo": pedido del usuario 2026-10-13, ver el SKILL de presupuesto-vs-real):
 
 | Grupo | Canales | Responsables |
 |---|---|---|
@@ -34,9 +34,9 @@ pedirle los correos al usuario.
 - **Lunes 8:00 am** y **miércoles 4:00 pm**, hora Bogotá. Las Routines arrancan
   ~15 minutos antes para que el correo llegue cerca de esa hora.
 - **Corte = cierre del día anterior** (domingo 23:59 los lunes, martes 23:59 los
-  miércoles). Regla pedida por el usuario el 2026-10-13: medir el ritmo con días
-  completos, sin contar un día que apenas empieza (si no, el ritmo se ve
-  artificialmente bajo). Shopify se consulta hasta las 23:59:59 del día anterior y
+  miércoles). Regla pedida por el usuario el 2026-10-13: medir con días completos, sin
+  contar un día que apenas empieza (si no, el cumplimiento vs. lo esperado se
+  ve artificialmente bajo). Shopify se consulta hasta las 23:59:59 del día anterior y
   `compute.py` corre con `--now <día anterior>T23:59:59-05:00`.
 
 ## Procedimiento (corrida automática, sin usuario presente)
@@ -95,7 +95,9 @@ pedirle los correos al usuario.
    de la Routine).
    Enviar **una sola vez**: no reintentar si la respuesta trae id de mensaje.
 
-6. **Reportar** en la sesión: asunto, destinatarios, ritmo total y canales en rojo.
+6. **Reportar** en la sesión: asunto, destinatarios, cumplimiento vs. esperado a la fecha y canales en rojo.
+
+Mayoristas internacionales (`BY_SHIPMENT` en `build_report.py`) se factura por despachos: no se le calcula "faltan $X por día", solo lo que falta para la meta del mes.
 
 ## Si algo falla
 
@@ -109,7 +111,7 @@ pedirle los correos al usuario.
 
 - `build_report.py` — arma `tarjetas.html`, `correo.html`, `asunto.txt` y
   `resumen.json` desde el `DATA_BUNDLE` del dashboard. No hace aritmética de
-  negocio: toma real/meta/ritmo/semáforo tal cual; solo calcula lo que falta por
+  negocio: toma real/meta/cumplimiento/semáforo tal cual; solo calcula el esperado a la fecha y lo que falta por
   día para cumplir ((meta − real) / días restantes).
 - `render.js` — screenshot 2x de cada tarjeta → `online.png`, `showroom.png`,
   `mayoristas.png` (Playwright, Chromium en `/opt/pw-browsers/chromium`).
