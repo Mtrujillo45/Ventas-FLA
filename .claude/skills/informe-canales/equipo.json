@@ -1,0 +1,11 @@
+{
+  "_nota": "Responsables por canal (definido por el usuario 2026-10-13). Los correos van en 'email'; mientras estén vacíos el informe no se puede enviar.",
+  "grupos": [
+    {"id": "online", "titulo": "Online", "canales": ["online"],
+     "responsables": [{"nombre": "Verónica", "email": ""}, {"nombre": "Laura", "email": ""}]},
+    {"id": "showroom", "titulo": "Showroom", "canales": ["showroom"],
+     "responsables": [{"nombre": "Greisy", "email": ""}]},
+    {"id": "mayoristas", "titulo": "Mayoristas nacionales e internacionales", "canales": ["nacional", "internacional"],
+     "responsables": [{"nombre": "Camila", "email": ""}, {"nombre": "Natalia", "email": ""}]}
+  ]
+}

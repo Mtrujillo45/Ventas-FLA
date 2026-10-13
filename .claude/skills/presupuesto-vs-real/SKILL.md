@@ -324,6 +324,8 @@ rompiendo el parseo silenciosamente (el dashboard se ve en blanco, con un
 | Canales | Online (Web/Redes propias), Showroom (Retail), Mayoristas nacionales (Multimarcas), Mayoristas internacionales (Internacional directo) |
 | Mayoristas | Facturas electrónicas en Google Drive, carpetas "FACTURAS NACIONALES" y "FACTURA EXPOR" (no automatizado — se extrae a mano cada corrida, ver paso 3) |
 | Script de cómputo | `.claude/skills/presupuesto-vs-real/compute.py` |
+| Insumos de mayoristas del mes | `.claude/skills/presupuesto-vs-real/insumos/<YYYY-MM>/wholesale.json` y `extraordinary.json` — versionados desde oct-2026 para que una sesión nueva (p.ej. la Routine del skill `informe-canales`) parta de lo ya clasificado y solo agregue facturas nuevas. Mantenerlos al día en cada corrida. |
+| Acumulado de meses cerrados | suma de `total.realValue` / `total.realUnits` de `historico/*.json` anteriores al mes en curso → `--prior-real-value` / `--prior-real-units` |
 | Cuenta Google Drive | `googledrive_secern-burl` (operaciones@mompossina.com) — especificar `account` en `run_composio_tool`/`COMPOSIO_MULTI_EXECUTE_TOOL` si hay ambigüedad de múltiples cuentas conectadas |
 
 ## Procedimiento
