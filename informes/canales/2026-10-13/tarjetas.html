@@ -1,0 +1,153 @@
+<!doctype html><html lang='es'><head><meta charset='utf-8'><title>Tarjetas por canal</title><style>
+* { box-sizing: border-box; }
+body { margin: 0; padding: 24px; background: #f4f3ef; font-family: -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; color: #1f1f1e; }
+.card { width: 600px; background: #ffffff; border: 1px solid #e4e2dc; border-radius: 12px; padding: 20px 22px 16px; margin-bottom: 24px; }
+.card-head { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 4px; }
+.card-title { font-size: 20px; font-weight: 700; margin-bottom: 2px; }
+.card-cut { font-size: 12px; color: #8a8a85; }
+.owners { font-size: 13px; color: #5c5c58; margin-bottom: 14px; }
+.sub-title { font-size: 14px; font-weight: 700; margin: 14px 0 2px; padding-top: 12px; border-top: 1px solid #e4e2dc; }
+.sub-title:first-of-type { border-top: none; padding-top: 0; margin-top: 4px; }
+.metric { margin: 10px 0 14px; }
+.metric-head { display: flex; justify-content: space-between; align-items: center; font-size: 12px; color: #5c5c58; text-transform: uppercase; letter-spacing: .03em; }
+.metric-pace { text-transform: none; letter-spacing: 0; font-size: 13px; color: #5c5c58; }
+.metric-pace b { color: #1f1f1e; }
+.chip { display: inline-block; margin-left: 6px; padding: 1px 8px; border: 1.5px solid; border-radius: 999px; font-size: 11px; font-weight: 700; letter-spacing: .03em; background: #fff; }
+.metric-value { font-size: 15px; margin: 4px 0 6px; color: #5c5c58; }
+.metric-value b { font-size: 22px; color: #1f1f1e; }
+.metric-value .of { color: #5c5c58; }
+.metric-value .pct { float: right; font-size: 13px; color: #5c5c58; margin-top: 8px; }
+.track { position: relative; height: 12px; border-radius: 6px; overflow: visible; }
+.fill { height: 12px; border-radius: 6px; }
+.marker { position: absolute; top: -4px; width: 2px; height: 20px; background: #1f1f1e; border-radius: 1px; transform: translateX(-1px); }
+.marker-note { font-size: 11px; color: #8a8a85; margin-top: 5px; }
+.need { font-size: 13px; color: #5c5c58; background: #f7f6f2; border-radius: 8px; padding: 8px 10px; margin-top: 6px; }
+.need b { color: #1f1f1e; }
+</style></head><body>
+  <div class="card" id="card-online">
+    <div class="card-title">Online</div>
+    <div class="owners">Responsables: Verónica y Laura · Octubre 2026, corte 13 oct (día 13 de 31)</div>
+    
+    <div class="metric">
+      <div class="metric-head">
+        <span class="metric-label">Ventas en pesos</span>
+        <span class="metric-pace">Esperado a la fecha <b>$42.3M</b>
+          <span class="chip" style="color:#d03b3b;border-color:#d03b3b">● ROJO</span></span>
+      </div>
+      <div class="metric-value"><b>$29.7M</b> <span class="of">de $100.9M</span>
+        <span class="pct">29.4% de la meta</span></div>
+      <div class="track" style="background:#f5d6d6">
+        <div class="fill" style="width:29.43%;background:#d03b3b"></div>
+        <div class="marker" style="left:41.94%"></div>
+      </div>
+      <div class="marker-note">Línea vertical = esperado a la fecha (41.9% de la meta)</div>
+    </div>
+    <div class="metric">
+      <div class="metric-head">
+        <span class="metric-label">Unidades</span>
+        <span class="metric-pace">Esperado a la fecha <b>366</b>
+          <span class="chip" style="color:#d03b3b;border-color:#d03b3b">● ROJO</span></span>
+      </div>
+      <div class="metric-value"><b>248</b> <span class="of">de 873</span>
+        <span class="pct">28.4% de la meta</span></div>
+      <div class="track" style="background:#f5d6d6">
+        <div class="fill" style="width:28.41%;background:#d03b3b"></div>
+        <div class="marker" style="left:41.94%"></div>
+      </div>
+      <div class="marker-note">Línea vertical = esperado a la fecha (41.9% de la meta)</div>
+    </div><div class="need">Para cumplir: <b>$4.0M/día</b> y <b>35 und/día</b> en los 18 días restantes.</div>
+  </div>
+  <div class="card" id="card-showroom">
+    <div class="card-title">Showroom</div>
+    <div class="owners">Responsables: Greisy · Octubre 2026, corte 13 oct (día 13 de 31)</div>
+    
+    <div class="metric">
+      <div class="metric-head">
+        <span class="metric-label">Ventas en pesos</span>
+        <span class="metric-pace">Esperado a la fecha <b>$10.5M</b>
+          <span class="chip" style="color:#fab219;border-color:#fab219">▲ AMARILLO</span></span>
+      </div>
+      <div class="metric-value"><b>$8.9M</b> <span class="of">de $25.0M</span>
+        <span class="pct">35.8% de la meta</span></div>
+      <div class="track" style="background:#fdeccb">
+        <div class="fill" style="width:35.76%;background:#fab219"></div>
+        <div class="marker" style="left:41.94%"></div>
+      </div>
+      <div class="marker-note">Línea vertical = esperado a la fecha (41.9% de la meta)</div>
+    </div>
+    <div class="metric">
+      <div class="metric-head">
+        <span class="metric-label">Unidades</span>
+        <span class="metric-pace">Esperado a la fecha <b>91</b>
+          <span class="chip" style="color:#fab219;border-color:#fab219">▲ AMARILLO</span></span>
+      </div>
+      <div class="metric-value"><b>81</b> <span class="of">de 216</span>
+        <span class="pct">37.5% de la meta</span></div>
+      <div class="track" style="background:#fdeccb">
+        <div class="fill" style="width:37.50%;background:#fab219"></div>
+        <div class="marker" style="left:41.94%"></div>
+      </div>
+      <div class="marker-note">Línea vertical = esperado a la fecha (41.9% de la meta)</div>
+    </div><div class="need">Para cumplir: <b>$892K/día</b> y <b>8 und/día</b> en los 18 días restantes.</div>
+  </div>
+  <div class="card" id="card-mayoristas">
+    <div class="card-title">Mayoristas nacionales e internacionales</div>
+    <div class="owners">Responsables: Camila y Natalia · Octubre 2026, corte 13 oct (día 13 de 31)</div>
+    <div class="sub-title">May. nacionales</div>
+    <div class="metric">
+      <div class="metric-head">
+        <span class="metric-label">Ventas en pesos</span>
+        <span class="metric-pace">Esperado a la fecha <b>$18.5M</b>
+          <span class="chip" style="color:#d03b3b;border-color:#d03b3b">● ROJO</span></span>
+      </div>
+      <div class="metric-value"><b>$13.6M</b> <span class="of">de $44.0M</span>
+        <span class="pct">30.9% de la meta</span></div>
+      <div class="track" style="background:#f5d6d6">
+        <div class="fill" style="width:30.94%;background:#d03b3b"></div>
+        <div class="marker" style="left:41.94%"></div>
+      </div>
+      <div class="marker-note">Línea vertical = esperado a la fecha (41.9% de la meta)</div>
+    </div>
+    <div class="metric">
+      <div class="metric-head">
+        <span class="metric-label">Unidades</span>
+        <span class="metric-pace">Esperado a la fecha <b>280</b>
+          <span class="chip" style="color:#d03b3b;border-color:#d03b3b">● ROJO</span></span>
+      </div>
+      <div class="metric-value"><b>176</b> <span class="of">de 667</span>
+        <span class="pct">26.4% de la meta</span></div>
+      <div class="track" style="background:#f5d6d6">
+        <div class="fill" style="width:26.39%;background:#d03b3b"></div>
+        <div class="marker" style="left:41.94%"></div>
+      </div>
+      <div class="marker-note">Línea vertical = esperado a la fecha (41.9% de la meta)</div>
+    </div><div class="need">Para cumplir: <b>$1.7M/día</b> y <b>27 und/día</b> en los 18 días restantes.</div><div class="sub-title">May. internacionales</div>
+    <div class="metric">
+      <div class="metric-head">
+        <span class="metric-label">Ventas en pesos</span>
+        <span class="metric-pace">Esperado a la fecha <b>$58.7M</b>
+          <span class="chip" style="color:#d03b3b;border-color:#d03b3b">● ROJO</span></span>
+      </div>
+      <div class="metric-value"><b>$0</b> <span class="of">de $140.0M</span>
+        <span class="pct">0.0% de la meta</span></div>
+      <div class="track" style="background:#f5d6d6">
+        <div class="fill" style="width:0.00%;background:#d03b3b"></div>
+        <div class="marker" style="left:41.94%"></div>
+      </div>
+      <div class="marker-note">Línea vertical = esperado a la fecha (41.9% de la meta)</div>
+    </div>
+    <div class="metric">
+      <div class="metric-head">
+        <span class="metric-label">Unidades</span>
+        <span class="metric-pace">Esperado a la fecha <b>434</b>
+          <span class="chip" style="color:#d03b3b;border-color:#d03b3b">● ROJO</span></span>
+      </div>
+      <div class="metric-value"><b>0</b> <span class="of">de 1.036</span>
+        <span class="pct">0.0% de la meta</span></div>
+      <div class="track" style="background:#f5d6d6">
+        <div class="fill" style="width:0.00%;background:#d03b3b"></div>
+        <div class="marker" style="left:41.94%"></div>
+      </div>
+      <div class="marker-note">Línea vertical = esperado a la fecha (41.9% de la meta)</div>
+    </div><div class="need">Faltan <b>$140.0M</b> para la meta del mes. Se factura por despachos, no a diario.</div>
+  </div></body></html>
