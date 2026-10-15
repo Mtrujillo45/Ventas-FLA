@@ -27,5 +27,65 @@
   "invoice": "#34808",
   "partner": "Falabella (marketplace vía Shopify)",
   "carpeta": "Shopify (Falabella marketplace)"
+ },
+ {
+  "channel": "internacional",
+  "date": "2026-10-09",
+  "value": 7712125,
+  "units": 53,
+  "invoice": "RFEL8415",
+  "partner": "Mayoh Beachwear (Jeddah, Arabia Saudita)",
+  "note": "USD 2,396 (mercancía USD 2,178 + flete y seguro USD 218, CIP), TRM 3.218,75. Unidades: 53 prendas según observaciones (la factura dice 55 cantidades incluyendo flete/seguro).",
+  "carpeta": "10. OCTUBRE (hellosales@)/FIRME"
+ },
+ {
+  "channel": "internacional",
+  "date": "2026-10-14",
+  "value": 9487487,
+  "units": 0,
+  "invoice": "RFEL8421",
+  "partner": "Cristalina Swimwear (Miami)",
+  "note": "Reporte de ventas de septiembre de mercancía en consignación (USD 2,970, TRM 3.194,44). Facturada como asesoría de diseño, sin desglose de prendas: unidades en 0. Cuenta como venta real por estar en CONSIGNACIÓN/REPORTES DE VENTAS (regla de carpetas 2026-10-15).",
+  "carpeta": "10. OCTUBRE (hellosales@)/CONSIGNACIÓN/REPORTES DE VENTAS"
+ },
+ {
+  "channel": "nacional",
+  "date": "2026-10-13",
+  "value": -76361,
+  "units": -2,
+  "invoice": "NC57",
+  "partner": "Patopat SAS",
+  "note": "Devolución de clientes 57 sobre RFEL8386 (sep): 2 pañoletas LOVESSENCE, subtotal 117,479 - descuento 41,118, sin IVA.",
+  "carpeta": "10. OCTUBRE (comercial@)/FIRME"
+ },
+ {
+  "channel": "nacional",
+  "date": "2026-10-14",
+  "value": 676764,
+  "units": 10,
+  "invoice": "RFEL8420",
+  "partner": "Patopat SAS",
+  "note": "Subtotal 1,041,176 - descuento 364,412, sin IVA.",
+  "carpeta": "10. OCTUBRE (comercial@)/FIRME"
+ },
+ {
+  "channel": "nacional",
+  "date": "2026-10-14",
+  "value": 1095831,
+  "units": 17,
+  "invoice": "RFEL8422",
+  "partner": "Casa Viva / 18 Razones SAS",
+  "note": "Subtotal sin IVA, sin descuento.",
+  "carpeta": "10. OCTUBRE (comercial@)/FIRME"
+ },
+ {
+  "channel": "nacional",
+  "date": "2026-10-14",
+  "value": 10946201,
+  "units": 183,
+  "invoice": "RFEL8425",
+  "partner": "Wanitta / Creemos Que Todo Es Posible SAS",
+  "note": "Subtotal sin IVA, sin descuento.",
+  "carpeta": "10. OCTUBRE (comercial@)/FIRME"
  }
 ]
