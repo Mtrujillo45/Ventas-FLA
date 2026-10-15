@@ -57,6 +57,13 @@ pedirle los correos al usuario.
      `extraordinary.json` (versionados en el repo) y **agregar solo** las facturas
      nuevas de Drive y los pedidos nuevos de Falabella-Shopify; guardar los JSON
      actualizados en esa misma carpeta.
+   - Drive: buscar primero en la estructura por mes de Camila (`<n>. <MES>` →
+     `FIRME`, `CONSIGNACIÓN/REPORTES DE VENTAS`, `CONSIGNACIÓN/REMISIONES`,
+     `PAQUETE COMPLETO`). **La carpeta decide**: FIRME y REPORTES DE VENTAS son
+     venta real; REMISIONES es consignación (trámite, no es venta); PAQUETE
+     COMPLETO es PAC. Una factura bien ubicada en esa estructura NO es ambigua,
+     aunque diga "servicio". Ver "Estructura de Drive de mayoristas" en el SKILL
+     de presupuesto. Las carpetas viejas son solo respaldo temporal.
    - `--prior-real-value/--prior-real-units` = suma de `total.realValue` /
      `total.realUnits` de los meses en `historico/` anteriores al mes en curso.
    - **Factura ambigua** (las que el SKILL de presupuesto dice "preguntar al

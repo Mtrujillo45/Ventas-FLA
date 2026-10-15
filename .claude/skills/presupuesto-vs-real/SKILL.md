@@ -246,7 +246,70 @@ semáforo sigue igual por dentro (`paceValue`), pero se explica como "verde: en 
 encima de lo esperado; amarillo: hasta 15% por debajo; rojo: más de 15% por debajo".
 Para el promedio diario se dice "venta diaria", no "ritmo diario".
 
-## Cristalina Swimwear vende en consignación, no en firme — confirmado 2026-09-27
+## Estructura de Drive de mayoristas — organizada por Camila, confirmada 2026-10-15
+
+**La carpeta donde está la factura decide cómo cuenta.** Desde oct-2026 cada
+mes tiene una carpeta `<n>. <MES>` (ej. `9. SEPTIEMBRE`, `10. OCTUBRE`) por
+canal de mayoristas, compartidas con operaciones@mompossina.com (cuenta
+`googledrive_secern-burl`, aparecen en "compartido conmigo", sin carpeta padre
+visible). Buscarlas por nombre (`name = '10. OCTUBRE'` y mimeType folder) y
+distinguir el canal por el dueño de la carpeta:
+
+| Dueño de la carpeta del mes | Canal |
+|---|---|
+| comercial@mompossina.com | Mayoristas **nacionales** (Falabella, Casa Viva, Wanitta, boutiques…) |
+| hellosales@mompossina.com | Mayoristas **internacionales** (Cristalina, Shop Greta, Anatomikos…) |
+
+Dentro de cada mes, misma estructura en ambos canales:
+
+| Subcarpeta | Qué contiene | Cómo cuenta |
+|---|---|---|
+| `FIRME` | Venta en firme | **Venta real** → `wholesale.json` del canal |
+| `CONSIGNACIÓN/REPORTES DE VENTAS` | Reporte de mercancía en consignación **ya vendida** (ej. facturas de Falabella, reporte de ventas de Cristalina) | **Venta real** → `wholesale.json` del canal |
+| `CONSIGNACIÓN/REMISIONES` | Despacho en consignación; la factura es **solo trámite** (exportación/envío) | **No es venta** → `extraordinary.json`, `"category": "CONSIGNACION"` |
+| `PAQUETE COMPLETO` | Paquete completo/curado | `extraordinary.json`, `"category": "PAC"` (cuenta en el canal solo si el mes tiene `pacEnMeta`, ver arriba) |
+
+Reglas:
+- La carpeta **reemplaza** las reglas anteriores por cliente o sufijo: una
+  factura de Cristalina en `REPORTES DE VENTAS` es venta real (antes toda
+  factura de Cristalina salía del cumplimiento); una factura en `REMISIONES` no
+  es venta sea del cliente que sea (incluido Falabella). Una factura en `FIRME`
+  o `REPORTES DE VENTAS` con descripción tipo "servicio/asesoría" sin detalle de
+  prendas **no se pregunta**: la carpeta ya es la confirmación de que es venta
+  real (unidades en 0 si no se pueden determinar).
+- El prefijo `SOLICITAR LA EMITIDA - ` en el nombre del archivo (ej.
+  `SOLICITAR LA EMITIDA - RFEL 8324 WANITTA.pdf`) es una nota interna de que hay
+  que pedir la versión emitida; la factura cuenta igual según su carpeta.
+- Notas crédito y anulaciones van en la misma carpeta que la factura que
+  afectan y restan del mismo canal (ej. sep-2026 Falabella: RFEL8314 +
+  RFEL8315 anulada + NC54 que la revierte + RFEL8339 que la reemplaza).
+- **Respaldo temporal — confirmado 2026-10-15:** mientras un mes no tenga su
+  carpeta en la estructura nueva (o una factura del mes siga solo en las
+  carpetas viejas `FACTURAS NACIONALES` / `FACTURA EXPOR`), contarla como
+  hasta ahora (reglas de abajo) y anotar en el footer del dashboard que falta
+  moverla a la estructura nueva. Si una factura aparece en ambas, manda la
+  carpeta nueva.
+- Facturas que **emiten otros a Mompossina** (carpetas de gastos `OCTUBRE`,
+  `SEPTIEMBRE`, pagos, etc.) nunca son venta.
+- **Septiembre 2026 queda como está** (decisión del usuario 2026-10-15): la
+  RFEL8325 de Cristalina quedó en `REPORTES DE VENTAS` ("reporte ventas
+  agosto"), pero se mantiene fuera del cumplimiento como regularización de
+  agosto; no se reabre el mes cerrado. La regla de carpetas aplica de octubre en
+  adelante.
+
+IDs de referencia (sep-2026): nacional `9. SEPTIEMBRE` =
+`1G9AuHFusEuaQbYy75U0v0Gf6uBMCK-YS`; internacional `9. SEPTIEMBRE` =
+`1NrH8Sb4MeGusKbYCsSm-sZPzfR4q0yur`. Carpetas viejas: `FACTURAS NACIONALES` =
+`1G17ZePAcCJ6TocOzb-WKTrSVcDDk4Qmi`, `FACTURA EXPOR` =
+`1SPgPOIUwvLWsr0Zb4om7UwW3j9dUE8hU`.
+
+## Cristalina Swimwear vende en consignación, no en firme — confirmado 2026-09-27 (reemplazado por la estructura de Drive desde oct-2026)
+
+> **Desde oct-2026 manda la carpeta** (sección anterior): una factura de
+> Cristalina cuenta según esté en `REMISIONES` (no es venta), `REPORTES DE
+> VENTAS` (venta real) o `PAQUETE COMPLETO` (PAC). Lo de abajo es la regla
+> histórica, válida para septiembre y como respaldo si una factura de
+> Cristalina aparece solo en la carpeta vieja `FACTURA EXPOR`.
 
 El usuario confirmó que las facturas de Cristalina Swimwear (Miami) NO son
 venta en firme — Cristalina recibe la mercancía en **consignación** y las
@@ -345,7 +408,7 @@ rompiendo el parseo silenciosamente (el dashboard se ve en blanco, con un
 | Plan de referencia | `.claude/skills/presupuesto-vs-real/plan_2026_2027.json` — meta por canal y mes (Sep-Dic 2026), precios de facturación, márgenes. Extraído una sola vez de Dropbox (`/Mompossina/Plan Estrategico/Plan_Estrategico_Mompossina_2026_2027.xlsx`, versión **SIN** "Ajuste" — 43,358 bytes, NO la de 48,351 bytes). No hace falta re-leer el Excel cada corrida: el plan no cambia dentro del periodo Sep-Dic salvo que el usuario avise de un ajuste. |
 | Meta total del periodo | $1,399.0M (Sep-Dic 2026), 13,093 unidades (con el ajuste de octubre del 29-sep-2026: Online $100.9M, Nacional $44M, Internacional $140M — ver `_source` en el plan) |
 | Canales | Online (Web/Redes propias), Showroom (Retail), Mayoristas nacionales (Multimarcas), Mayoristas internacionales (Internacional directo) |
-| Mayoristas | Facturas electrónicas en Google Drive, carpetas "FACTURAS NACIONALES" y "FACTURA EXPOR" (no automatizado — se extrae a mano cada corrida, ver paso 3) |
+| Mayoristas | Facturas electrónicas en Google Drive, estructura por mes de Camila (`<n>. <MES>` → `FIRME`, `CONSIGNACIÓN/REPORTES DE VENTAS`, `CONSIGNACIÓN/REMISIONES`, `PAQUETE COMPLETO`; ver "Estructura de Drive de mayoristas"), con las carpetas viejas "FACTURAS NACIONALES" y "FACTURA EXPOR" como respaldo temporal (no automatizado — se extrae a mano cada corrida, ver paso 3) |
 | Script de cómputo | `.claude/skills/presupuesto-vs-real/compute.py` |
 | Insumos de mayoristas del mes | `.claude/skills/presupuesto-vs-real/insumos/<YYYY-MM>/wholesale.json` y `extraordinary.json` — versionados desde oct-2026 para que una sesión nueva (p.ej. la Routine del skill `informe-canales`) parta de lo ya clasificado y solo agregue facturas nuevas. Mantenerlos al día en cada corrida. |
 | Acumulado de meses cerrados | suma de `total.realValue` / `total.realUnits` de `historico/*.json` anteriores al mes en curso → `--prior-real-value` / `--prior-real-units` |
@@ -403,9 +466,16 @@ o subido a S3 **no se puede descargar** con `curl` local. Dos caminos:
   soportados, uno u otro, no los dos).
 
 **3. Traer facturas de mayoristas** (Google Drive, `GOOGLEDRIVE_FIND_FILE` /
-`GOOGLEDRIVE_DOWNLOAD_FILE`, cuenta `googledrive_secern-burl`): carpetas
-"FACTURAS NACIONALES" y "FACTURA EXPOR", filtrar a facturas con fecha del
-mes en curso. Descargar y parsear cada PDF con `pdfplumber` dentro de
+`GOOGLEDRIVE_DOWNLOAD_FILE`, cuenta `googledrive_secern-burl`): primero las
+dos carpetas del mes en la estructura nueva (`<n>. <MES>` de comercial@ =
+nacional y de hellosales@ = internacional; subcarpetas `FIRME`,
+`CONSIGNACIÓN/REPORTES DE VENTAS`, `CONSIGNACIÓN/REMISIONES`, `PAQUETE
+COMPLETO` — ver "Estructura de Drive de mayoristas"); la subcarpeta decide si
+va a `wholesale.json` o a `extraordinary.json`. Después, como respaldo, las
+carpetas viejas "FACTURAS NACIONALES" y "FACTURA EXPOR" (solo facturas que no
+estén ya en la estructura nueva; anotarlas como pendientes de mover). Filtrar
+a facturas con fecha del mes en curso. Guardar en cada entrada el campo
+`"carpeta"` con la ruta de donde salió (ej. `"10. OCTUBRE/FIRME"`). Descargar y parsear cada PDF con `pdfplumber` dentro de
 `COMPOSIO_REMOTE_WORKBENCH` (el link firmado de Cloudflare R2 que devuelve
 `GOOGLEDRIVE_DOWNLOAD_FILE` sólo es alcanzable desde la red del sandbox, no
 desde Bash local). Armar `wholesale_<mes>.json`:
@@ -424,8 +494,8 @@ unidades (colaboraciones, co-branding, patrocinios — ver sección
 [{"date":"YYYY-MM-DD","invoice":"RFEL...","category":"FLA","partner":"...",
   "description":"...","value":123,"note":"opcional"}]
 ```
-`category` es `"FLA"` o `"PAC"` (ver `EXTRAORDINARY_CATEGORIES` en
-`compute.py`) — determina en qué fila fija del panel "$ Valor" aparece.
+`category` es `"FLA"`, `"PAC"` o `"CONSIGNACION"` (remisiones en consignación;
+ver `EXTRAORDINARY_CATEGORIES` en `compute.py`) — determina en qué fila fija del panel "$ Valor" aparece.
 
 **4. Acumulado de meses ya cerrados (sólo relevante desde octubre en
 adelante).** `compute.py` necesita `--prior-real-value`/`--prior-real-units`
