@@ -129,7 +129,7 @@ VALID_STATUS = {"PAID", "PARTIALLY_PAID", "PARTIALLY_REFUNDED", "REFUNDED"}
 EXTRAORDINARY_CATEGORIES = [
     ("FLA", "Colaboración FLA"),
     ("PAC", "Paquete completo (PAC)"),
-    ("CONSIGNACION", "Consignación (Cristalina)"),
+    ("CONSIGNACION", "Consignación (remisiones)"),
 ]
 
 
