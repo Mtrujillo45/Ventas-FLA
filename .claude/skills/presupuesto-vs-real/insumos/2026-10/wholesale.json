@@ -7,7 +7,7 @@
   "invoice": "RFEL8398",
   "partner": "Falabella de Colombia SAS",
   "note": "Subtotal sin IVA, sin descuento",
-  "carpeta": "FACTURAS NACIONALES (carpeta vieja; pendiente de mover a 10. OCTUBRE — respaldo temporal 2026-10-15)"
+  "carpeta": "10. OCTUBRE (comercial@)/CONSIGNACIÓN/REPORTES DE VENTAS (movida desde FACTURAS NACIONALES el 15-oct)"
  },
  {
   "channel": "nacional",
@@ -17,7 +17,7 @@
   "invoice": "RFEL8399",
   "partner": "Falabella de Colombia SAS",
   "note": "Cargo por servicio de descuento no autorizado — suma al valor, no a unidades (igual que RFEL8339 en sep)",
-  "carpeta": "FACTURAS NACIONALES (carpeta vieja; pendiente de mover a 10. OCTUBRE — respaldo temporal 2026-10-15)"
+  "carpeta": "10. OCTUBRE (comercial@)/CONSIGNACIÓN/REPORTES DE VENTAS (movida desde FACTURAS NACIONALES el 15-oct)"
  },
  {
   "channel": "nacional",
@@ -25,6 +25,15 @@
   "value": 139900,
   "units": 1,
   "invoice": "#34808",
+  "partner": "Falabella (marketplace vía Shopify)",
+  "carpeta": "Shopify (Falabella marketplace)"
+ },
+ {
+  "channel": "nacional",
+  "date": "2026-10-15",
+  "value": 139900,
+  "units": 1,
+  "invoice": "#34910",
   "partner": "Falabella (marketplace vía Shopify)",
   "carpeta": "Shopify (Falabella marketplace)"
  },
