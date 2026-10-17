@@ -7,7 +7,7 @@
   "description": "Paquete completo (PAC) — 180 prendas",
   "value": 3182376,
   "note": "USD 1,000.20 (mercancía USD 900 + flete y seguro USD 100, CIP), TRM 3.181,74; 180 prendas. Octubre tiene pacEnMeta = internacional, así que compute.py la suma al cumplimiento de internacional. No es el despacho PAC grande (~USD 39.000) previsto en la meta.",
-  "carpeta": "FACTURA EXPOR (carpeta vieja; pendiente de mover a 10. OCTUBRE/PAQUETE COMPLETO — respaldo temporal)",
+  "carpeta": "10. OCTUBRE (hellosales@)/PAQUETE COMPLETO (movida desde FACTURA EXPOR el 16-oct)",
   "units": 180
  }
 ]
