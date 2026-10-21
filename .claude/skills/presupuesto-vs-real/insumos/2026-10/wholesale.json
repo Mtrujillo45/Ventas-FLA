@@ -96,5 +96,24 @@
   "partner": "Wanitta / Creemos Que Todo Es Posible SAS",
   "note": "Subtotal sin IVA, sin descuento.",
   "carpeta": "10. OCTUBRE (comercial@)/FIRME"
+ },
+ {
+  "channel": "nacional",
+  "date": "2026-10-21",
+  "value": 129900,
+  "units": 1,
+  "invoice": "#35104",
+  "partner": "Falabella (marketplace vía Shopify)",
+  "carpeta": "Shopify (Falabella marketplace)"
+ },
+ {
+  "channel": "nacional",
+  "date": "2026-10-21",
+  "value": 2794509,
+  "units": 39,
+  "invoice": "RFEL8431",
+  "partner": "Patopat SAS",
+  "note": "Subtotal 4,299,244 - descuento 1,504,735, sin IVA.",
+  "carpeta": "10. OCTUBRE (comercial@)/FIRME"
  }
 ]
