@@ -38,15 +38,6 @@
   "carpeta": "Shopify (Falabella marketplace)"
  },
  {
-  "channel": "nacional",
-  "date": "2026-10-21",
-  "value": 129900,
-  "units": 1,
-  "invoice": "#35104",
-  "partner": "Falabella (marketplace vía Shopify)",
-  "carpeta": "Shopify (Falabella marketplace)"
- },
- {
   "channel": "internacional",
   "date": "2026-10-09",
   "value": 7712125,
