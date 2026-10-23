@@ -115,5 +115,23 @@
   "partner": "Patopat SAS",
   "note": "Subtotal 4,299,244 - descuento 1,504,735, sin IVA.",
   "carpeta": "10. OCTUBRE (comercial@)/FIRME"
+ },
+ {
+  "channel": "nacional",
+  "date": "2026-10-22",
+  "value": 139900,
+  "units": 1,
+  "invoice": "#35117",
+  "partner": "Falabella (marketplace vía Shopify)",
+  "carpeta": "Shopify (Falabella marketplace)"
+ },
+ {
+  "channel": "nacional",
+  "date": "2026-10-23",
+  "value": 259800,
+  "units": 2,
+  "invoice": "#35124",
+  "partner": "Falabella (marketplace vía Shopify)",
+  "carpeta": "Shopify (Falabella marketplace)"
  }
 ]
