@@ -20,5 +20,16 @@
   "units": 181,
   "note": "USD 1,000.00 (mercancía USD 900 + flete y seguro USD 100, CIP), TRM 3.163,76; 181 prendas. Octubre tiene pacEnMeta = internacional, así que suma al cumplimiento de internacional. No es el despacho PAC grande (~USD 39.000).",
   "carpeta": "10. OCTUBRE (hellosales@)/PAQUETE COMPLETO"
+ },
+ {
+  "date": "2026-10-23",
+  "invoice": "RFEL8438",
+  "category": "PAC",
+  "partner": "Cristalina Swimwear (Miami)",
+  "description": "Paquete completo (PAC) — 134 prendas",
+  "value": 3185010,
+  "units": 134,
+  "note": "USD 1,000.00 (mercancía USD 900 + flete y seguro USD 100, CIP), TRM 3.185,01; 134 prendas. Octubre tiene pacEnMeta = internacional, así que suma al cumplimiento de internacional. No es el despacho PAC grande (~USD 39.000).",
+  "carpeta": "10. OCTUBRE (hellosales@)/PAQUETE COMPLETO"
  }
 ]
