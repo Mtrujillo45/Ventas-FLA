@@ -133,5 +133,25 @@
   "invoice": "#35124",
   "partner": "Falabella (marketplace vía Shopify)",
   "carpeta": "Shopify (Falabella marketplace)"
+ },
+ {
+  "channel": "internacional",
+  "date": "2026-10-23",
+  "value": 4223323,
+  "units": 0,
+  "invoice": "RFEL8439",
+  "partner": "Anatomikos S.A. de C.V. (Doral, EE.UU.)",
+  "note": "USD 1,326, TRM 3.185,01. Descripción 'asesoría en diseño' sin prendas: unidades en 0. Cuenta como venta real por estar en FIRME (regla de carpetas).",
+  "carpeta": "10. OCTUBRE (hellosales@)/FIRME"
+ },
+ {
+  "channel": "nacional",
+  "date": "2026-10-23",
+  "value": 3125496,
+  "units": 39,
+  "invoice": "RFEL8442",
+  "partner": "Nathalie Toro Ruiz (Granada)",
+  "note": "Subtotal sin IVA (IVA 593.844; total 3.719.340), sin descuento",
+  "carpeta": "10. OCTUBRE (comercial@)/FIRME"
  }
 ]
