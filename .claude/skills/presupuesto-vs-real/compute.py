@@ -531,17 +531,24 @@ def build_period_total(plan, data_by_month, current_key):
     total["breakevenMonthsReached"] = sum(1 for m in months if m["frac"] > 0 and m["entry"]["total"].get("breakevenReached"))
     total["monthsStarted"] = sum(1 for m in months if m["frac"] > 0)
 
+    # Total facturado de la compañía (pedido del usuario 2026-10-27) = venta de canales
+    # (la que cuenta en el cumplimiento) + facturación fuera del presupuesto. Misma base:
+    # sin IVA. No hay doble conteo: las PAC de meses con pacEnMeta ya se movieron a canal.
     extra_by_month = []
     for m in months:
         ex = m["entry"].get("extraordinary") or {}
-        extra_by_month.append({"month": m["key"], "total": float(ex.get("total", 0.0) or 0.0),
-                               "count": len(ex.get("items") or [])})
+        extra_value = float(ex.get("total", 0.0) or 0.0)
+        channels_value = m["entry"]["total"]["realValue"]
+        extra_by_month.append({"month": m["key"], "total": extra_value, "count": len(ex.get("items") or []),
+                               "channelsValue": channels_value, "companyTotal": channels_value + extra_value})
+    extra_total = sum(e["total"] for e in extra_by_month)
 
     return {
         "months": [{"key": m["key"], "label": m["label"], "status": m["status"], "frac": m["frac"]} for m in months],
         "channels": channels,
         "total": total,
-        "extraordinary": {"byMonth": extra_by_month, "total": sum(e["total"] for e in extra_by_month)},
+        "extraordinary": {"byMonth": extra_by_month, "total": extra_total,
+                          "companyTotal": total["realValue"] + extra_total},
     }
 
 
