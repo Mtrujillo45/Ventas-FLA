@@ -462,6 +462,89 @@ def build_ytd(plan, month_key, total_real_value, total_real_units, prior_real_va
     }
 
 
+def build_period_total(plan, data_by_month, current_key):
+    """Pestaña "Total Sep-Dic" (pedido del usuario 2026-10-27): suma por canal de
+    todos los meses del periodo — meses cerrados (historico/), el mes en curso y
+    los meses futuros (plantilla, real en 0). "Esperado a la fecha" del periodo =
+    meta completa de los meses cerrados + meta del mes en curso prorrateada por
+    días transcurridos (+0 de los meses futuros), igual criterio que build_ytd.
+    También arma la matriz canal × mes y el acumulado fuera del presupuesto."""
+    channel_order = ["online", "showroom", "nacional", "internacional"]
+    labels = {"online": "Online", "showroom": "Showroom", "nacional": "May. nacionales", "internacional": "May. internacionales"}
+    months = []
+    for mkey in plan["period_order"]:
+        entry = data_by_month[mkey]
+        if entry["status"] == "closed":
+            frac = 1.0
+        elif mkey == current_key:
+            frac = entry["meta"]["daysElapsed"] / entry["meta"]["daysInMonth"]
+        else:
+            frac = 0.0
+        months.append({"key": mkey, "label": entry["meta"]["period"].split()[0], "status": entry["status"],
+                       "frac": frac, "entry": entry})
+
+    channels = []
+    for key in channel_order:
+        acc = {"key": key, "label": labels[key], "budgetValue": 0.0, "realValue": 0.0, "budgetUnits": 0, "realUnits": 0,
+               "orders": 0, "expectedValue": 0.0, "expectedUnits": 0.0, "byMonth": []}
+        for m in months:
+            c = next(ch for ch in m["entry"]["channels"] if ch["key"] == key)
+            acc["budgetValue"] += c["budgetValue"]
+            acc["realValue"] += c["realValue"]
+            acc["budgetUnits"] += c["budgetUnits"]
+            acc["realUnits"] += c["realUnits"]
+            acc["orders"] += c.get("orders", 0) or 0
+            acc["expectedValue"] += c["budgetValue"] * m["frac"]
+            acc["expectedUnits"] += c["budgetUnits"] * m["frac"]
+            acc["byMonth"].append({"month": m["key"], "budgetValue": c["budgetValue"], "realValue": c["realValue"],
+                                   "budgetUnits": c["budgetUnits"], "realUnits": c["realUnits"]})
+        channels.append(acc)
+
+    def finish(acc):
+        acc["pctValue"] = acc["realValue"] / acc["budgetValue"] * 100 if acc["budgetValue"] else 0.0
+        acc["pctUnits"] = acc["realUnits"] / acc["budgetUnits"] * 100 if acc["budgetUnits"] else 0.0
+        acc["paceValue"] = acc["realValue"] / acc["expectedValue"] * 100 if acc["expectedValue"] else None
+        acc["paceUnits"] = acc["realUnits"] / acc["expectedUnits"] * 100 if acc["expectedUnits"] else None
+        acc["ticketReal"] = acc["realValue"] / acc["realUnits"] if acc["realUnits"] else None
+        acc["ticketPlan"] = acc["budgetValue"] / acc["budgetUnits"] if acc["budgetUnits"] else None
+        acc["ticketDelta"] = ((acc["ticketReal"] / acc["ticketPlan"]) - 1) * 100 if acc["ticketReal"] and acc["ticketPlan"] else None
+        return acc
+
+    channels = [finish(c) for c in channels]
+    total = {"key": "total", "label": "TOTAL"}
+    for f in ("budgetValue", "realValue", "budgetUnits", "realUnits", "orders", "expectedValue", "expectedUnits"):
+        total[f] = sum(c[f] for c in channels)
+    total["byMonth"] = [{"month": m["key"],
+                         "budgetValue": m["entry"]["total"]["budgetValue"], "realValue": m["entry"]["total"]["realValue"],
+                         "budgetUnits": m["entry"]["total"]["budgetUnits"], "realUnits": m["entry"]["total"]["realUnits"]}
+                        for m in months]
+    total = finish(total)
+    for c in channels:
+        c["shareReal"] = c["realValue"] / total["realValue"] * 100 if total["realValue"] else 0.0
+        c["sharePlan"] = c["budgetValue"] / total["budgetValue"] * 100 if total["budgetValue"] else 0.0
+
+    # punto de equilibrio acumulado: PE mensual × meses transcurridos (el mes en curso prorrateado)
+    months_elapsed = sum(m["frac"] for m in months)
+    breakeven_to_date = plan["breakeven_value"] * months_elapsed
+    total["breakevenToDate"] = breakeven_to_date
+    total["monthsElapsed"] = months_elapsed
+    total["breakevenMonthsReached"] = sum(1 for m in months if m["frac"] > 0 and m["entry"]["total"].get("breakevenReached"))
+    total["monthsStarted"] = sum(1 for m in months if m["frac"] > 0)
+
+    extra_by_month = []
+    for m in months:
+        ex = m["entry"].get("extraordinary") or {}
+        extra_by_month.append({"month": m["key"], "total": float(ex.get("total", 0.0) or 0.0),
+                               "count": len(ex.get("items") or [])})
+
+    return {
+        "months": [{"key": m["key"], "label": m["label"], "status": m["status"], "frac": m["frac"]} for m in months],
+        "channels": channels,
+        "total": total,
+        "extraordinary": {"byMonth": extra_by_month, "total": sum(e["total"] for e in extra_by_month)},
+    }
+
+
 def build_proj2(plan, runrate, plan_total_value):
     total_days_period = sum(plan["months"][m]["daysInMonth"] for m in plan["period_order"])
     wholesale_backlog_total = sum(
@@ -685,12 +768,19 @@ def main():
     if historico:
         print(f"Meses cargados desde historico/ ({args.historical_dir}): {sorted(historico.keys())}")
 
+    period_total = build_period_total(plan, data_by_month, args.month)
+    pt = period_total["total"]
+    print(f"Total Sep-Dic (pestaña Total): real {money_short(pt['realValue'])} / meta {money_short(pt['budgetValue'])} "
+          f"({pt['pctValue']:.1f}%) · esperado a la fecha {money_short(pt['expectedValue'])} · "
+          f"{pt['realUnits']}/{pt['budgetUnits']} und")
+
     if args.html:
         blob = {
             "byMonth": data_by_month,
             "currentMonthKey": args.month,
             "periodOrder": plan["period_order"],
             "ytd": ytd,
+            "periodTotal": period_total,
         }
         data_js = "const DATA_BUNDLE = " + json.dumps(blob, ensure_ascii=False) + ";"
         patch_html(args.html, data_js)
