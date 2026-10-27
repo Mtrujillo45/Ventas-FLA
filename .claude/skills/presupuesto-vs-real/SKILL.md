@@ -391,6 +391,26 @@ el HTML) y el footer completo (fuentes de datos, metodología). Son
 period-level / siempre-vigentes, no tiene sentido que cambien al mirar un
 mes distinto.
 
+**Pestaña "Total Sep–Dic" — agregada 2026-10-27 a pedido del usuario.** Quinta
+pestaña al final de la barra (después de Dic), con una hoja completa del periodo:
+KPIs acumulados (venta, % de la meta del periodo, esperado a la fecha, diferencia,
+unidades, precio promedio, punto de equilibrio acumulado, faltante para la meta,
+pedidos/facturas), barras de cumplimiento por canal en $ y unidades, tabla resumen,
+matrices canal × mes ($ y unidades), participación real vs. plan de cada canal,
+precio promedio por canal y facturación fuera del presupuesto acumulada por mes.
+Todo sale de `DATA_BUNDLE.periodTotal`, que arma `build_period_total()` en
+`compute.py` a partir de `byMonth` (cerrados + mes en curso + plantillas); no hay
+que editar nada a mano en cada corrida. "Esperado a la fecha" del periodo = meta
+completa de los meses cerrados + meta del mes en curso × días transcurridos ÷ días
+del mes (mismo criterio que `build_ytd`). PE acumulado = PE mensual × meses
+transcurridos (el mes en curso prorrateado) — decidido así el 2026-10-27 para que
+sea comparable con el "esperado a la fecha" (misma base de días); el recuadro dice
+además en cuántos meses iniciados se alcanzó el PE. Cuadro "Total facturado de la
+compañía" (pedido del usuario 2026-10-27): venta de canales + facturación fuera del
+presupuesto, por mes y total, sin IVA; es solo referencia, el cumplimiento sigue
+midiéndose con la venta de canales. La sección "Acumulado del periodo" con las dos
+proyecciones sigue debajo de todas las pestañas, incluida esta.
+
 **Bug ya corregido, no reintroducir:** `patch_html()` usa
 `re.subn(pattern, lambda m: wrapped, html, ...)` — el reemplazo va
 envuelto en una función, NO como string directo. Si se pasa `wrapped`
