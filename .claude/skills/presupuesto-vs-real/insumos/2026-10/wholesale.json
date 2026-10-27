@@ -153,5 +153,25 @@
   "partner": "Nathalie Toro Ruiz (Granada)",
   "note": "Subtotal sin IVA (IVA 593.844; total 3.719.340), sin descuento",
   "carpeta": "10. OCTUBRE (comercial@)/FIRME"
+ },
+ {
+  "channel": "internacional",
+  "date": "2026-10-26",
+  "value": 7033824,
+  "units": 54,
+  "invoice": "RFEL8443",
+  "partner": "Civetta / B&M SA (Guatemala)",
+  "note": "USD 2,227 (FCA, sin flete), TRM 3.158,43; 54 prendas.",
+  "carpeta": "10. OCTUBRE (hellosales@)/FIRME"
+ },
+ {
+  "channel": "nacional",
+  "date": "2026-10-26",
+  "value": 3428117,
+  "units": 49,
+  "invoice": "RFEL8445",
+  "partner": "Dulce Menta SAS",
+  "note": "Subtotal 5,713,529 - descuento 2,285,412 (40%), sin IVA.",
+  "carpeta": "10. OCTUBRE (comercial@)/CONSIGNACIÓN/REPORTES DE VENTAS"
  }
 ]
