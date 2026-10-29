@@ -1,6 +1,6 @@
 ---
 name: presupuesto-vs-real
-description: "Refresca el dashboard de Presupuesto vs. Real de Mompossina: venta neta y unidades del mes en curso frente a la meta del Plan Estratégico 2026-2027, por canal (Online, Showroom, Mayoristas nacionales, Mayoristas internacionales) — cumplimiento, ritmo diario, proyección de cierre de mes, acumulado del periodo Sep-Dic y semáforo de alertas. Republica el Artifact y la página pública (GitHub Pages). Usar siempre que el usuario pida: actualiza el presupuesto vs real, cómo vamos vs. la meta, cumplimiento de ventas, cómo va el mes vs. el plan, refresca el dashboard de presupuesto, o cuando se ejecute automáticamente por el scheduler."
+description: "Refresca el dashboard de Presupuesto vs. Real de Mompossina: venta neta y unidades del mes en curso frente a la meta del Plan Estratégico 2026-2027, por canal (Online, Showroom, Mayoristas nacionales, Mayoristas internacionales) — cumplimiento, ritmo diario, proyección de cierre de mes, acumulado del periodo Sep-Dic, pestaña Total Sep-Dic (hoja completa del periodo por canal y mes, total facturado de la compañía) y semáforo de alertas. Republica el Artifact y la página pública (GitHub Pages). Usar siempre que el usuario pida: actualiza el presupuesto vs real, cómo vamos vs. la meta, cumplimiento de ventas, cómo va el mes vs. el plan, refresca el dashboard de presupuesto, cómo vamos en el periodo / total Sep-Dic, acumulado del periodo por canal, o cuando se ejecute automáticamente por el scheduler."
 ---
 
 ## Qué hace
@@ -585,6 +585,10 @@ No toques el resto del HTML — todo lo demás ya se recalcula solo desde
 (`/opt/pw-browsers/chromium`, `NODE_PATH=$(npm root -g)`), claro y oscuro,
 revisando que no haya errores de JS (`pageerror`) y que las cifras nuevas
 se vean bien — un marcador mal cerrado rompe todo el `DATA` silenciosamente.
+Revisar también la pestaña **Total Sep–Dic** (click en `button[data-month="total"]`):
+debe mostrar la misma fecha de corte y el mes en curso con la venta recién
+calculada. No tiene narrativa a mano: si sus cifras no cuadran con la pestaña del
+mes, el problema está en `DATA_BUNDLE.periodTotal` (`build_period_total()`), no en el HTML.
 
 **8. Republicar el Artifact:**
 - `file_path`: `dashboards/presupuesto-vs-real.html`
@@ -603,8 +607,9 @@ abrir un Pull Request hacia la rama por defecto y fusionarlo — una sesión
 nueva parte de la rama por defecto, así que el dashboard sólo queda "vivo"
 en GitHub Pages una vez fusionado.
 
-**10. Reportar en el chat**: % cumplimiento del mes, ritmo esperado a la
-fecha, canal(es) en rojo, proyección de cierre (piso) y acción #1
+**10. Reportar en el chat**: % cumplimiento del mes vs. esperado a la
+fecha, canal(es) en rojo, proyección de cierre (piso), acumulado Sep–Dic
+(pestaña Total: real vs. esperado a la fecha del periodo) y acción #1
 recomendada.
 
 ## Notas
