@@ -1,0 +1,10 @@
+{
+  "permissions": {
+    "allow": [
+      "mcp__Composio__COMPOSIO_REMOTE_WORKBENCH",
+      "mcp__Composio__COMPOSIO_MULTI_EXECUTE_TOOL",
+      "mcp__Composio__COMPOSIO_SEARCH_TOOLS",
+      "mcp__Composio__COMPOSIO_GET_TOOL_SCHEMAS"
+    ]
+  }
+}
