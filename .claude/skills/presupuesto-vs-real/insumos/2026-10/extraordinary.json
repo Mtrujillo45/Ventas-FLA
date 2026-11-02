@@ -108,5 +108,16 @@
   "units": 160,
   "note": "USD 850 (mercancía USD 750 + flete y seguro USD 100, CIP), TRM 3.166,91; 160 prendas. Mes con pacEnMeta = internacional.",
   "carpeta": "10. OCTUBRE (hellosales@)/PAQUETE COMPLETO"
+ },
+ {
+  "date": "2026-10-30",
+  "invoice": "RFEL8463",
+  "category": "PAC",
+  "partner": "Cristalina Swimwear (Miami)",
+  "description": "Asesoría en diseño de siluetas, ilustración de estampados, patronaje, moldería y confección (archivo 'SRV', en PAQUETE COMPLETO)",
+  "value": 95582094,
+  "units": 0,
+  "note": "USD 30,181.50, TRM 3.166,91; sin prendas. Está en la carpeta PAQUETE COMPLETO, por la regla de carpetas cuenta como PAC presupuestado (pacEnMeta = internacional), unidades en 0. El nombre de archivo dice SRV, no PAC: pendiente confirmar con hellosales@ que corresponde al PAC presupuestado.",
+  "carpeta": "10. OCTUBRE (hellosales@)/PAQUETE COMPLETO"
  }
 ]

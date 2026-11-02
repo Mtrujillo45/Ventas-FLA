@@ -12,13 +12,13 @@
   },
   "total": {
     "budgetValue": 309900000,
-    "realValue": 197514943.0,
-    "pctValue": 63.73505743788319,
+    "realValue": 293097037.0,
+    "pctValue": 94.57794030332364,
     "budgetUnits": 2792,
     "realUnits": 3241,
     "pctUnits": 116.08166189111748,
-    "ticketProm": 60942.59271829682,
-    "paceValue": 63.73505743788319,
+    "ticketProm": 90434.13668620796,
+    "paceValue": 94.57794030332364,
     "paceUnits": 116.08166189111748,
     "breakevenValue": 152500000,
     "breakevenPctOfBudget": 49.209422394320754,
@@ -83,18 +83,18 @@
       "key": "internacional",
       "label": "May. internacionales",
       "budgetValue": 140000000,
-      "realValue": 58713090.0,
-      "pctValue": 41.93792142857143,
+      "realValue": 154295184.0,
+      "pctValue": 110.21084571428572,
       "budgetUnits": 1036,
       "realUnits": 1694,
       "pctUnits": 163.51351351351352,
-      "paceValue": 41.93792142857143,
+      "paceValue": 110.21084571428572,
       "paceUnits": 163.51351351351352,
-      "ticketReal": 34659.439197166466,
+      "ticketReal": 91083.34356552539,
       "ticketPlan": 135121,
-      "ticketDelta": -74.34933193421713,
-      "orders": 14,
-      "semaforoValue": "rojo",
+      "ticketDelta": -32.59127480885622,
+      "orders": 15,
+      "semaforoValue": "verde",
       "semaforoUnits": "verde"
     }
   ],
@@ -111,8 +111,8 @@
     "showroomPacePct": 61.490168,
     "showroomProjection": 15372542.0,
     "showroomProjectionPct": 61.490168,
-    "floorValue": 197514943.0,
-    "floorPct": 63.73505743788319
+    "floorValue": 293097037.0,
+    "floorPct": 94.57794030332364
   },
   "daily": {
     "dates": [
@@ -211,5 +211,5 @@
       }
     ]
   },
-  "narrativeHtml": "<p class=\"section-sub\" id=\"exec-summary-label\">Cierre de octubre: corte al sábado 31 de octubre, 23:59 hora Bogotá (día 31 de 31, 100% transcurrido) — mes completo; incluye las facturas de mayoristas hasta esa fecha</p>\n       <ul class=\"exec-list\">\n         <li><strong>Octubre cerró en rojo: 63.7% de la meta</strong> — $197.5M reales de una meta de $309.9M; faltaron $112.4M.</li>\n         <li><strong>Punto de equilibrio superado</strong> — $197.5M vs. PE de $152.5M (+$45.0M).</li>\n         <li><strong>Online cerró en amarillo</strong> — $87.0M de $100.9M (86.2% de la meta), −$13.9M; 867 de 873 unidades.</li>\n         <li><strong>Showroom cerró en rojo</strong> — $15.4M de $25.0M (61.5% de la meta), −$9.6M; 163 de 216 unidades.</li>\n         <li><strong>Mayoristas nacionales cerraron en rojo</strong> — $36.4M de $44.0M (82.8% de la meta), −$7.6M. Últimas facturas: Nathalie Toro RFEL8442 y el reporte de ventas de Dulce Menta RFEL8445.</li>\n         <li><strong>Mayoristas internacionales cerraron en rojo</strong> — $58.7M de $140.0M (41.9% de la meta), −$81.3M. Entre el 28 y el 30-oct se facturaron 7 paquetes completos (PAC) de Cristalina por $20.7M (la meta de octubre incluye un despacho PAC de ~USD 39.000 que no se facturó como uno solo). Quedaron fuera, pendientes de clasificar, RFEL8463 (Cristalina, asesoría en diseño, $95.6M) y RFEL8454 (Ana Mercedes Marenco, Managua, asesoría en diseño, $7.7M).</li>\n         <li><strong>Acumulado Sep-Dic</strong>: $443.3M reales (septiembre $245.8M + octubre $197.5M) vs. $570.8M esperados a la fecha (77.7%). Si el resto del periodo se cumple tal cual el plan, cerraría en $1,271.5M de $1,399.0M (90.9%).</li>\n         <li id=\"accion-recomendada\"><strong>Acción recomendada:</strong> definir con Camila y la gerencia cómo se clasifican RFEL8463 ($95.6M) y RFEL8454 ($7.7M): si fueran venta de producto subfacturado cambiarían el cierre de internacionales de forma importante.</li>\n       </ul>"
+  "narrativeHtml": "<p class=\"section-sub\" id=\"exec-summary-label\">Cierre de octubre: corte al sábado 31 de octubre, 23:59 hora Bogotá (día 31 de 31, 100% transcurrido) — mes completo; incluye las facturas de mayoristas hasta esa fecha</p>\n       <ul class=\"exec-list\">\n         <li><strong>Octubre cerró en rojo en Showroom y Mayoristas nacionales; total al 94.6% de la meta</strong> — $293.1M reales de una meta de $309.9M; faltaron $16.8M.</li>\n         <li><strong>Mayoristas internacionales cerró en verde: 110.2% de la meta</strong> — $154.3M de $140.0M. Entraron 7 PAC de Cristalina del 28 al 30-oct (RFEL8450, 8452, 8456, 8457, 8460, 8461 y 8462: $20.7M, 1,092 prendas) y RFEL8463 (asesoría en diseño, USD 30,181.50 = $95.6M, sin prendas, archivo \"SRV\" dentro de PAQUETE COMPLETO: por la regla de carpetas cuenta como PAC presupuestado). Sin RFEL8463 el canal cerraría en $58.7M (41.9%). La NC 58 anula RFEL8455 (reemplazada por RFEL8456), no suma ni resta.</li>\n         <li><strong>Punto de equilibrio superado con holgura</strong> — $293.1M vs. PE de $152.5M (+$140.6M).</li>\n         <li><strong>Online cerró en amarillo</strong> — $87.0M de $100.9M (86.2% de la meta), −$13.9M; 867 de 873 unidades.</li>\n         <li><strong>Mayoristas nacionales cerraron en rojo</strong> — $36.4M de $44.0M (82.8% de la meta), −$7.6M. Últimas facturas: Nathalie Toro RFEL8442 y el reporte de ventas de Dulce Menta RFEL8445.</li>\n         <li><strong>Showroom cerró en rojo</strong> — $15.4M de $25.0M (61.5% de la meta), −$9.6M; 163 de 216 unidades.</li>\n         <li><strong>Acumulado Sep-Dic</strong>: $538.9M reales (septiembre $245.8M + octubre $293.1M) vs. $570.8M esperados a la fecha (94.4%). Si el resto del periodo se cumple tal cual el plan, cerraría en $1,367.1M de $1,399.0M (97.7%).</li>\n         <li id=\"accion-recomendada\"><strong>Acción recomendada:</strong> confirmar con hellosales@ que RFEL8463 ($95.6M) corresponde al PAC presupuestado y no a una asesoría aparte: de eso depende que internacionales haya cerrado en verde. Definir también RFEL8454 (Ana Mercedes Marenco, $7.7M), pendiente de clasificar.</li>\n       </ul>"
 }
