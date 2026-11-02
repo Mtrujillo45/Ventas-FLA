@@ -173,5 +173,14 @@
   "partner": "Dulce Menta SAS",
   "note": "Subtotal 5,713,529 - descuento 2,285,412 (40%), sin IVA.",
   "carpeta": "10. OCTUBRE (comercial@)/CONSIGNACIÓN/REPORTES DE VENTAS"
+ },
+ {
+  "channel": "nacional",
+  "date": "2026-10-30",
+  "value": 139900,
+  "units": 1,
+  "invoice": "#35190",
+  "partner": "Falabella (marketplace vía Shopify)",
+  "carpeta": "Shopify (Falabella marketplace)"
  }
 ]
