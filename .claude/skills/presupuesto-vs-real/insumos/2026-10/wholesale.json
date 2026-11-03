@@ -22,20 +22,22 @@
  {
   "channel": "nacional",
   "date": "2026-10-07",
-  "value": 139900,
+  "value": 117563.0,
   "units": 1,
   "invoice": "#34808",
   "partner": "Falabella (marketplace vía Shopify)",
-  "carpeta": "Shopify (Falabella marketplace)"
+  "carpeta": "Shopify (Falabella marketplace)",
+  "note": "Sin IVA (subtotal + envío − IVA del pedido en Shopify)"
  },
  {
   "channel": "nacional",
   "date": "2026-10-15",
-  "value": 139900,
+  "value": 117563.0,
   "units": 1,
   "invoice": "#34910",
   "partner": "Falabella (marketplace vía Shopify)",
-  "carpeta": "Shopify (Falabella marketplace)"
+  "carpeta": "Shopify (Falabella marketplace)",
+  "note": "Sin IVA (subtotal + envío − IVA del pedido en Shopify)"
  },
  {
   "channel": "internacional",
@@ -100,11 +102,12 @@
  {
   "channel": "nacional",
   "date": "2026-10-21",
-  "value": 129900,
+  "value": 109159.0,
   "units": 1,
   "invoice": "#35104",
   "partner": "Falabella (marketplace vía Shopify)",
-  "carpeta": "Shopify (Falabella marketplace)"
+  "carpeta": "Shopify (Falabella marketplace)",
+  "note": "Sin IVA (subtotal + envío − IVA del pedido en Shopify)"
  },
  {
   "channel": "nacional",
@@ -119,20 +122,22 @@
  {
   "channel": "nacional",
   "date": "2026-10-22",
-  "value": 139900,
+  "value": 117563.0,
   "units": 1,
   "invoice": "#35117",
   "partner": "Falabella (marketplace vía Shopify)",
-  "carpeta": "Shopify (Falabella marketplace)"
+  "carpeta": "Shopify (Falabella marketplace)",
+  "note": "Sin IVA (subtotal + envío − IVA del pedido en Shopify)"
  },
  {
   "channel": "nacional",
   "date": "2026-10-23",
-  "value": 259800,
+  "value": 218319.0,
   "units": 2,
   "invoice": "#35124",
   "partner": "Falabella (marketplace vía Shopify)",
-  "carpeta": "Shopify (Falabella marketplace)"
+  "carpeta": "Shopify (Falabella marketplace)",
+  "note": "Sin IVA (subtotal + envío − IVA del pedido en Shopify)"
  },
  {
   "channel": "internacional",
@@ -177,10 +182,11 @@
  {
   "channel": "nacional",
   "date": "2026-10-30",
-  "value": 139900,
+  "value": 117563.0,
   "units": 1,
   "invoice": "#35190",
   "partner": "Falabella (marketplace vía Shopify)",
-  "carpeta": "Shopify (Falabella marketplace)"
+  "carpeta": "Shopify (Falabella marketplace)",
+  "note": "Sin IVA (subtotal + envío − IVA del pedido en Shopify)"
  }
 ]
