@@ -39,8 +39,9 @@ Envío (confirmado con el usuario, 2026-09-08): el envío cobrado en pedidos
 web bajo $280.000 SÍ se contabiliza en la cuenta 4 (Ingresos) del balance
 de prueba — la misma cuenta de la que sale la "venta neta" histórica del
 plan — así que el "valor" de cada pedido para este dashboard es
-`currentSubtotalPriceSet + currentShippingPriceSet` (producto + envío),
-no solo producto. Aplica igual a los 4 canales/fuentes (será $0 donde no
+`currentSubtotalPriceSet + currentShippingPriceSet - currentTotalTaxSet`
+(producto + envío, SIN IVA: la tienda tiene precios con IVA incluido y la
+regla del usuario, 2026-11-03, es que toda venta se muestra sin IVA). Aplica igual a los 4 canales/fuentes (será $0 donde no
 se cobró envío, p.ej. showroom presencial o pedidos que califican para
 envío gratis).
 
@@ -59,6 +60,7 @@ Uso:
   id, name, createdAt, tags, sourceName, test, displayFinancialStatus,
   currentSubtotalPriceSet.shopMoney.amount,
   currentShippingPriceSet.shopMoney.amount,
+  currentTotalTaxSet.shopMoney.amount  (obligatorio: se resta, venta sin IVA),
   lineItems.edges[].node.currentQuantity
   Alternativa --shopify-summary (usar cuando traer el JSON crudo completo al
   disco local no sea práctico, p.ej. si se calculó en un sandbox aparte):
@@ -67,7 +69,7 @@ Uso:
   "excluded":[...]}. Si se usa este camino, la agregación debe replicar
   EXACTAMENTE `classify_shopify_order()` y `order_value()` de este archivo
   — cópialas tal cual, no las reescribas de memoria (`order_value()` es la
-  que suma envío al subtotal).
+  que suma envío al subtotal y resta el IVA).
 
 --wholesale: lista de facturas ya extraídas de Google Drive (National/Intl):
   [{"channel":"nacional"|"internacional","date":"2026-09-07","value":123,
@@ -158,11 +160,19 @@ def bogota_date(created_at_utc_iso):
 
 
 def order_value(o):
-    """Producto + envío — el envío cobrado en pedidos web es ingreso (cuenta 4),
-    igual que la venta de producto, confirmado con el usuario 2026-09-08."""
+    """Producto + envío, SIN IVA — el envío cobrado en pedidos web es ingreso
+    (cuenta 4), igual que la venta de producto, confirmado con el usuario
+    2026-09-08. La tienda tiene `taxesIncluded: true`: subtotal y envío traen el
+    IVA adentro, así que se resta el IVA real del pedido (`currentTotalTaxSet`).
+    Regla del usuario 2026-11-03: toda venta y todo presupuesto se muestran sin
+    IVA. No dividir por 1,19: el envío y algunos ítems no llevan IVA."""
     subtotal = float(o["currentSubtotalPriceSet"]["shopMoney"]["amount"])
     shipping = float((o.get("currentShippingPriceSet") or {}).get("shopMoney", {}).get("amount", 0) or 0)
-    return subtotal + shipping
+    if "currentTotalTaxSet" not in o:
+        raise SystemExit(f"ERROR: el pedido {o.get('name')} no trae currentTotalTaxSet — "
+                         "agrégalo a la consulta de Shopify (la venta va sin IVA).")
+    tax = float((o["currentTotalTaxSet"] or {}).get("shopMoney", {}).get("amount", 0) or 0)
+    return subtotal + shipping - tax
 
 
 def aggregate_shopify(orders):

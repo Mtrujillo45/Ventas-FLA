@@ -93,12 +93,31 @@ patrón — no son frecuentes (4 en todo septiembre) pero sí recurrentes.
 El envío que se cobra en pedidos web bajo $280.000 SÍ es ingreso de cuenta
 4 (la misma cuenta de la que sale la "venta neta" histórica del plan), así
 que el valor de cada pedido de Shopify para este dashboard es
-`currentSubtotalPriceSet + currentShippingPriceSet` (producto + envío),
-no solo producto — ver `order_value()` en `compute.py`. Aplica igual a
+`currentSubtotalPriceSet + currentShippingPriceSet - currentTotalTaxSet`
+(producto + envío, **sin IVA**), no solo producto — ver `order_value()` en
+`compute.py`. Aplica igual a
 Online y Showroom (será $0 donde no se cobró envío). Si se usa el camino
 `--shopify-summary` (agregación hecha aparte, ver más abajo), el valor que
 se agrega por pedido también debe incluir el envío — copiar `order_value()`
 igual que se copia `classify_shopify_order()`.
+
+## Todo sin IVA — regla del usuario 2026-11-03 (no cambiar)
+
+**Todo presupuesto y toda venta que se muestre va SIN IVA.** La meta del plan
+es venta neta de cuenta 4 (sin IVA), así que lo real también.
+- **Shopify (Online, Showroom y pedidos de Falabella vía Shopify):** la tienda
+  tiene `taxesIncluded: true` — `currentSubtotalPriceSet` y el envío traen el
+  IVA adentro. `order_value()` resta `currentTotalTaxSet` (IVA real del pedido;
+  no dividir por 1,19: el envío y algunos ítems no llevan IVA). La consulta del
+  paso 2 **debe** traer `currentTotalTaxSet`; si falta, `compute.py` se detiene.
+  Los pedidos de Falabella que se pasan a mano a `wholesale.json` también van
+  sin IVA (subtotal + envío − IVA de cada pedido).
+- **Facturas RFEL nacionales:** cargar el **subtotal antes de IVA** (menos
+  descuento), nunca el total de la factura.
+- **Exportaciones (internacional) y fuera del presupuesto:** no llevan IVA.
+- Bug corregido el 2026-11-03: hasta el cierre de octubre `order_value()` sumaba
+  el subtotal con IVA, y Online/Showroom de sep y oct quedaron inflados (~19%).
+  Los históricos `2026-09.json` y `2026-10.json` se recalcularon sin IVA ese día.
 
 ## Marcador de punto de equilibrio (PE) — confirmado 2026-09-08, actualizado 2026-09-10
 
@@ -458,6 +477,7 @@ query Orders($q: String!, $after: String) {
       name createdAt tags sourceName test displayFinancialStatus
       currentSubtotalPriceSet { shopMoney { amount } }
       currentShippingPriceSet { shopMoney { amount } }
+      currentTotalTaxSet { shopMoney { amount } }
       lineItems(first: 50) { edges { node { currentQuantity } } }
     } }
   }
