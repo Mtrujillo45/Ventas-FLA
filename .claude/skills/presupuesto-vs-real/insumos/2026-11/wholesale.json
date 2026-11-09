@@ -1,1 +1,72 @@
-[]
+[
+ {
+  "channel": "nacional",
+  "date": "2026-11-05",
+  "value": 2471344,
+  "units": 36,
+  "invoice": "RFEL8473",
+  "partner": "Creemos que todo es posible SAS (Wanitta)",
+  "note": "Subtotal sin IVA, sin descuento",
+  "carpeta": "11. NOVIEMBRE (comercial@)/FIRME"
+ },
+ {
+  "channel": "internacional",
+  "date": "2026-11-04",
+  "value": 1127603,
+  "units": 8,
+  "invoice": "RFEL8465",
+  "partner": "Shop Greta SRL",
+  "note": "USD 348,50 × TRM 3.235,59; exportación sin IVA",
+  "carpeta": "11. NOVIEMBRE (hellosales@)/FIRME"
+ },
+ {
+  "channel": "internacional",
+  "date": "2026-11-04",
+  "value": 2149241,
+  "units": 0,
+  "invoice": "RFEL8470",
+  "partner": "Siete Mares CA",
+  "note": "USD 664,25 × TRM 3.235,59; asesoría de diseño, sin prendas — cuenta como venta real por estar en FIRME",
+  "carpeta": "11. NOVIEMBRE (hellosales@)/FIRME"
+ },
+ {
+  "channel": "nacional",
+  "date": "2026-11-05",
+  "value": 109159,
+  "units": 1,
+  "invoice": "#35248",
+  "partner": "Falabella (marketplace vía Shopify)",
+  "carpeta": "Shopify (Falabella marketplace)",
+  "note": "Sin IVA (subtotal + envío − IVA del pedido en Shopify)"
+ },
+ {
+  "channel": "nacional",
+  "date": "2026-11-07",
+  "value": 109159,
+  "units": 1,
+  "invoice": "#35256",
+  "partner": "Falabella (marketplace vía Shopify)",
+  "carpeta": "Shopify (Falabella marketplace)",
+  "note": "Sin IVA (subtotal + envío − IVA del pedido en Shopify)"
+ },
+ {
+  "channel": "nacional",
+  "date": "2026-11-07",
+  "value": 117563,
+  "units": 1,
+  "invoice": "#35264",
+  "partner": "Falabella (marketplace vía Shopify)",
+  "carpeta": "Shopify (Falabella marketplace)",
+  "note": "Sin IVA (subtotal + envío − IVA del pedido en Shopify)"
+ },
+ {
+  "channel": "nacional",
+  "date": "2026-11-08",
+  "value": 117563,
+  "units": 1,
+  "invoice": "#35268",
+  "partner": "Falabella (marketplace vía Shopify)",
+  "carpeta": "Shopify (Falabella marketplace)",
+  "note": "Sin IVA (subtotal + envío − IVA del pedido en Shopify)"
+ }
+]
