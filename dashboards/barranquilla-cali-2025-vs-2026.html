@@ -1,0 +1,183 @@
+<title>Barranquilla y Cali 2025 vs 2026</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&display=swap">
+<style>
+/* Layout: encabezado corto, una franja de KPIs por ciudad, tendencia mensual, Meta Ads al final */
+:root{
+  --bg:#FBF8F8; --surface:#FFFFFF; --fg:#2A1F22; --muted:#6E5F63; --line:#E8DEE0;
+  --brand:#C9576A; --y25:#B9AAAE; --y26:#C9576A; --blue:#2A78D6;
+  --up:#1F7A4D; --down:#B4322E;
+  --display:"Space Grotesk",system-ui,sans-serif; --body:"Inter",system-ui,sans-serif;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#171213; --surface:#211A1C; --fg:#F3EAEC; --muted:#AE9FA3; --line:#3A2F32;
+  --brand:#E07688; --y25:#6D5F63; --y26:#E07688; --blue:#5B9BE8; --up:#4CC48A; --down:#F0726B; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#171213; --surface:#211A1C; --fg:#F3EAEC; --muted:#AE9FA3; --line:#3A2F32;
+  --brand:#E07688; --y25:#6D5F63; --y26:#E07688; --blue:#5B9BE8; --up:#4CC48A; --down:#F0726B; color-scheme:dark}
+body{background:var(--bg);color:var(--fg);font-family:var(--body);line-height:1.5}
+.wrap{max-width:1080px;margin:0 auto;padding-block:32px 56px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));display:grid;gap:36px}
+h1,h2,h3{font-family:var(--display);text-wrap:balance;margin:0}
+h1{font-size:clamp(1.6rem,4vw,2.3rem);line-height:1.15}
+h2{font-size:1.3rem}
+h3{font-size:1rem}
+.eyebrow{font-size:.75rem;letter-spacing:.08em;text-transform:uppercase;color:var(--brand);font-weight:600}
+.sub{color:var(--muted);max-width:68ch;margin:8px 0 0}
+section{display:grid;gap:16px}
+.legend{display:flex;gap:16px;font-size:.8rem;color:var(--muted);flex-wrap:wrap}
+.sw{display:inline-block;width:10px;height:10px;border-radius:2px;margin-right:6px;vertical-align:-1px}
+.cities{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,460px),1fr));gap:20px}
+.city{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:20px;display:grid;gap:14px;min-width:0}
+.city header{display:flex;justify-content:space-between;align-items:baseline;gap:8px;flex-wrap:wrap}
+.city header span{font-size:.8rem;color:var(--muted)}
+table{width:100%;border-collapse:collapse;font-variant-numeric:tabular-nums;font-size:.9rem}
+th,td{padding:8px 6px;text-align:right;border-bottom:1px solid var(--line);white-space:nowrap}
+th:first-child,td:first-child{text-align:left;white-space:normal}
+thead th{font-size:.72rem;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);font-weight:600}
+tbody tr:last-child td{border-bottom:none}
+.pill{display:inline-block;padding:1px 8px;border-radius:999px;font-size:.78rem;font-weight:600}
+.pill.up{color:var(--up);background:color-mix(in srgb,var(--up) 12%,transparent)}
+.pill.down{color:var(--down);background:color-mix(in srgb,var(--down) 12%,transparent)}
+.derived{font-size:.82rem;color:var(--muted);display:flex;gap:18px;flex-wrap:wrap}
+.derived b{color:var(--fg);font-weight:600}
+.scroll{overflow-x:auto}
+.chart svg{display:block;width:100%;height:auto}
+.chart text{fill:var(--muted);font-family:var(--body);font-size:11px}
+.note{background:var(--surface);border:1px solid var(--line);border-left:3px solid var(--brand);border-radius:6px;padding:14px 16px;font-size:.9rem;max-width:80ch}
+.note p{margin:0}
+.note p+p{margin-top:8px}
+.grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,460px),1fr));gap:20px}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:20px;display:grid;gap:12px;min-width:0}
+footer{font-size:.78rem;color:var(--muted);display:grid;gap:6px;max-width:90ch}
+footer p{margin:0}
+</style>
+
+<div class="wrap">
+  <header>
+    <div class="eyebrow">Mompossina · Tienda online Shopify + Meta Ads</div>
+    <h1>Barranquilla y Cali, 2025 vs. 2026</h1>
+    <p class="sub">Año corrido comparable: <b>1 de enero al 10 de noviembre</b> de cada año. Ventas en pesos colombianos, sin IVA. Datos tomados el 11 de noviembre de 2026.</p>
+  </header>
+
+  <section>
+    <h2>Tienda online por ciudad</h2>
+    <div class="legend"><span><i class="sw" style="background:var(--y25)"></i>2025</span><span><i class="sw" style="background:var(--y26)"></i>2026</span></div>
+    <div class="cities" id="cities"></div>
+  </section>
+
+  <div class="note">
+    <p><b>El crecimiento viene casi todo de mayo y junio.</b> La campaña de la colección "Colombia" explica el 76% de la venta 2026 de Barranquilla y el 73% de la de Cali. Sin esos dos meses, ambas ciudades siguen arriba de 2025, pero con un margen mucho menor.</p>
+    <p><b>Octubre 2026 quedó por debajo de octubre 2025</b> en las dos ciudades: Cali pasó de 62 a 27 pedidos ($9,1M a $5,2M) y Barranquilla de 9 a 5 pedidos ($2,3M a $1,3M), aunque las sesiones se mantuvieron o subieron.</p>
+  </div>
+
+  <section>
+    <h2>Venta mes a mes (sin IVA)</h2>
+    <div class="legend"><span><i class="sw" style="background:var(--y25)"></i>2025</span><span><i class="sw" style="background:var(--y26)"></i>2026</span><span>Noviembre llega solo al día 10</span></div>
+    <div class="grid2" id="monthly"></div>
+  </section>
+
+  <section>
+    <h2>Meta Ads: alcance y clics de la cuenta</h2>
+    <p class="sub" style="margin:0">Cuenta publicitaria "Mompossina 1", toda Colombia. La cuenta "Mompossina" no tuvo inversión en ninguno de los dos periodos.</p>
+    <div class="card scroll"><table id="metaTotal"></table></div>
+    <div class="grid2">
+      <div class="card"><h3>Alcance mensual</h3><div class="chart" id="metaReach"></div></div>
+      <div class="card"><h3>Clics (todos) mensuales</h3><div class="chart" id="metaClicks"></div></div>
+    </div>
+    <div class="card scroll">
+      <h3>Departamentos de las dos ciudades</h3>
+      <table id="metaRegion"></table>
+      <p class="sub" style="margin:0;font-size:.8rem">Meta reporta por departamento, no por ciudad: Atlántico incluye Soledad, Malambo y Puerto Colombia; Valle del Cauca incluye Palmira, Jamundí y Tuluá. Meta no devolvió alcance por departamento para 2025.</p>
+    </div>
+  </section>
+
+  <footer>
+    <p><b>Fuentes.</b> Shopify ShopifyQL (tienda mompossina.com): <i>sessions</i> agrupadas por ciudad de la sesión; <i>orders</i>, <i>net_sales</i> y <i>net_items_sold</i> agrupados por ciudad de envío (o de facturación cuando no hay envío). Meta Ads: cuenta 176024080, métricas a nivel de cuenta.</p>
+    <p><b>Ventas antes de IVA</b> = venta neta de Shopify: ventas brutas menos descuentos y devoluciones, sin IVA y sin envío. <b>Unidades</b> = unidades netas vendidas (descontando devoluciones).</p>
+    <p><b>Ciudad.</b> Se agruparon las variantes de escritura ("Cali", "CALI (VALLE)", "Santiago de Cali", "Barranquilla (atl)", etc.). Las sesiones por ciudad vienen de la geolocalización de Shopify; en 2025 Shopify reporta Cali como "Santiago de Cali".</p>
+    <p><b>Alcance</b> son cuentas únicas de Meta en el periodo completo, por eso no es la suma de los meses.</p>
+  </footer>
+</div>
+
+<script>
+const M=["Ene","Feb","Mar","Abr","May","Jun","Jul","Ago","Sep","Oct","Nov"];
+const CITY={
+ "Barranquilla":{
+  y25:{orders:59,sales:13096233.25,units:132,sessions:8842},
+  y26:{orders:484,sales:70605934.91,units:692,sessions:29209},
+  m25:[372857.14,371226.89,1727327.74,2049042.02,117563.03,1592829.4,1331022.33,579949.58,2438770.59,2251089.91,264554.62],
+  m26:[2064092.44,853201.69,278857.14,4269200.82,26333915.48,27342999.33,3530268.86,1891722.68,2691142.87,1257747.89,92785.71],
+  share25:1.4,share26:2.8},
+ "Cali":{
+  y25:{orders:288,sales:45237404.17,units:491,sessions:23366},
+  y26:{orders:1183,sales:174316704.06,units:1764,sessions:48956},
+  m25:[3047016.8,1929677.31,6650675.21,4068571.4,2868546.19,5102998.34,2991033.61,3995949.56,4395617.3,9076690.72,1110627.73],
+  m26:[4160409.21,3231169.74,2400399.13,3697127.73,59575478.09,67957269.79,11584783.02,8984740.31,7294310.26,5168778.13,262238.65],
+  share25:4.7,share26:6.8}
+};
+const META={
+ y25:{reach:1208643,impressions:14073650,clicks:452535,link:287302,spend:187292804},
+ y26:{reach:1102639,impressions:12047741,clicks:525103,link:356337,spend:166519860},
+ reach25:[257766,368000,480638,382707,372627,362042,271511,156161,175921,201342,87138],
+ reach26:[107934,178775,140517,112270,383658,341252,210305,266364,180562,134010,356792],
+ clicks25:[40662,40839,56448,54705,37841,65660,42152,36340,29373,37383,11132],
+ clicks26:[23570,26645,23886,26826,96049,100672,48724,71360,42704,39138,25529],
+ region:[
+  {name:"Atlántico (Barranquilla)",r25:null,r26:63028,i25:302689,i26:394311,c25:11077,c26:19215,l25:6170,l26:12327,s25:3877260,s26:4917685},
+  {name:"Valle del Cauca (Cali)",r25:null,r26:118141,i25:1053989,i26:1024543,c25:34601,c26:46253,l25:21070,l26:31242,s25:14520942,s26:14163881}
+ ]
+};
+const nf=new Intl.NumberFormat("es-CO");
+const n=v=>v==null?"n/d":nf.format(Math.round(v));
+const cop=v=>"$"+nf.format(Math.round(v));
+const mill=v=>"$"+(v/1e6).toLocaleString("es-CO",{maximumFractionDigits:1})+"M";
+function pill(a,b,inv){ if(a==null||b==null||!a) return '<span class="pill">n/d</span>';
+  const p=(b/a-1)*100; const cls=(p>=0)!==!!inv?"up":"down";
+  return `<span class="pill ${cls}">${p>=0?"+":""}${p.toLocaleString("es-CO",{maximumFractionDigits:0})}%</span>`;}
+
+const cities=document.getElementById("cities");
+for(const [name,c] of Object.entries(CITY)){
+  const a=c.y25,b=c.y26;
+  const rows=[["Sesiones",a.sessions,b.sessions,n],["Número de pedidos",a.orders,b.orders,n],["Ventas antes de IVA",a.sales,b.sales,cop],["Ventas en unidades",a.units,b.units,n]];
+  const el=document.createElement("article"); el.className="city";
+  el.innerHTML=`<header><h2>${name}</h2><span>${c.share25}% → ${c.share26}% de la venta online total</span></header>
+  <div class="scroll"><table><thead><tr><th>Indicador</th><th>2025</th><th>2026</th><th>Var.</th></tr></thead><tbody>
+  ${rows.map(([l,x,y,f])=>`<tr><td>${l}</td><td>${f(x)}</td><td><b>${f(y)}</b></td><td>${pill(x,y)}</td></tr>`).join("")}
+  </tbody></table></div>
+  <div class="derived">
+   <span>Conversión <b>${(a.orders/a.sessions*100).toFixed(2).replace(".",",")}%</b> → <b>${(b.orders/b.sessions*100).toFixed(2).replace(".",",")}%</b></span>
+   <span>Ticket promedio <b>${cop(a.sales/a.orders)}</b> → <b>${cop(b.sales/b.orders)}</b></span>
+  </div>`;
+  cities.appendChild(el);
+}
+
+function bars(v25,v26,fmt){
+  const W=520,H=230,L=48,R=8,T=12,B=26,max=Math.max(...v25,...v26);
+  const step=niceStep(max/4),top=Math.ceil(max/step)*step;
+  const y=v=>T+(H-T-B)*(1-v/top), gw=(W-L-R)/v25.length, bw=Math.min(14,gw*0.36);
+  let s=`<svg viewBox="0 0 ${W} ${H}" role="img">`;
+  for(let t=0;t<=top+1e-9;t+=step){s+=`<line x1="${L}" x2="${W-R}" y1="${y(t)}" y2="${y(t)}" stroke="var(--line)"/><text x="${L-6}" y="${y(t)+4}" text-anchor="end">${fmt(t)}</text>`;}
+  v25.forEach((v,i)=>{const cx=L+gw*i+gw/2;
+    s+=`<rect x="${cx-bw-1}" y="${y(v)}" width="${bw}" height="${y(0)-y(v)}" fill="var(--y25)" rx="2"><title>${M[i]} 2025: ${fmt(v,1)}</title></rect>`;
+    s+=`<rect x="${cx+1}" y="${y(v26[i])}" width="${bw}" height="${y(0)-y(v26[i])}" fill="var(--y26)" rx="2"><title>${M[i]} 2026: ${fmt(v26[i],1)}</title></rect>`;
+    s+=`<text x="${cx}" y="${H-8}" text-anchor="middle">${M[i]}</text>`;});
+  return s+"</svg>";
+}
+function niceStep(x){const p=Math.pow(10,Math.floor(Math.log10(x)));const r=x/p;return (r<=1?1:r<=2?2:r<=5?5:10)*p;}
+const fmtM=(v,full)=>full?cop(v):(v/1e6).toLocaleString("es-CO")+"M";
+const fmtK=(v,full)=>full?n(v):(v>=1000?(v/1000).toLocaleString("es-CO")+"k":String(v));
+const monthly=document.getElementById("monthly");
+for(const [name,c] of Object.entries(CITY)){
+  const d=document.createElement("div"); d.className="card";
+  d.innerHTML=`<h3>${name}</h3><div class="chart">${bars(c.m25,c.m26,fmtM)}</div>`;
+  monthly.appendChild(d);
+}
+document.getElementById("metaReach").innerHTML=bars(META.reach25,META.reach26,fmtK);
+document.getElementById("metaClicks").innerHTML=bars(META.clicks25,META.clicks26,fmtK);
+
+const a=META.y25,b=META.y26;
+const mrows=[["Alcance (cuentas únicas)",a.reach,b.reach,n],["Impresiones",a.impressions,b.impressions,n],["Clics (todos)",a.clicks,b.clicks,n],["Clics en el enlace",a.link,b.link,n],["CTR (todos)",a.clicks/a.impressions*100,b.clicks/b.impressions*100,v=>v.toFixed(2).replace(".",",")+"%"],["Inversión",a.spend,b.spend,cop],["Costo por clic (todos)",a.spend/a.clicks,b.spend/b.clicks,cop,1]];
+document.getElementById("metaTotal").innerHTML=`<thead><tr><th>Indicador</th><th>2025</th><th>2026</th><th>Var.</th></tr></thead><tbody>${mrows.map(([l,x,y,f,inv])=>`<tr><td>${l}</td><td>${f(x)}</td><td><b>${f(y)}</b></td><td>${pill(x,y,inv)}</td></tr>`).join("")}</tbody>`;
+document.getElementById("metaRegion").innerHTML=`<thead><tr><th>Departamento</th><th>Alcance 2026</th><th>Impr. 2025</th><th>Impr. 2026</th><th>Clics 2025</th><th>Clics 2026</th><th>Var. clics</th><th>Inversión 2025</th><th>Inversión 2026</th></tr></thead><tbody>${META.region.map(r=>`<tr><td>${r.name}</td><td>${n(r.r26)}</td><td>${n(r.i25)}</td><td>${n(r.i26)}</td><td>${n(r.c25)}</td><td><b>${n(r.c26)}</b></td><td>${pill(r.c25,r.c26)}</td><td>${mill(r.s25)}</td><td>${mill(r.s26)}</td></tr>`).join("")}</tbody>`;
+</script>
