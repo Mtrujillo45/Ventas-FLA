@@ -85,11 +85,9 @@ footer p{margin:0}
       <div class="card"><h3>Alcance mensual</h3><div class="chart" id="metaReach"></div></div>
       <div class="card"><h3>Clics (todos) mensuales</h3><div class="chart" id="metaClicks"></div></div>
     </div>
-    <div class="card scroll">
-      <h3>Departamentos de las dos ciudades</h3>
-      <table id="metaRegion"></table>
-      <p class="sub" style="margin:0;font-size:.8rem">Meta reporta por departamento, no por ciudad: Atlántico incluye Soledad, Malambo y Puerto Colombia; Valle del Cauca incluye Palmira, Jamundí y Tuluá. Meta no devolvió alcance por departamento para 2025.</p>
-    </div>
+    <h2 style="margin-top:12px">Meta Ads por ciudad</h2>
+    <p class="sub" style="margin:0">Meta reporta por departamento, no por ciudad: Barranquilla corresponde a Atlántico (incluye Soledad, Malambo y Puerto Colombia) y Cali a Valle del Cauca (incluye Palmira, Jamundí y Tuluá).</p>
+    <div class="grid2" id="metaCities"></div>
   </section>
 
   <footer>
@@ -123,11 +121,12 @@ const META={
  reach26:[107934,178775,140517,112270,383658,341252,210305,266364,180562,134010,356792],
  clicks25:[40662,40839,56448,54705,37841,65660,42152,36340,29373,37383,11132],
  clicks26:[23570,26645,23886,26826,96049,100672,48724,71360,42704,39138,25529],
- region:[
-  {name:"Atlántico (Barranquilla)",r25:null,r26:63028,i25:302689,i26:394311,c25:11077,c26:19215,l25:6170,l26:12327,s25:3877260,s26:4917685},
-  {name:"Valle del Cauca (Cali)",r25:null,r26:118141,i25:1053989,i26:1024543,c25:34601,c26:46253,l25:21070,l26:31242,s25:14520942,s26:14163881}
- ]
-};
+ region:{
+  "Barranquilla (Atlántico)":{r26:63028,i25:302689,i26:394311,c25:11077,c26:19215,l25:6170,l26:12327,s25:3877260,s26:4917685,
+    mc25:[1071,817,1451,1378,792,1612,1022,846,864,887,337],mc26:[961,1148,876,939,4615,4799,985,1126,1078,944,1745]},
+  "Cali (Valle del Cauca)":{r26:118141,i25:1053989,i26:1024543,c25:34601,c26:46253,l25:21070,l26:31242,s25:14520942,s26:14163881,
+    mc25:[3559,2786,4189,3605,2712,4601,3114,3341,2463,3232,998],mc26:[2605,2557,1977,2208,8639,9734,3431,4838,4225,3337,2702]}
+ }};
 const nf=new Intl.NumberFormat("es-CO");
 const n=v=>v==null?"n/d":nf.format(Math.round(v));
 const cop=v=>"$"+nf.format(Math.round(v));
@@ -179,5 +178,17 @@ document.getElementById("metaClicks").innerHTML=bars(META.clicks25,META.clicks26
 const a=META.y25,b=META.y26;
 const mrows=[["Alcance (cuentas únicas)",a.reach,b.reach,n],["Impresiones",a.impressions,b.impressions,n],["Clics (todos)",a.clicks,b.clicks,n],["Clics en el enlace",a.link,b.link,n],["CTR (todos)",a.clicks/a.impressions*100,b.clicks/b.impressions*100,v=>v.toFixed(2).replace(".",",")+"%"],["Inversión",a.spend,b.spend,cop],["Costo por clic (todos)",a.spend/a.clicks,b.spend/b.clicks,cop,1]];
 document.getElementById("metaTotal").innerHTML=`<thead><tr><th>Indicador</th><th>2025</th><th>2026</th><th>Var.</th></tr></thead><tbody>${mrows.map(([l,x,y,f,inv])=>`<tr><td>${l}</td><td>${f(x)}</td><td><b>${f(y)}</b></td><td>${pill(x,y,inv)}</td></tr>`).join("")}</tbody>`;
-document.getElementById("metaRegion").innerHTML=`<thead><tr><th>Departamento</th><th>Alcance 2026</th><th>Impr. 2025</th><th>Impr. 2026</th><th>Clics 2025</th><th>Clics 2026</th><th>Var. clics</th><th>Inversión 2025</th><th>Inversión 2026</th></tr></thead><tbody>${META.region.map(r=>`<tr><td>${r.name}</td><td>${n(r.r26)}</td><td>${n(r.i25)}</td><td>${n(r.i26)}</td><td>${n(r.c25)}</td><td><b>${n(r.c26)}</b></td><td>${pill(r.c25,r.c26)}</td><td>${mill(r.s25)}</td><td>${mill(r.s26)}</td></tr>`).join("")}</tbody>`;
+const pct=v=>v.toFixed(2).replace(".",",")+"%";
+const mc=document.getElementById("metaCities");
+for(const [name,r] of Object.entries(META.region)){
+  const rows=[["Alcance (cuentas únicas)",null,r.r26,n],["Impresiones",r.i25,r.i26,n],["Clics (todos)",r.c25,r.c26,n],["Clics en el enlace",r.l25,r.l26,n],
+   ["CTR (todos)",r.c25/r.i25*100,r.c26/r.i26*100,pct],["Inversión",r.s25,r.s26,cop],["Costo por clic (todos)",r.s25/r.c25,r.s26/r.c26,cop,1],["Costo por clic en el enlace",r.s25/r.l25,r.s26/r.l26,cop,1]];
+  const d=document.createElement("article"); d.className="card";
+  d.innerHTML=`<h3>${name}</h3><div class="scroll"><table><thead><tr><th>Indicador</th><th>2025</th><th>2026</th><th>Var.</th></tr></thead><tbody>
+  ${rows.map(([l,x,y,f,inv])=>`<tr><td>${l}</td><td>${x==null?"n/d":f(x)}</td><td><b>${f(y)}</b></td><td>${pill(x,y,inv)}</td></tr>`).join("")}</tbody></table></div>
+  <div class="legend"><span>Clics (todos) por mes</span><span><i class="sw" style="background:var(--y25)"></i>2025</span><span><i class="sw" style="background:var(--y26)"></i>2026</span></div>
+  <div class="chart">${bars(r.mc25,r.mc26,fmtK)}</div>
+  <p class="sub" style="margin:0;font-size:.8rem">Meta no entrega alcance por departamento con más de 13 meses de antigüedad, por eso 2025 aparece como n/d.</p>`;
+  mc.appendChild(d);
+}
 </script>
