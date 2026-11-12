@@ -1,0 +1,561 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Somos Latinas — Dashboard</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Yellowtail&family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Figtree:wght@400;500;600;700&display=swap">
+<style>
+  /* Layout: parche bordado en el encabezado → consolidado → canal online → anexo mayorista. Paleta tomada de la colección: rojo chenilla, crema, rosa, naranja hibisco, dorado estrella y azul noche del tank negro. */
+  :root {
+    --bg: #FBF3EA;
+    --surface: #FFFDF9;
+    --surface-2: #F6EADC;
+    --ink: #2B1517;
+    --ink-2: #6E4F4A;
+    --ink-3: #A08580;
+    --line: #EBDACB;
+    --red: #A3192E;
+    --red-soft: #F6DEDF;
+    --pink: #E35D86;
+    --orange: #EC7A2C;
+    --gold: #E2AE24;
+    --navy: #22305A;
+    --navy-soft: #E1E5F0;
+    --good: #2F7D43; --good-bg: #E3F1E5;
+    --warn: #B7700E; --warn-bg: #FBEFD9;
+    --crit: #B4232F; --crit-bg: #F9E1E2;
+    --display: "Yellowtail", "Brush Script MT", cursive;
+    --head: "Bricolage Grotesque", "Segoe UI", system-ui, sans-serif;
+    --body: "Figtree", "Segoe UI", system-ui, sans-serif;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #170D0F; --surface: #22151A; --surface-2: #2B1B20; --ink: #FBEFE6; --ink-2: #D6BDB4; --ink-3: #9E847D;
+      --line: #3A262B; --red: #E8505F; --red-soft: #3D1A20; --pink: #F07FA2; --orange: #F49556; --gold: #EFC350;
+      --navy: #8EA2DA; --navy-soft: #20283F;
+      --good: #6CC383; --good-bg: rgba(108,195,131,.14); --warn: #EDB45A; --warn-bg: rgba(237,180,90,.14); --crit: #F07C82; --crit-bg: rgba(240,124,130,.14);
+      color-scheme: dark;
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #170D0F; --surface: #22151A; --surface-2: #2B1B20; --ink: #FBEFE6; --ink-2: #D6BDB4; --ink-3: #9E847D;
+    --line: #3A262B; --red: #E8505F; --red-soft: #3D1A20; --pink: #F07FA2; --orange: #F49556; --gold: #EFC350;
+    --navy: #8EA2DA; --navy-soft: #20283F;
+    --good: #6CC383; --good-bg: rgba(108,195,131,.14); --warn: #EDB45A; --warn-bg: rgba(237,180,90,.14); --crit: #F07C82; --crit-bg: rgba(240,124,130,.14);
+    color-scheme: dark;
+  }
+  * { box-sizing: border-box; }
+  body { background: var(--bg); color: var(--ink); font-family: var(--body); font-size: 14.5px; line-height: 1.5; -webkit-font-smoothing: antialiased; }
+  .wrap { max-width: 1160px; margin: 0 auto; padding-block: 0 72px; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+  .num, td.n, th.n { font-variant-numeric: tabular-nums; }
+
+  /* ===== Encabezado tipo parche ===== */
+  .hero { position: relative; margin-top: 20px; border-radius: 22px; background: var(--red); color: #FFF6EE; padding: 30px 28px 26px; overflow: hidden; }
+  .hero::after { content: ""; position: absolute; inset: 8px; border: 2px dashed rgba(255,246,238,.45); border-radius: 16px; pointer-events: none; }
+  .hero .kicker { font-family: var(--head); font-weight: 700; font-size: 12px; letter-spacing: .16em; text-transform: uppercase; opacity: .85; }
+  .hero h1 { font-family: var(--display); font-weight: 400; font-size: clamp(54px, 10vw, 104px); line-height: .95; margin: 6px 0 4px; letter-spacing: .01em; text-shadow: 0 2px 0 rgba(0,0,0,.18); text-wrap: balance; }
+  .hero h1 small { display: block; font-family: var(--head); font-size: .24em; font-weight: 800; letter-spacing: .3em; text-transform: uppercase; margin-bottom: 4px; text-shadow: none; }
+  .hero p { margin: 0; max-width: 62ch; font-size: 14px; opacity: .92; }
+  .hero .meta { margin-top: 14px; display: flex; flex-wrap: wrap; gap: 8px; }
+  .hero .chip { background: rgba(255,246,238,.16); border: 1px solid rgba(255,246,238,.3); border-radius: 999px; padding: 4px 11px; font-size: 12px; font-weight: 600; }
+  .stickers { position: absolute; right: 18px; top: 14px; width: 300px; height: 190px; pointer-events: none; }
+  .stickers svg { position: absolute; filter: drop-shadow(0 2px 2px rgba(0,0,0,.2)); }
+  @media (max-width: 760px) { .stickers { opacity: .35; right: -60px; } }
+
+  /* ===== Secciones ===== */
+  section { margin-top: 34px; }
+  .sec-head { display: flex; align-items: flex-end; justify-content: space-between; gap: 8px 16px; flex-wrap: wrap; margin-bottom: 14px; }
+  h2 { font-family: var(--head); font-size: 22px; font-weight: 800; margin: 0; letter-spacing: -.01em; display: flex; align-items: center; gap: 10px; text-wrap: balance; }
+  h2 svg { flex: 0 0 auto; }
+  h3 { font-family: var(--head); font-size: 15.5px; font-weight: 700; margin: 0 0 4px; }
+  .note { font-size: 12.5px; color: var(--ink-3); max-width: 70ch; }
+  .tag { font-family: var(--body); font-size: 11px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; padding: 3px 9px; border-radius: 999px; background: var(--red-soft); color: var(--red); }
+  .tag.navy { background: var(--navy-soft); color: var(--navy); }
+
+  .panel { background: var(--surface); border: 1px solid var(--line); border-radius: 16px; padding: 20px 22px; min-width: 0; }
+  .grid2 { display: grid; grid-template-columns: 1.25fr 1fr; gap: 16px; align-items: start; }
+  .grid3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; align-items: start; }
+  @media (max-width: 900px) { .grid2, .grid3 { grid-template-columns: 1fr; } }
+
+  /* ===== Consolidado ===== */
+  .total { background: var(--surface); border: 1px solid var(--line); border-radius: 18px; padding: 22px; }
+  .total .lab { font-family: var(--head); font-size: 12px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; color: var(--red); }
+  .eq { display: flex; align-items: stretch; flex-wrap: wrap; gap: 10px; margin-top: 14px; }
+  .eq .part { flex: 1 1 180px; border: 1px solid var(--line); border-radius: 12px; padding: 12px 14px; background: var(--surface-2); }
+  .eq .part.final { background: var(--red); border-color: var(--red); color: #FFF6EE; }
+  .eq .op { display: flex; align-items: center; font-family: var(--head); font-size: 22px; font-weight: 800; color: var(--ink-3); }
+  .eq .pl { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .07em; opacity: .8; }
+  .eq .pv { font-family: var(--head); font-size: 26px; font-weight: 800; margin-top: 2px; font-variant-numeric: tabular-nums; }
+  .eq .pm { font-size: 12px; opacity: .8; }
+  @media (max-width: 640px) { .eq { flex-direction: column; } .eq .op { justify-content: center; } }
+
+  .kpis { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
+  @media (max-width: 900px) { .kpis { grid-template-columns: repeat(2, 1fr); } }
+  .kpi { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 14px 16px; min-width: 0; }
+  .kpi .kl { font-size: 12px; color: var(--ink-2); font-weight: 600; }
+  .kpi .kv { font-family: var(--head); font-size: 26px; font-weight: 800; margin-top: 4px; font-variant-numeric: tabular-nums; letter-spacing: -.01em; }
+  .kpi .km { font-size: 12px; color: var(--ink-3); margin-top: 2px; }
+
+  .pipeline { margin-top: 12px; display: flex; gap: 12px; align-items: flex-start; padding: 12px 16px; border-radius: 12px; background: var(--navy-soft); color: var(--ink); font-size: 13px; }
+  .pipeline b { color: var(--navy); }
+
+  /* ===== Barras ===== */
+  .rank { display: flex; flex-direction: column; }
+  .rrow { display: grid; grid-template-columns: minmax(0, 190px) 1fr 104px; gap: 12px; align-items: center; padding: 8px 0; }
+  .rrow + .rrow { border-top: 1px solid var(--line); }
+  .rname { font-size: 13px; font-weight: 600; min-width: 0; }
+  .rname small { display: block; font-weight: 400; color: var(--ink-3); font-size: 11.5px; }
+  .track { height: 16px; background: var(--surface-2); border-radius: 5px; overflow: hidden; display: flex; }
+  .seg { height: 100%; }
+  .seg.on { background: var(--red); }
+  .seg.ws { background: var(--navy); }
+  .seg.tr { background: var(--orange); }
+  .rval { text-align: right; font-size: 13px; font-weight: 700; font-variant-numeric: tabular-nums; }
+  .rval span { display: block; font-size: 11.5px; font-weight: 400; color: var(--ink-3); }
+  .legend { display: flex; flex-wrap: wrap; gap: 14px; font-size: 12px; color: var(--ink-2); margin-top: 10px; }
+  .legend i { display: inline-block; width: 10px; height: 10px; border-radius: 3px; margin-right: 6px; vertical-align: -1px; }
+  @media (max-width: 520px) { .rrow { grid-template-columns: minmax(0, 1fr) 90px; } .rrow .track { grid-column: 1 / -1; grid-row: 2; } }
+
+  /* columnas por día */
+  .days { display: flex; gap: 14px; align-items: flex-end; height: 170px; padding-top: 22px; }
+  .day { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: flex-end; height: 100%; }
+  .day .bv { font-size: 12px; font-weight: 700; margin-bottom: 6px; font-variant-numeric: tabular-nums; }
+  .day .bar { width: 100%; max-width: 70px; background: var(--red); border-radius: 6px 6px 0 0; min-height: 3px; }
+  .day .bar.empty { background: var(--line); }
+  .day .bl { margin-top: 8px; font-size: 12px; color: var(--ink-2); text-align: center; line-height: 1.3; }
+  .day .bl b { color: var(--ink); }
+
+  .stack { display: flex; height: 24px; border-radius: 7px; overflow: hidden; margin-top: 8px; }
+  .stack div { display: flex; align-items: center; justify-content: center; color: #fff; font-size: 11.5px; font-weight: 700; }
+
+  /* ===== Tablas ===== */
+  .tbl { overflow-x: auto; }
+  table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  th { text-align: left; font-size: 11px; font-weight: 700; letter-spacing: .05em; text-transform: uppercase; color: var(--ink-3); padding: 8px 10px; border-bottom: 1px solid var(--line); white-space: nowrap; }
+  td { padding: 8px 10px; border-bottom: 1px solid var(--line); white-space: nowrap; }
+  td.n, th.n { text-align: right; }
+  tr.grp td { background: var(--surface-2); font-weight: 700; font-size: 12.5px; }
+  tr.grp td .gt { float: right; font-weight: 500; color: var(--ink-2); }
+  td.sku { font-family: ui-monospace, Consolas, monospace; font-size: 11.5px; color: var(--ink-3); }
+  tfoot td { font-weight: 700; border-top: 2px solid var(--line); border-bottom: none; }
+  .pill { display: inline-block; font-size: 11px; font-weight: 700; padding: 2px 8px; border-radius: 999px; }
+  .pill.good { background: var(--good-bg); color: var(--good); }
+  .pill.warn { background: var(--warn-bg); color: var(--warn); }
+  .pill.crit { background: var(--crit-bg); color: var(--crit); }
+  .pill.flat { background: var(--surface-2); color: var(--ink-2); }
+  .zero { color: var(--ink-3); }
+
+  .callouts { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; margin-top: 14px; }
+  @media (max-width: 760px) { .callouts { grid-template-columns: 1fr; } }
+  .callout { border-radius: 12px; padding: 13px 15px; font-size: 13px; border: 1px solid var(--line); background: var(--surface); }
+  .callout.crit { background: var(--crit-bg); border-color: transparent; }
+  .callout.warn { background: var(--warn-bg); border-color: transparent; }
+  .callout b { display: block; margin-bottom: 4px; }
+  .callout ul { margin: 4px 0 0; padding-left: 18px; }
+
+  .divider { display: flex; align-items: center; gap: 12px; margin-top: 46px; color: var(--ink-3); font-family: var(--head); font-weight: 700; font-size: 12px; letter-spacing: .14em; text-transform: uppercase; }
+  .divider::before, .divider::after { content: ""; flex: 1; border-top: 2px dashed var(--line); }
+
+  footer { margin-top: 44px; font-size: 12.5px; color: var(--ink-2); }
+  footer h3 { color: var(--ink); }
+  footer ul { padding-left: 18px; display: flex; flex-direction: column; gap: 5px; max-width: 95ch; }
+  footer code { font-size: 11.5px; background: var(--surface-2); padding: 1px 5px; border-radius: 4px; }
+</style>
+
+<!-- Íconos de la colección (reutilizados) -->
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <symbol id="i-flor" viewBox="0 0 100 100">
+      <g transform="translate(50 50)">
+        <g fill="var(--orange)" stroke="var(--gold)" stroke-width="2.5">
+          <path d="M0-6C-14-20-16-44 0-46 16-44 14-20 0-6Z"/>
+          <path d="M0-6C-14-20-16-44 0-46 16-44 14-20 0-6Z" transform="rotate(72)"/>
+          <path d="M0-6C-14-20-16-44 0-46 16-44 14-20 0-6Z" transform="rotate(144)"/>
+          <path d="M0-6C-14-20-16-44 0-46 16-44 14-20 0-6Z" transform="rotate(216)"/>
+          <path d="M0-6C-14-20-16-44 0-46 16-44 14-20 0-6Z" transform="rotate(288)"/>
+        </g>
+        <circle r="12" fill="var(--pink)"/>
+        <path d="M0 0L14-20" stroke="#8E1730" stroke-width="4" stroke-linecap="round"/>
+        <circle cx="15" cy="-22" r="4" fill="var(--gold)"/>
+      </g>
+    </symbol>
+    <symbol id="i-estrella" viewBox="0 0 100 100">
+      <path d="M50 4L59 38 94 30 66 52 86 84 52 66 30 96 34 60 6 46 40 38Z" fill="var(--gold)" stroke="#B57D10" stroke-width="2.5" stroke-linejoin="round"/>
+    </symbol>
+    <symbol id="i-boca" viewBox="0 0 100 70">
+      <path d="M4 34C18 14 34 8 50 20 66 8 82 14 96 34 80 58 62 66 50 66 38 66 20 58 4 34Z" fill="#D9243C" stroke="#8E1730" stroke-width="3"/>
+      <path d="M10 34C30 40 70 40 90 34" stroke="#8E1730" stroke-width="3" fill="none" stroke-linecap="round"/>
+    </symbol>
+    <symbol id="i-sol" viewBox="0 0 100 100">
+      <g fill="var(--gold)" stroke="#B57D10" stroke-width="2">
+        <path d="M50 2L56 20 44 20Z"/><path d="M50 98L44 80 56 80Z"/><path d="M2 50L20 44 20 56Z"/><path d="M98 50L80 56 80 44Z"/>
+        <path d="M16 16L32 26 26 32Z"/><path d="M84 84L68 74 74 68Z"/><path d="M84 16L74 32 68 26Z"/><path d="M16 84L26 68 32 74Z"/>
+        <circle cx="50" cy="50" r="27"/>
+      </g>
+      <circle cx="41" cy="45" r="3.5" fill="#6B3B10"/><circle cx="59" cy="45" r="3.5" fill="#6B3B10"/>
+      <path d="M38 57Q50 68 62 57" stroke="#6B3B10" stroke-width="3.5" fill="none" stroke-linecap="round"/>
+    </symbol>
+    <symbol id="i-carita" viewBox="0 0 100 100">
+      <circle cx="50" cy="50" r="44" fill="#F3A3B9" stroke="var(--pink)" stroke-width="4"/>
+      <circle cx="37" cy="42" r="5" fill="#8E1730"/><circle cx="63" cy="42" r="5" fill="#8E1730"/>
+      <path d="M32 60Q50 78 68 60" stroke="#8E1730" stroke-width="5" fill="none" stroke-linecap="round"/>
+    </symbol>
+    <symbol id="i-corazon" viewBox="0 0 100 90">
+      <path d="M50 86C20 62 4 46 4 26 4 12 16 2 29 2 39 2 46 8 50 16 54 8 61 2 71 2 84 2 96 12 96 26 96 46 80 62 50 86Z" fill="var(--pink)" stroke="#B0345A" stroke-width="3"/>
+    </symbol>
+  </defs>
+</svg>
+
+<div class="wrap">
+
+  <header class="hero">
+    <div class="stickers" aria-hidden="true">
+      <svg style="left:150px;top:0;width:118px;height:118px;transform:rotate(-12deg)"><use href="#i-flor"/></svg>
+      <svg style="left:62px;top:24px;width:48px;height:48px;transform:rotate(14deg)"><use href="#i-estrella"/></svg>
+      <svg style="left:262px;top:96px;width:44px;height:44px"><use href="#i-estrella"/></svg>
+      <svg style="left:20px;top:104px;width:70px;height:50px;transform:rotate(-8deg)"><use href="#i-boca"/></svg>
+      <svg style="left:110px;top:118px;width:60px;height:60px;transform:rotate(10deg)"><use href="#i-sol"/></svg>
+      <svg style="left:200px;top:128px;width:46px;height:46px;transform:rotate(-14deg)"><use href="#i-carita"/></svg>
+    </div>
+    <div class="kicker">Mompossina · Dashboard de colección</div>
+    <h1><small>Somos</small>Latinas</h1>
+    <p>Cápsula inspirada en Karol G. Lanzamiento oficial en mompossina.com el 10 de noviembre de 2026. 12 referencias: las 9 que llevan "Latina" en el nombre, Sun Tank Top White, Sun Tank Top Black y Fungi Tank Top.</p>
+    <div class="meta">
+      <span class="chip">Todo en COP antes de IVA</span>
+      <span class="chip" id="corte">Corte: —</span>
+      <span class="chip">Periodo: 10 nov – 12 nov 2026</span>
+    </div>
+  </header>
+
+  <!-- ===== CONSOLIDADO ===== -->
+  <section>
+    <div class="sec-head">
+      <h2><svg width="26" height="26"><use href="#i-flor"/></svg>Consolidado · online + mayoristas</h2>
+      <span class="note">Venta real registrada: pedidos pagados en Shopify más facturas de mayoristas. Lo pedido y aún no facturado va aparte.</span>
+    </div>
+    <div class="total">
+      <div class="lab">Ventas Latinas antes de IVA</div>
+      <div class="eq" id="eq"></div>
+      <div class="pipeline" id="pipeNote"></div>
+    </div>
+    <div class="kpis" id="kpiCons" style="margin-top:12px"></div>
+    <div class="panel" style="margin-top:12px">
+      <h3>Unidades por referencia, por canal</h3>
+      <p class="note" style="margin:0 0 6px">Barra = unidades vendidas · cifra = ingresos antes de IVA de los dos canales</p>
+      <div class="rank" id="rankCons"></div>
+      <div class="legend"><span><i style="background:var(--red)"></i>Online (web + showroom)</span><span><i style="background:var(--navy)"></i>Mayoristas (facturado)</span></div>
+    </div>
+  </section>
+
+  <div class="divider">Canal online · Shopify</div>
+
+  <!-- ===== ONLINE ===== -->
+  <section style="margin-top:20px">
+    <div class="sec-head">
+      <h2><svg width="26" height="26"><use href="#i-estrella"/></svg>Canal online <span class="tag">web + showroom</span></h2>
+      <span class="note">Pedidos pagados en mompossina.com y en el showroom (pedidos manuales). Ingreso = valor de línea después de descuentos, menos IVA.</span>
+    </div>
+    <div class="kpis" id="kpiOn"></div>
+
+    <div class="grid2" style="margin-top:12px">
+      <div class="panel">
+        <h3>Ventas por día</h3>
+        <p class="note" style="margin:0">Ingresos antes de IVA por fecha del pedido, hora Colombia</p>
+        <div class="days" id="days"></div>
+      </div>
+      <div class="panel">
+        <h3>Quién compró</h3>
+        <p class="note" style="margin:0">14 pedidos con al menos una prenda Latinas</p>
+        <div style="margin-top:12px;font-size:12.5px;color:var(--ink-2)">Clientes nuevos vs. que ya habían comprado</div>
+        <div class="stack" id="stCust"></div>
+        <div class="legend" id="lgCust"></div>
+        <div style="margin-top:16px;font-size:12.5px;color:var(--ink-2)">Código de descuento usado</div>
+        <div class="stack" id="stCode"></div>
+        <div class="legend" id="lgCode"></div>
+      </div>
+    </div>
+
+    <div class="panel" style="margin-top:12px">
+      <h3>Ventas por referencia · online</h3>
+      <div class="rank" id="rankOn"></div>
+    </div>
+
+    <div class="grid2" style="margin-top:12px">
+      <div class="panel">
+        <h3>Ciudades de compra</h3>
+        <p class="note" style="margin:0 0 8px">Ciudad de envío del pedido</p>
+        <div class="tbl"><table id="tCities"></table></div>
+      </div>
+      <div class="panel">
+        <h3>Fuente de tráfico</h3>
+        <p class="note" style="margin:0 0 6px">Primer canal de llegada registrado por Shopify</p>
+        <div class="rank" id="rankTraffic"></div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="sec-head">
+      <h2><svg width="26" height="26"><use href="#i-sol"/></svg>Inventario por referencia y talla</h2>
+      <span class="note">OP y pedidos de mayoristas: order sheet del 4-nov. Stock: disponible hoy en Shopify. Estado: ≤5 crítico, ≤15 vigilar.</span>
+    </div>
+    <div class="panel">
+      <div class="tbl"><table id="tInv"></table></div>
+      <div class="callouts" id="alerts"></div>
+    </div>
+  </section>
+
+  <div class="divider">Anexo · canal mayorista</div>
+
+  <!-- ===== MAYORISTAS ===== -->
+  <section id="mayoristas" style="margin-top:20px">
+    <div class="sec-head">
+      <h2><svg width="30" height="22"><use href="#i-boca"/></svg>Canal mayorista <span class="tag navy">B2B</span></h2>
+      <span class="note">Facturas de las carpetas "11. NOVIEMBRE" de comercial@ y hellosales@ en Drive. Precio mayorista antes de IVA.</span>
+    </div>
+    <div class="kpis" id="kpiWs"></div>
+    <div class="grid2" style="margin-top:12px">
+      <div class="panel">
+        <h3>Facturas de noviembre revisadas</h3>
+        <p class="note" style="margin:0 0 8px">Solo cuentan las líneas con SKU de Latinas</p>
+        <div class="tbl"><table id="tInvoices"></table></div>
+      </div>
+      <div class="panel">
+        <h3>Facturado por referencia</h3>
+        <div class="rank" id="rankWs"></div>
+      </div>
+    </div>
+    <div class="panel" style="margin-top:12px">
+      <h3>Pedidos de mayoristas aún sin factura</h3>
+      <p class="note" style="margin:0 0 8px">Unidades de Latinas que cada cliente pidió en el order sheet del 4-nov. Se mueven al bloque de facturado cuando aparezca la factura en Drive. No suman en el consolidado.</p>
+      <div class="rank" id="rankPipe"></div>
+    </div>
+  </section>
+
+  <footer>
+    <h3>Cómo se calculan estas cifras</h3>
+    <ul>
+      <li><b>Referencias:</b> productos de Shopify con el tag <code>LATINAS</code> (12). Fungi Tank Top entra en la colección pero no está en la OP de Karol G, por eso no tiene OP ni pedidos de mayoristas.</li>
+      <li><b>Online:</b> pedidos pagados, sin cancelados ni de prueba, desde el 10-nov 00:00 hora Colombia. Ingreso de cada línea = valor después de descuentos de línea y de pedido (códigos LATINAMAMI, HELLO15 y descuento de showroom), menos el IVA que Shopify calcula para esa línea. La tienda vende con IVA incluido. No incluye envío.</li>
+      <li><b>Showroom:</b> pedidos manuales (borrador) o con tag SHOWROOM.</li>
+      <li><b>Mayoristas:</b> facturas en FIRME y reportes de venta de consignación de noviembre. Se suma el subtotal antes de IVA de las líneas con SKU de Latinas. Las proformas y pedidos sin factura no suman.</li>
+      <li><b>Cliente nuevo:</b> su único pedido en la tienda es el de Latinas. "Ya era cliente": tiene más de un pedido.</li>
+      <li><b>% de la tienda:</b> ingresos Latinas sobre ingresos totales de la tienda online antes de IVA en el mismo periodo.</li>
+      <li>Foto fija. Para refrescar, pide "actualiza el dashboard de Latinas".</li>
+    </ul>
+  </footer>
+</div>
+
+<script>
+const CORTE = "12 nov 2026, 6:30 a. m. (hora Colombia)";
+
+// ===== Referencias: OP del order sheet (4-nov), pedidos mayoristas, stock Shopify =====
+// sizes: [talla, sku, op, pedidosMay, stockShopify]
+const REFS = [
+  { name:"LATINA MESH SHIRT", code:"34CA36/LAT", price:139900, sizes:[["S","34CA36/LAT-S",193,60,130],["M","34CA36/LAT-M",233,65,166],["L","34CA36/LAT-L",130,53,75],["XL","34CA36/LAT-XL",58,1,13]] },
+  { name:"LATINA MESH LONG SHIRT", code:"34CA32/LAT", price:139900, sizes:[["XS","34CA32/LAT-XS",30,12,18],["S","34CA32/LAT-S",100,33,69],["M","34CA32/LAT-M",115,29,86],["L","34CA32/LAT-L",75,27,44],["XL","34CA32/LAT-XL",40,1,40]] },
+  { name:"LATINA RUCHED SIDE TEE", code:"34TE21/LAT", price:139900, sizes:[["S","34TE21/LAT-S",100,57,52],["M","34TE21/LAT-M",110,53,54],["L","34TE21/LAT-L",90,44,42],["XL","34TE21/LAT-XL",50,1,49]] },
+  { name:"LATINA T-SHIRT", code:"34TSH20/LAT", price:129900, sizes:[["XS","34TSH20/LAT-XS",20,15,6],["S","34TSH20/LAT-S",58,31,26],["M","34TSH20/LAT-M",80,27,48],["L","34TSH20/LAT-L",40,22,16],["XL","34TSH20/LAT-XL",10,1,8]] },
+  { name:"SUN TANK TOP WHITE", code:"34TTP21/WH", price:119900, sizes:[["S","34TTP21/WH-S",80,31,47],["M","34TTP21/WH-M",110,27,81],["L","34TTP21/WH-L",60,23,35]] },
+  { name:"SUN TANK TOP BLACK", code:"34TTP21/BL", price:119900, sizes:[["S","34TTP21/BL-S",80,33,46],["M","34TTP21/BL-M",110,29,81],["L","34TTP21/BL-L",60,24,36]] },
+  { name:"FUNGI TANK TOP", code:"37TTP21/FUG", price:119900, noOP:true, sizes:[["S","37TTP21/FUG-S",null,0,40],["M","37TTP21/FUG-M",null,0,80],["L","37TTP21/FUG-L",null,0,48]] },
+  { name:"LATINA STRAIGHT ONE PIECE", code:"343370/LAT", price:189900, sizes:[["S","343370/LAT-S",85,29,55],["M","343370/LAT-M",90,29,59],["L","343370/LAT-L",60,18,42],["XL","343370/LAT-XL",25,1,23]] },
+  { name:"LATINA TRIANGLE TOP", code:"343135/LAT", price:129900, sizes:[["S","343135/LAT-S",40,18,20],["M","343135/LAT-M",50,16,34],["L","343135/LAT-L",25,9,19]] },
+  { name:"LATINA STRAP TIE SIDE BOTTOM", code:"343236/LAT", price:119900, sizes:[["S","343236/LAT-S",40,18,20],["M","343236/LAT-M",50,16,34],["L","343236/LAT-L",25,9,19]] },
+  { name:"LATINA PAREO", code:"34RE22/LAT", price:145900, sizes:[["Única","34RE22/LAT-UN",150,71,52]] },
+  { name:"PAÑOLETA LATINA", code:"34KE21/LAT", price:69900, sizes:[["Única","34KE21/LAT-UN",120,38,16]] },
+];
+
+// ===== Líneas online (Shopify) — ingreso antes de IVA y neto de descuentos =====
+// [pedido, fecha, canal, sku, uds, ingreso, ciudad, pedidosCliente, fuente, codigo]
+const ONLINE = [
+  ["#35282","2026-11-10","Showroom","34CA32/LAT-M",1,95226,"Showroom (Medellín)",1,"Pedido manual (showroom)","Descuento showroom"],
+  ["#35282","2026-11-10","Showroom","34TSH20/LAT-S",1,88419,"Showroom (Medellín)",1,"Pedido manual (showroom)","Descuento showroom"],
+  ["#35283","2026-11-10","Web","343370/LAT-XL",1,159580,"Girón",2,"Instagram","Sin código"],
+  ["#35284","2026-11-10","Web","34CA36/LAT-XL",1,117563,"Pasto",1,"Fuente desconocida","Sin código"],
+  ["#35285","2026-11-10","Web","37TTP21/FUG-L",1,80605,"Rionegro",8,"Instagram","LATINAMAMI"],
+  ["#35286","2026-11-10","Web","34TTP21/BL-S",1,80605,"San Andrés",1,"Google","LATINAMAMI"],
+  ["#35286","2026-11-10","Web","34TSH20/LAT-XS",1,87328,"San Andrés",1,"Google","LATINAMAMI"],
+  ["#35287","2026-11-10","Web","34TTP21/WH-S",1,80605,"Medellín",42,"Google","LATINAMAMI"],
+  ["#35288","2026-11-10","Web","34TE21/LAT-M",1,94050,"Itagüí",31,"Fuente desconocida","LATINAMAMI"],
+  ["#35289","2026-11-10","Web","34TSH20/LAT-XL",1,87328,"Cartagena",1,"Google","LATINAMAMI"],
+  ["#35290","2026-11-10","Web","34CA36/LAT-M",1,94050,"Rivera (Huila)",3,"Instagram","LATINAMAMI"],
+  ["#35290","2026-11-10","Web","34TTP21/BL-M",1,80605,"Rivera (Huila)",3,"Instagram","LATINAMAMI"],
+  ["#35292","2026-11-10","Web","34TE21/LAT-M",1,94050,"Bogotá",2,"Google","LATINAMAMI"],
+  ["#35293","2026-11-10","Web","37TTP21/FUG-L",1,80605,"Palmira",1,"Instagram","LATINAMAMI"],
+  ["#35293","2026-11-10","Web","34TSH20/LAT-S",1,87328,"Palmira",1,"Instagram","LATINAMAMI"],
+  ["#35299","2026-11-11","Web","34TE21/LAT-L",1,99929,"Bogotá",1,"Google","HELLO15"],
+  ["#35300","2026-11-11","Web","34CA36/LAT-S",1,99929,"Pereira",1,"Fuente desconocida","HELLO15"],
+  ["#35303","2026-11-11","Web","34TE21/LAT-M",1,117563,"Villavicencio",1,"Instagram","Sin código"],
+];
+const ONLINE_LIST_NET = 2040504;   // mismas unidades a precio de lista, antes de IVA
+const STORE_NET = 4247989;         // tienda online completa, antes de IVA, mismo periodo
+const STORE_ORDERS = 27;
+
+// ===== Mayoristas: facturas de noviembre (Drive) =====
+const INVOICES = [
+  { n:"RFEL 8477", client:"Cliente nuevo · Granada", city:"Granada", date:"11 nov", folder:"comercial@ · FIRME", lat:24, latNet:1933882, total:3319378 },
+  { n:"RFEL 8478", client:"Falabella de Colombia", city:"Bogotá", date:"11 nov", folder:"comercial@ · Reporte de ventas", lat:0, latNet:0, total:14103324 },
+  { n:"RFEL 8473", client:"Wanitta (Creemos que todo es posible)", city:"Medellín", date:"5 nov", folder:"comercial@ · FIRME", lat:0, latNet:0, total:2471344 },
+  { n:"RFEL 8470", client:"Siete Mares CA", city:"Valencia (VE)", date:"4 nov", folder:"hellosales@ · FIRME", lat:0, latNet:0, total:2149241 },
+  { n:"RFEL 8465", client:"Shop Greta SRL", city:"Santo Domingo", date:"4 nov", folder:"hellosales@ · FIRME", lat:0, latNet:0, total:1127603 },
+];
+// Líneas Latinas facturadas: [sku, uds, ingreso antes de IVA]
+const WS_LINES = [
+  ["34CA36/LAT-S",2,164588],["34CA36/LAT-M",2,164588],["34CA36/LAT-L",1,82294],
+  ["34CA32/LAT-S",2,164588],["34CA32/LAT-M",2,164588],
+  ["34TSH20/LAT-S",1,76412],["34TSH20/LAT-M",1,76412],
+  ["34TTP21/WH-S",3,211588],["34TTP21/WH-M",3,211588],
+  ["34TTP21/BL-S",2,141059],["34TTP21/BL-M",2,141059],
+  ["343370/LAT-S",1,111706],["343370/LAT-M",2,223412],
+];
+// Pedidos del order sheet (4-nov) sin factura, unidades Latinas por cliente
+const PIPE = [["Wanitta",373,"Medellín · nacional"],["Cristalina",234,"internacional"],["Falabella",216,"concesión · nacional"],["Dulce Menta",125,"consignación · nacional"],["Anatomikos",23,"internacional"]];
+
+// ===== Cálculos =====
+const cop = n => "$" + Math.round(n).toLocaleString("es-CO");
+const copM = n => n >= 1e6 ? "$" + (n/1e6).toLocaleString("es-CO",{minimumFractionDigits:2,maximumFractionDigits:2}) + " M" : "$" + Math.round(n/1e3).toLocaleString("es-CO") + " mil";
+const num = n => Math.round(n).toLocaleString("es-CO");
+const pct = (a,b) => b ? (a/b*100).toLocaleString("es-CO",{maximumFractionDigits:1}) + "%" : "—";
+const sum = (a,f) => a.reduce((s,x)=>s+f(x),0);
+
+const skuRef = {};
+REFS.forEach(r => { r.on = {u:0,v:0}; r.ws = {u:0,v:0}; r.sizes.forEach(s => { skuRef[s[1]] = r; s.on = 0; s.ws = 0; }); });
+const sizeBySku = {}; REFS.forEach(r => r.sizes.forEach(s => sizeBySku[s[1]] = s));
+ONLINE.forEach(l => { const r = skuRef[l[3]]; r.on.u += l[4]; r.on.v += l[5]; sizeBySku[l[3]].on += l[4]; });
+WS_LINES.forEach(l => { const r = skuRef[l[0]]; r.ws.u += l[1]; r.ws.v += l[2]; sizeBySku[l[0]].ws += l[1]; });
+
+const on = { u: sum(ONLINE,l=>l[4]), v: sum(ONLINE,l=>l[5]) };
+const ws = { u: sum(WS_LINES,l=>l[1]), v: sum(WS_LINES,l=>l[2]) };
+const orders = [...new Set(ONLINE.map(l=>l[0]))];
+const OP = sum(REFS, r => sum(r.sizes, s => s[2]||0));
+const STOCK = sum(REFS, r => sum(r.sizes, s => s[4]));
+const PIPE_U = sum(PIPE, p=>p[1]);
+
+document.getElementById("corte").textContent = "Corte: " + CORTE;
+
+// Consolidado
+document.getElementById("eq").innerHTML = `
+  <div class="part"><div class="pl">Online · web + showroom</div><div class="pv">${cop(on.v)}</div><div class="pm">${on.u} uds · ${orders.length} pedidos</div></div>
+  <div class="op">+</div>
+  <div class="part"><div class="pl">Mayoristas · facturado</div><div class="pv">${cop(ws.v)}</div><div class="pm">${ws.u} uds · ${INVOICES.filter(i=>i.lat).length} factura</div></div>
+  <div class="op">=</div>
+  <div class="part final"><div class="pl">Total Latinas</div><div class="pv">${cop(on.v+ws.v)}</div><div class="pm">${on.u+ws.u} uds vendidas</div></div>`;
+document.getElementById("pipeNote").innerHTML = `<svg width="22" height="22" style="flex:0 0 auto"><use href="#i-estrella"/></svg><span><b>${num(PIPE_U)} uds pedidas por mayoristas aún sin factura</b> (Wanitta, Cristalina, Falabella, Dulce Menta y Anatomikos, order sheet del 4-nov). Entran al total a medida que se facturen.</span>`;
+
+const sold = on.u + ws.u;
+document.getElementById("kpiCons").innerHTML = [
+  ["Unidades vendidas", num(sold), `${pct(sold,OP)} de la OP de ${num(OP)} uds`],
+  ["Vendido + pedido mayoristas", num(sold+PIPE_U), `${pct(sold+PIPE_U,OP)} de la OP comprometido`],
+  ["Precio promedio por unidad", cop((on.v+ws.v)/sold), `online ${cop(on.v/on.u)} · mayorista ${cop(ws.v/ws.u)}`],
+  ["Stock disponible en Shopify", num(STOCK), "uds de las 12 referencias, para web y showroom"],
+].map(k=>`<div class="kpi"><div class="kl">${k[0]}</div><div class="kv">${k[1]}</div><div class="km">${k[2]}</div></div>`).join("");
+
+function rankRows(el, rows, max){
+  document.getElementById(el).innerHTML = rows.map(r => `
+    <div class="rrow"><div class="rname">${r.name}${r.sub?`<small>${r.sub}</small>`:""}</div>
+    <div class="track">${r.segs.map(s=>`<div class="seg ${s[0]}" style="width:${max? s[1]/max*100:0}%"></div>`).join("")}</div>
+    <div class="rval">${r.val}<span>${r.val2}</span></div></div>`).join("");
+}
+const cons = [...REFS].sort((a,b)=>(b.on.u+b.ws.u)-(a.on.u+a.ws.u) || (b.on.v+b.ws.v)-(a.on.v+a.ws.v));
+const maxC = Math.max(...cons.map(r=>r.on.u+r.ws.u));
+rankRows("rankCons", cons.map(r=>({ name: r.name, sub: (r.on.u+r.ws.u) ? `${r.on.u} online · ${r.ws.u} mayorista` : "sin ventas", segs:[["on",r.on.u],["ws",r.ws.u]], val: `${r.on.u+r.ws.u} uds`, val2: (r.on.v+r.ws.v)? cop(r.on.v+r.ws.v):"—" })), maxC);
+
+// Online KPIs
+const disc = ONLINE_LIST_NET - on.v;
+const newC = orders.filter(o => ONLINE.find(l=>l[0]===o)[7] <= 1).length;
+document.getElementById("kpiOn").innerHTML = [
+  ["Ingresos online", cop(on.v), `a precio lista serían ${cop(ONLINE_LIST_NET)} · descuentos ${pct(disc,ONLINE_LIST_NET)}`],
+  ["Unidades · pedidos", `${on.u} · ${orders.length}`, `${orders.length-1} web y 1 showroom · ${(on.u/orders.length).toLocaleString("es-CO",{maximumFractionDigits:1})} uds por pedido`],
+  ["Peso en la tienda", pct(on.v, STORE_NET), `de ${cop(STORE_NET)} vendidos en la web · ${orders.length} de ${STORE_ORDERS} pedidos`],
+  ["Ingreso Latinas por pedido", cop(on.v/orders.length), `${newC} de ${orders.length} pedidos son de clientes nuevos`],
+].map(k=>`<div class="kpi"><div class="kl">${k[0]}</div><div class="kv">${k[1]}</div><div class="km">${k[2]}</div></div>`).join("");
+
+// Por día
+const DAYS = [["2026-11-10","Lun 10 nov","lanzamiento"],["2026-11-11","Mar 11 nov",""],["2026-11-12","Mié 12 nov","parcial, hasta el corte"]];
+const dayV = DAYS.map(d => ({ d, v: sum(ONLINE.filter(l=>l[1]===d[0]),l=>l[5]), u: sum(ONLINE.filter(l=>l[1]===d[0]),l=>l[4]) }));
+const maxD = Math.max(...dayV.map(x=>x.v));
+document.getElementById("days").innerHTML = dayV.map(x=>`
+  <div class="day"><div class="bv">${x.v? copM(x.v):"—"}</div><div class="bar ${x.v?"":"empty"}" style="height:${x.v? x.v/maxD*100:2}%"></div>
+  <div class="bl"><b>${x.d[1]}</b><br>${x.u} uds${x.d[2]?` · ${x.d[2]}`:""}</div></div>`).join("");
+
+// Composición
+function stack(el, lg, parts){
+  const tot = sum(parts,p=>p[1]);
+  document.getElementById(el).innerHTML = parts.filter(p=>p[1]).map(p=>`<div style="width:${p[1]/tot*100}%;background:${p[2]}">${Math.round(p[1]/tot*100)}%</div>`).join("");
+  document.getElementById(lg).innerHTML = parts.map(p=>`<span><i style="background:${p[2]}"></i>${p[0]} (${p[1]})</span>`).join("");
+}
+stack("stCust","lgCust",[["Primera compra",newC,"var(--red)"],["Ya eran clientes",orders.length-newC,"var(--navy)"]]);
+const codeCount = {}; orders.forEach(o => { const c = ONLINE.find(l=>l[0]===o)[9]; codeCount[c]=(codeCount[c]||0)+1; });
+stack("stCode","lgCode",[["LATINAMAMI (20%)",codeCount["LATINAMAMI"]||0,"var(--red)"],["HELLO15",codeCount["HELLO15"]||0,"var(--orange)"],["Showroom",codeCount["Descuento showroom"]||0,"var(--gold)"],["Sin código",codeCount["Sin código"]||0,"var(--ink-3)"]]);
+
+// Ranking online
+const onR = [...REFS].sort((a,b)=>b.on.v-a.on.v || b.on.u-a.on.u);
+const maxO = Math.max(...onR.map(r=>r.on.v));
+rankRows("rankOn", onR.map(r=>({ name:r.name, sub: r.on.u? `PVP ${cop(r.price)} con IVA` : "sin ventas todavía", segs:[["on",r.on.v]], val: r.on.v? cop(r.on.v):"—", val2:`${r.on.u} uds` })), maxO);
+
+// Ciudades
+const cities = {};
+orders.forEach(o => { const ls = ONLINE.filter(l=>l[0]===o); const c = ls[0][6]; cities[c] = cities[c] || {p:0,v:0}; cities[c].p++; cities[c].v += sum(ls,l=>l[5]); });
+const cRows = Object.entries(cities).sort((a,b)=>b[1].p-a[1].p || b[1].v-a[1].v);
+document.getElementById("tCities").innerHTML = `<thead><tr><th>Ciudad</th><th class="n">Pedidos</th><th class="n">Ingresos</th></tr></thead><tbody>${cRows.map(c=>`<tr><td>${c[0]}</td><td class="n">${c[1].p}</td><td class="n">${cop(c[1].v)}</td></tr>`).join("")}</tbody>`;
+
+// Tráfico
+const tr = {}; orders.forEach(o => { const s = ONLINE.find(l=>l[0]===o)[8]; tr[s]=(tr[s]||0)+1; });
+const tRows = Object.entries(tr).sort((a,b)=>b[1]-a[1]);
+rankRows("rankTraffic", tRows.map(t=>({ name:t[0], segs:[["tr",t[1]]], val:`${t[1]} pedidos`, val2: pct(t[1],orders.length) })), Math.max(...tRows.map(t=>t[1])));
+
+// Inventario
+function estado(s){
+  if (s[4] <= 0) return '<span class="pill crit">agotado</span>';
+  if (s[4] <= 5) return '<span class="pill crit">crítico</span>';
+  if (s[4] <= 15) return '<span class="pill warn">vigilar</span>';
+  return '<span class="pill good">saludable</span>';
+}
+let invHtml = `<thead><tr><th>Talla</th><th>SKU</th><th class="n">OP</th><th class="n">Pedido mayoristas</th><th class="n">Vendido online</th><th class="n">Facturado mayorista</th><th class="n">Stock Shopify</th><th>Estado</th></tr></thead><tbody>`;
+REFS.forEach(r => {
+  const st = sum(r.sizes,s=>s[4]), op = r.noOP ? null : sum(r.sizes,s=>s[2]);
+  invHtml += `<tr class="grp"><td colspan="8">${r.name}<span class="gt">${op!==null? `OP ${num(op)} · `:"fuera de la OP Karol G · "}${r.on.u+r.ws.u} vendidas · ${num(st)} en stock</span></td></tr>`;
+  r.sizes.forEach(s => {
+    const z = v => v ? num(v) : '<span class="zero">0</span>';
+    invHtml += `<tr><td><b>${s[0]}</b></td><td class="sku">${s[1]}</td><td class="n">${s[2]===null?"—":num(s[2])}</td><td class="n">${z(s[3])}</td><td class="n">${z(s.on)}</td><td class="n">${z(s.ws)}</td><td class="n">${num(s[4])}</td><td>${estado(s)}</td></tr>`;
+  });
+});
+invHtml += `</tbody><tfoot><tr><td colspan="2">Total colección</td><td class="n">${num(OP)}</td><td class="n">${num(sum(REFS,r=>sum(r.sizes,s=>s[3])))}</td><td class="n">${on.u}</td><td class="n">${ws.u}</td><td class="n">${num(STOCK)}</td><td></td></tr></tfoot>`;
+document.getElementById("tInv").innerHTML = invHtml;
+
+// Alertas: stock bajo, y stock en Shopify menor que lo que debería quedar del saldo del order sheet
+const low = [], gap = [];
+REFS.forEach(r => r.sizes.forEach(s => {
+  if (s[4] <= 15) low.push(`${r.name} — ${s[0]}: quedan ${s[4]}${s.on?` (vendió ${s.on} online)`:""}`);
+  if (s[2] !== null) {
+    const esperado = s[2] - s[3] - s.on - s.ws;
+    if (esperado - s[4] >= 10) gap.push(`${r.name} — ${s[0]}: Shopify ${s[4]} vs. ${esperado} esperadas (faltan ${esperado - s[4]})`);
+  }
+}));
+document.getElementById("alerts").innerHTML =
+  `<div class="callout warn"><b>${low.length} tallas con 15 uds o menos en Shopify</b><ul>${low.map(x=>`<li>${x}</li>`).join("")}</ul></div>` +
+  `<div class="callout"><b>Stock en Shopify por debajo del saldo del order sheet</b>Esperado = OP − pedidos de mayoristas − vendido. Diferencias de 10 uds o más; puede ser mercancía separada para Maralta o para el showroom. Conviene revisarlo con Greisy:<ul>${gap.map(x=>`<li>${x}</li>`).join("")}</ul></div>`;
+
+// Mayoristas
+const wsPVP = sum(WS_LINES, l => skuRef[l[0]].price/1.19*l[1]);
+document.getElementById("kpiWs").innerHTML = [
+  ["Facturado Latinas", cop(ws.v), `${ws.u} uds · antes de IVA`],
+  ["Facturas con Latinas", `${INVOICES.filter(i=>i.lat).length} de ${INVOICES.length}`, "facturas de noviembre revisadas en Drive"],
+  ["Precio mayorista promedio", cop(ws.v/ws.u), `${pct(ws.v,wsPVP)} del PVP antes de IVA`],
+  ["Pedido sin facturar", num(PIPE_U), `uds de ${PIPE.length} clientes, order sheet 4-nov`],
+].map(k=>`<div class="kpi"><div class="kl">${k[0]}</div><div class="kv">${k[1]}</div><div class="km">${k[2]}</div></div>`).join("");
+document.getElementById("tInvoices").innerHTML = `<thead><tr><th>Factura</th><th>Cliente</th><th>Fecha</th><th class="n">Uds Latinas</th><th class="n">Latinas antes de IVA</th></tr></thead><tbody>${INVOICES.map(i=>`<tr><td><b>${i.n}</b><br><span class="note">${i.folder}</span></td><td>${i.client}<br><span class="note">${i.city}</span></td><td>${i.date}</td><td class="n">${i.lat||'<span class="zero">0</span>'}</td><td class="n">${i.latNet?cop(i.latNet):'<span class="zero">—</span>'}</td></tr>`).join("")}</tbody><tfoot><tr><td colspan="3">Total</td><td class="n">${ws.u}</td><td class="n">${cop(ws.v)}</td></tr></tfoot>`;
+const wsR = REFS.filter(r=>r.ws.u).sort((a,b)=>b.ws.v-a.ws.v);
+rankRows("rankWs", wsR.map(r=>({ name:r.name, segs:[["ws",r.ws.v]], val:cop(r.ws.v), val2:`${r.ws.u} uds` })), Math.max(...wsR.map(r=>r.ws.v)));
+rankRows("rankPipe", PIPE.map(p=>({ name:p[0], sub:p[2], segs:[["ws",p[1]]], val:`${num(p[1])} uds`, val2: pct(p[1],PIPE_U) })), Math.max(...PIPE.map(p=>p[1])));
+</script>
+
+</body>
+</html>
