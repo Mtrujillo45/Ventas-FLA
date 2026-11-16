@@ -1,1 +1,46 @@
-[]
+[
+ {
+  "date": "2026-11-13",
+  "invoice": "RFEL8481",
+  "category": "PAC",
+  "partner": "Anatomikos S.A. de C.V. (San Pedro Sula, Honduras)",
+  "description": "Paquete completo (PAC) — 421 prendas",
+  "value": 34480758,
+  "units": 421,
+  "note": "USD 10.458 (mercancía USD 9.658 + flete y seguro USD 800, CIP), TRM 3.297,07. Noviembre no tiene pacEnMeta: queda fuera del cumplimiento.",
+  "carpeta": "11. NOVIEMBRE (hellosales@)/PAQUETE COMPLETO"
+ },
+ {
+  "date": "2026-11-13",
+  "invoice": "RFEL8482",
+  "category": "CONSIGNACION",
+  "partner": "Cristalina Swimwear (Miami)",
+  "description": "Remisión en consignación — 36 prendas",
+  "value": 2637656,
+  "units": 36,
+  "note": "USD 800 (mercancía USD 700 + flete y seguro USD 100, CIP), TRM 3.297,07. Trámite de exportación, no es venta.",
+  "carpeta": "11. NOVIEMBRE (hellosales@)/CONSIGNACIÓN/REMISIONES"
+ },
+ {
+  "date": "2026-11-14",
+  "invoice": "RFEL8486",
+  "category": "CONSIGNACION",
+  "partner": "Cristalina Swimwear (Miami)",
+  "description": "Despacho en consignación — 108 prendas",
+  "value": 3297070,
+  "units": 108,
+  "note": "USD 1.000, TRM 3.297,07. Reemplaza RFEL8483 (13-nov), anulada con NC 60 (14-nov). Solo en la carpeta vieja FACTURA EXPOR: respaldo temporal (Cristalina sin sufijo PAC → consignación); falta moverla a 11. NOVIEMBRE.",
+  "carpeta": "FACTURA EXPOR (carpeta vieja)"
+ },
+ {
+  "date": "2026-11-14",
+  "invoice": "RFEL8487",
+  "category": "CONSIGNACION",
+  "partner": "Cristalina Swimwear (Miami)",
+  "description": "Despacho en consignación — 96 prendas",
+  "value": 3264099,
+  "units": 96,
+  "note": "USD 990, TRM 3.297,07. Reemplaza RFEL8484 (13-nov), anulada con NC 61 (14-nov). Solo en la carpeta vieja FACTURA EXPOR: respaldo temporal; falta moverla a 11. NOVIEMBRE.",
+  "carpeta": "FACTURA EXPOR (carpeta vieja)"
+ }
+]
