@@ -229,7 +229,7 @@
     <div class="meta">
       <span class="chip">Todo en COP antes de IVA</span>
       <span class="chip" id="corte">Corte: —</span>
-      <span class="chip">Periodo: 10 nov – 12 nov 2026</span>
+      <span class="chip">Periodo: 10 nov – 16 nov 2026</span>
     </div>
   </header>
 
@@ -271,7 +271,7 @@
       </div>
       <div class="panel">
         <h3>Quién compró</h3>
-        <p class="note" style="margin:0">14 pedidos con al menos una prenda Latinas</p>
+        <p class="note" style="margin:0" id="whoNote"></p>
         <div style="margin-top:12px;font-size:12.5px;color:var(--ink-2)">Clientes nuevos vs. que ya habían comprado</div>
         <div class="stack" id="stCust"></div>
         <div class="legend" id="lgCust"></div>
@@ -303,7 +303,7 @@
   <section>
     <div class="sec-head">
       <h2><svg width="26" height="26"><use href="#i-sol"/></svg>Inventario por referencia y talla</h2>
-      <span class="note">OP y pedidos de mayoristas: order sheet del 4-nov. Stock: disponible hoy en Shopify. Estado: ≤5 crítico, ≤15 vigilar.</span>
+      <span class="note">OP y pedidos de mayoristas: order sheet del 4-nov. Stock: disponible hoy en Shopify (ya descuenta lo despachado a Cristalina en consignación). Estado: ≤5 crítico, ≤15 vigilar.</span>
     </div>
     <div class="panel">
       <div class="tbl"><table id="tInv"></table></div>
@@ -317,7 +317,7 @@
   <section id="mayoristas" style="margin-top:20px">
     <div class="sec-head">
       <h2><svg width="30" height="22"><use href="#i-boca"/></svg>Canal mayorista <span class="tag navy">B2B</span></h2>
-      <span class="note">Facturas de las carpetas "11. NOVIEMBRE" de comercial@ y hellosales@ en Drive. Precio mayorista antes de IVA.</span>
+      <span class="note">Facturas de las carpetas "11. NOVIEMBRE" de comercial@ y hellosales@ en Drive (y FACTURA EXPOR como respaldo). Precio mayorista antes de IVA.</span>
     </div>
     <div class="kpis" id="kpiWs"></div>
     <div class="grid2" style="margin-top:12px">
@@ -335,6 +335,9 @@
       <h3>Pedidos de mayoristas aún sin factura</h3>
       <p class="note" style="margin:0 0 8px">Unidades de Latinas que cada cliente pidió en el order sheet del 4-nov. Se mueven al bloque de facturado cuando aparezca la factura en Drive. No suman en el consolidado.</p>
       <div class="rank" id="rankPipe"></div>
+      <h3 style="margin-top:18px">Despachado en consignación · aún no es venta</h3>
+      <p class="note" style="margin:0 0 8px">Remisiones de exportación a Cristalina Swimwear (Miami). Cubren las 234 uds de Latinas de su pedido. Pasan a facturado cuando Cristalina envíe el reporte de ventas.</p>
+      <div class="rank" id="rankConsig"></div>
     </div>
   </section>
 
@@ -343,8 +346,8 @@
     <ul>
       <li><b>Referencias:</b> productos de Shopify con el tag <code>LATINAS</code> (12). Fungi Tank Top entra en la colección pero no está en la OP de Karol G, por eso no tiene OP ni pedidos de mayoristas.</li>
       <li><b>Online:</b> pedidos pagados, sin cancelados ni de prueba, desde el 10-nov 00:00 hora Colombia. Ingreso de cada línea = valor después de descuentos de línea y de pedido (códigos LATINAMAMI, HELLO15 y descuento de showroom), menos el IVA que Shopify calcula para esa línea. La tienda vende con IVA incluido. No incluye envío.</li>
-      <li><b>Showroom:</b> pedidos manuales (borrador) o con tag SHOWROOM.</li>
-      <li><b>Mayoristas:</b> facturas en FIRME y reportes de venta de consignación de noviembre. Se suma el subtotal antes de IVA de las líneas con SKU de Latinas. Las proformas y pedidos sin factura no suman.</li>
+      <li><b>Showroom:</b> pedidos manuales (borrador) sin tag de redes sociales/Melonn. Los pedidos en $0 (regalos o canjes: #35306 y #35318, dos Fungi Tank Top) no cuentan como venta.</li>
+      <li><b>Mayoristas:</b> facturas en FIRME, PAQUETE COMPLETO y reportes de venta de consignación de noviembre. Se suma el subtotal antes de IVA de las líneas con SKU de Latinas. Las remisiones en consignación (Cristalina), las proformas y los pedidos sin factura no suman. RFEL 8486 y 8487 siguen solo en la carpeta vieja FACTURA EXPOR; falta moverlas a 11. NOVIEMBRE.</li>
       <li><b>Cliente nuevo:</b> su único pedido en la tienda es el de Latinas. "Ya era cliente": tiene más de un pedido.</li>
       <li><b>% de la tienda:</b> ingresos Latinas sobre ingresos totales de la tienda online antes de IVA en el mismo periodo.</li>
       <li>Foto fija. Para refrescar, pide "actualiza el dashboard de Latinas".</li>
@@ -353,23 +356,23 @@
 </div>
 
 <script>
-const CORTE = "12 nov 2026, 6:30 a. m. (hora Colombia)";
+const CORTE = "16 nov 2026, 8:45 a. m. (hora Colombia)";
 
 // ===== Referencias: OP del order sheet (4-nov), pedidos mayoristas, stock Shopify =====
 // sizes: [talla, sku, op, pedidosMay, stockShopify]
 const REFS = [
-  { name:"LATINA MESH SHIRT", code:"34CA36/LAT", price:139900, sizes:[["S","34CA36/LAT-S",193,60,130],["M","34CA36/LAT-M",233,65,166],["L","34CA36/LAT-L",130,53,75],["XL","34CA36/LAT-XL",58,1,13]] },
-  { name:"LATINA MESH LONG SHIRT", code:"34CA32/LAT", price:139900, sizes:[["XS","34CA32/LAT-XS",30,12,18],["S","34CA32/LAT-S",100,33,69],["M","34CA32/LAT-M",115,29,86],["L","34CA32/LAT-L",75,27,44],["XL","34CA32/LAT-XL",40,1,40]] },
-  { name:"LATINA RUCHED SIDE TEE", code:"34TE21/LAT", price:139900, sizes:[["S","34TE21/LAT-S",100,57,52],["M","34TE21/LAT-M",110,53,54],["L","34TE21/LAT-L",90,44,42],["XL","34TE21/LAT-XL",50,1,49]] },
-  { name:"LATINA T-SHIRT", code:"34TSH20/LAT", price:129900, sizes:[["XS","34TSH20/LAT-XS",20,15,6],["S","34TSH20/LAT-S",58,31,26],["M","34TSH20/LAT-M",80,27,48],["L","34TSH20/LAT-L",40,22,16],["XL","34TSH20/LAT-XL",10,1,8]] },
-  { name:"SUN TANK TOP WHITE", code:"34TTP21/WH", price:119900, sizes:[["S","34TTP21/WH-S",80,31,47],["M","34TTP21/WH-M",110,27,81],["L","34TTP21/WH-L",60,23,35]] },
-  { name:"SUN TANK TOP BLACK", code:"34TTP21/BL", price:119900, sizes:[["S","34TTP21/BL-S",80,33,46],["M","34TTP21/BL-M",110,29,81],["L","34TTP21/BL-L",60,24,36]] },
-  { name:"FUNGI TANK TOP", code:"37TTP21/FUG", price:119900, noOP:true, sizes:[["S","37TTP21/FUG-S",null,0,40],["M","37TTP21/FUG-M",null,0,80],["L","37TTP21/FUG-L",null,0,48]] },
+  { name:"LATINA MESH SHIRT", code:"34CA36/LAT", price:139900, sizes:[["S","34CA36/LAT-S",193,60,124],["M","34CA36/LAT-M",233,65,161],["L","34CA36/LAT-L",130,53,73],["XL","34CA36/LAT-XL",58,1,13]] },
+  { name:"LATINA MESH LONG SHIRT", code:"34CA32/LAT", price:139900, sizes:[["XS","34CA32/LAT-XS",30,12,18],["S","34CA32/LAT-S",100,33,67],["M","34CA32/LAT-M",115,29,84],["L","34CA32/LAT-L",75,27,42],["XL","34CA32/LAT-XL",40,1,39]] },
+  { name:"LATINA RUCHED SIDE TEE", code:"34TE21/LAT", price:139900, sizes:[["S","34TE21/LAT-S",100,57,47],["M","34TE21/LAT-M",110,53,51],["L","34TE21/LAT-L",90,44,42],["XL","34TE21/LAT-XL",50,1,49]] },
+  { name:"LATINA T-SHIRT", code:"34TSH20/LAT", price:129900, sizes:[["XS","34TSH20/LAT-XS",20,15,6],["S","34TSH20/LAT-S",58,31,21],["M","34TSH20/LAT-M",80,27,43],["L","34TSH20/LAT-L",40,22,14],["XL","34TSH20/LAT-XL",10,1,8]] },
+  { name:"SUN TANK TOP WHITE", code:"34TTP21/WH", price:119900, sizes:[["S","34TTP21/WH-S",80,31,46],["M","34TTP21/WH-M",110,27,81],["L","34TTP21/WH-L",60,23,35]] },
+  { name:"SUN TANK TOP BLACK", code:"34TTP21/BL", price:119900, sizes:[["S","34TTP21/BL-S",80,33,45],["M","34TTP21/BL-M",110,29,81],["L","34TTP21/BL-L",60,24,36]] },
+  { name:"FUNGI TANK TOP", code:"37TTP21/FUG", price:119900, noOP:true, sizes:[["S","37TTP21/FUG-S",null,0,38],["M","37TTP21/FUG-M",null,0,80],["L","37TTP21/FUG-L",null,0,47]] },
   { name:"LATINA STRAIGHT ONE PIECE", code:"343370/LAT", price:189900, sizes:[["S","343370/LAT-S",85,29,55],["M","343370/LAT-M",90,29,59],["L","343370/LAT-L",60,18,42],["XL","343370/LAT-XL",25,1,23]] },
-  { name:"LATINA TRIANGLE TOP", code:"343135/LAT", price:129900, sizes:[["S","343135/LAT-S",40,18,20],["M","343135/LAT-M",50,16,34],["L","343135/LAT-L",25,9,19]] },
-  { name:"LATINA STRAP TIE SIDE BOTTOM", code:"343236/LAT", price:119900, sizes:[["S","343236/LAT-S",40,18,20],["M","343236/LAT-M",50,16,34],["L","343236/LAT-L",25,9,19]] },
-  { name:"LATINA PAREO", code:"34RE22/LAT", price:145900, sizes:[["Única","34RE22/LAT-UN",150,71,52]] },
-  { name:"PAÑOLETA LATINA", code:"34KE21/LAT", price:69900, sizes:[["Única","34KE21/LAT-UN",120,38,16]] },
+  { name:"LATINA TRIANGLE TOP", code:"343135/LAT", price:129900, sizes:[["S","343135/LAT-S",40,18,19],["M","343135/LAT-M",50,16,33],["L","343135/LAT-L",25,9,17]] },
+  { name:"LATINA STRAP TIE SIDE BOTTOM", code:"343236/LAT", price:119900, sizes:[["S","343236/LAT-S",40,18,18],["M","343236/LAT-M",50,16,34],["L","343236/LAT-L",25,9,17]] },
+  { name:"LATINA PAREO", code:"34RE22/LAT", price:145900, sizes:[["Única","34RE22/LAT-UN",150,71,48]] },
+  { name:"PAÑOLETA LATINA", code:"34KE21/LAT", price:69900, sizes:[["Única","34KE21/LAT-UN",120,38,54]] },
 ];
 
 // ===== Líneas online (Shopify) — ingreso antes de IVA y neto de descuentos =====
@@ -393,16 +396,31 @@ const ONLINE = [
   ["#35299","2026-11-11","Web","34TE21/LAT-L",1,99929,"Bogotá",1,"Google","HELLO15"],
   ["#35300","2026-11-11","Web","34CA36/LAT-S",1,99929,"Pereira",1,"Fuente desconocida","HELLO15"],
   ["#35303","2026-11-11","Web","34TE21/LAT-M",1,117563,"Villavicencio",1,"Instagram","Sin código"],
+  ["#35308","2026-11-12","Web","34TSH20/LAT-M",1,109160,"Granada",2,"Fuente desconocida","Sin código"],
+  ["#35315","2026-11-13","Web","34TSH20/LAT-M",1,109160,"Bogotá",1,"Instagram","Sin código"],
+  ["#35316","2026-11-13","Web","343135/LAT-M",1,109160,"Cali",3,"Fuente desconocida","Sin código"],
+  ["#35316","2026-11-13","Web","34RE22/LAT-UN",1,122605,"Cali",3,"Fuente desconocida","Sin código"],
+  ["#35316","2026-11-13","Web","34CA36/LAT-S",1,117563,"Cali",3,"Fuente desconocida","Sin código"],
+  ["#35316","2026-11-13","Web","343236/LAT-S",1,100756,"Cali",3,"Fuente desconocida","Sin código"],
+  ["#35316","2026-11-13","Web","37TTP21/FUG-S",1,100756,"Cali",3,"Fuente desconocida","Sin código"],
+  ["#35316","2026-11-13","Web","34TTP21/BL-S",1,100756,"Cali",3,"Fuente desconocida","Sin código"],
+  ["#35317","2026-11-13","Web","34TSH20/LAT-S",1,109160,"Ibagué",1,"Instagram","Sin código"],
+  ["#35324","2026-11-14","Web","34TSH20/LAT-S",1,92786,"Medellín",10,"Fuente desconocida","HELLO15"],
+  ["#35329","2026-11-14","Web","34TTP21/WH-S",1,100756,"Medellín",1,"Instagram","Sin código"],
+  ["#35332","2026-11-14","Web","34CA32/LAT-XL",1,99929,"Bogotá",2,"Instagram","HELLO15"],
+  ["#35332","2026-11-14","Web","34KE21/LAT-UN",1,49929,"Bogotá",2,"Instagram","HELLO15"],
+  ["#35333","2026-11-14","Web","34TSH20/LAT-S",1,109160,"Bogotá",1,"Instagram","Sin código"],
 ];
-const ONLINE_LIST_NET = 2040504;   // mismas unidades a precio de lista, antes de IVA
-const STORE_NET = 4247989;         // tienda online completa, antes de IVA, mismo periodo
-const STORE_ORDERS = 27;
+const ONLINE_LIST_NET = 3514958;   // mismas unidades a precio de lista, antes de IVA
+const STORE_NET = 8846157;         // tienda online completa, antes de IVA, mismo periodo
+const STORE_ORDERS = 56;
 
 // ===== Mayoristas: facturas de noviembre (Drive) =====
 const INVOICES = [
   { n:"RFEL 8477", client:"Cliente nuevo · Granada", city:"Granada", date:"11 nov", folder:"comercial@ · FIRME", lat:24, latNet:1933882, total:3319378 },
   { n:"RFEL 8478", client:"Falabella de Colombia", city:"Bogotá", date:"11 nov", folder:"comercial@ · Reporte de ventas", lat:0, latNet:0, total:14103324 },
   { n:"RFEL 8473", client:"Wanitta (Creemos que todo es posible)", city:"Medellín", date:"5 nov", folder:"comercial@ · FIRME", lat:0, latNet:0, total:2471344 },
+  { n:"RFEL 8481", client:"Anatomikos S.A. de C.V.", city:"San Pedro Sula (HN)", date:"13 nov", folder:"hellosales@ · Paquete completo", lat:0, latNet:0, total:34480758 },
   { n:"RFEL 8470", client:"Siete Mares CA", city:"Valencia (VE)", date:"4 nov", folder:"hellosales@ · FIRME", lat:0, latNet:0, total:2149241 },
   { n:"RFEL 8465", client:"Shop Greta SRL", city:"Santo Domingo", date:"4 nov", folder:"hellosales@ · FIRME", lat:0, latNet:0, total:1127603 },
 ];
@@ -416,7 +434,9 @@ const WS_LINES = [
   ["343370/LAT-S",1,111706],["343370/LAT-M",2,223412],
 ];
 // Pedidos del order sheet (4-nov) sin factura, unidades Latinas por cliente
-const PIPE = [["Wanitta",373,"Medellín · nacional"],["Cristalina",234,"internacional"],["Falabella",216,"concesión · nacional"],["Dulce Menta",125,"consignación · nacional"],["Anatomikos",23,"internacional"]];
+const PIPE = [["Wanitta",373,"Medellín · nacional"],["Falabella",216,"concesión · nacional"],["Dulce Menta",125,"consignación · nacional"],["Anatomikos",23,"internacional · no vino en el PAC RFEL 8481"]];
+// Remisiones en consignación con Latinas: [factura, fecha, carpeta, uds Latinas]
+const CONSIG = [["RFEL 8482","13 nov","hellosales@ · Consignación/Remisiones",34],["RFEL 8486","14 nov","FACTURA EXPOR (carpeta vieja) · reemplaza 8483",106],["RFEL 8487","14 nov","FACTURA EXPOR (carpeta vieja) · reemplaza 8484",94]];
 
 // ===== Cálculos =====
 const cop = n => "$" + Math.round(n).toLocaleString("es-CO");
@@ -437,6 +457,7 @@ const orders = [...new Set(ONLINE.map(l=>l[0]))];
 const OP = sum(REFS, r => sum(r.sizes, s => s[2]||0));
 const STOCK = sum(REFS, r => sum(r.sizes, s => s[4]));
 const PIPE_U = sum(PIPE, p=>p[1]);
+const CONSIG_U = sum(CONSIG, c=>c[3]);
 
 document.getElementById("corte").textContent = "Corte: " + CORTE;
 
@@ -447,12 +468,12 @@ document.getElementById("eq").innerHTML = `
   <div class="part"><div class="pl">Mayoristas · facturado</div><div class="pv">${cop(ws.v)}</div><div class="pm">${ws.u} uds · ${INVOICES.filter(i=>i.lat).length} factura</div></div>
   <div class="op">=</div>
   <div class="part final"><div class="pl">Total Latinas</div><div class="pv">${cop(on.v+ws.v)}</div><div class="pm">${on.u+ws.u} uds vendidas</div></div>`;
-document.getElementById("pipeNote").innerHTML = `<svg width="22" height="22" style="flex:0 0 auto"><use href="#i-estrella"/></svg><span><b>${num(PIPE_U)} uds pedidas por mayoristas aún sin factura</b> (Wanitta, Cristalina, Falabella, Dulce Menta y Anatomikos, order sheet del 4-nov). Entran al total a medida que se facturen.</span>`;
+document.getElementById("pipeNote").innerHTML = `<svg width="22" height="22" style="flex:0 0 auto"><use href="#i-estrella"/></svg><span><b>${num(PIPE_U)} uds pedidas por mayoristas aún sin factura</b> (Wanitta, Falabella, Dulce Menta y Anatomikos, order sheet del 4-nov). Además, <b>${num(CONSIG_U)} uds despachadas a Cristalina en consignación</b>: entran al total cuando llegue su reporte de ventas.</span>`;
 
 const sold = on.u + ws.u;
 document.getElementById("kpiCons").innerHTML = [
   ["Unidades vendidas", num(sold), `${pct(sold,OP)} de la OP de ${num(OP)} uds`],
-  ["Vendido + pedido mayoristas", num(sold+PIPE_U), `${pct(sold+PIPE_U,OP)} de la OP comprometido`],
+  ["Vendido + comprometido", num(sold+PIPE_U+CONSIG_U), `${pct(sold+PIPE_U+CONSIG_U,OP)} de la OP · incluye pedidos y consignación`],
   ["Precio promedio por unidad", cop((on.v+ws.v)/sold), `online ${cop(on.v/on.u)} · mayorista ${cop(ws.v/ws.u)}`],
   ["Stock disponible en Shopify", num(STOCK), "uds de las 12 referencias, para web y showroom"],
 ].map(k=>`<div class="kpi"><div class="kl">${k[0]}</div><div class="kv">${k[1]}</div><div class="km">${k[2]}</div></div>`).join("");
@@ -469,16 +490,18 @@ rankRows("rankCons", cons.map(r=>({ name: r.name, sub: (r.on.u+r.ws.u) ? `${r.on
 
 // Online KPIs
 const disc = ONLINE_LIST_NET - on.v;
+const showN = orders.filter(o => ONLINE.find(l=>l[0]===o)[2]==="Showroom").length;
+document.getElementById("whoNote").textContent = `${orders.length} pedidos con al menos una prenda Latinas`;
 const newC = orders.filter(o => ONLINE.find(l=>l[0]===o)[7] <= 1).length;
 document.getElementById("kpiOn").innerHTML = [
   ["Ingresos online", cop(on.v), `a precio lista serían ${cop(ONLINE_LIST_NET)} · descuentos ${pct(disc,ONLINE_LIST_NET)}`],
-  ["Unidades · pedidos", `${on.u} · ${orders.length}`, `${orders.length-1} web y 1 showroom · ${(on.u/orders.length).toLocaleString("es-CO",{maximumFractionDigits:1})} uds por pedido`],
+  ["Unidades · pedidos", `${on.u} · ${orders.length}`, `${orders.length-showN} web y ${showN} showroom · ${(on.u/orders.length).toLocaleString("es-CO",{maximumFractionDigits:1})} uds por pedido`],
   ["Peso en la tienda", pct(on.v, STORE_NET), `de ${cop(STORE_NET)} vendidos en la web · ${orders.length} de ${STORE_ORDERS} pedidos`],
   ["Ingreso Latinas por pedido", cop(on.v/orders.length), `${newC} de ${orders.length} pedidos son de clientes nuevos`],
 ].map(k=>`<div class="kpi"><div class="kl">${k[0]}</div><div class="kv">${k[1]}</div><div class="km">${k[2]}</div></div>`).join("");
 
 // Por día
-const DAYS = [["2026-11-10","Lun 10 nov","lanzamiento"],["2026-11-11","Mar 11 nov",""],["2026-11-12","Mié 12 nov","parcial, hasta el corte"]];
+const DAYS = [["2026-11-10","Mar 10","lanzamiento"],["2026-11-11","Mié 11",""],["2026-11-12","Jue 12",""],["2026-11-13","Vie 13",""],["2026-11-14","Sáb 14",""],["2026-11-15","Dom 15",""],["2026-11-16","Lun 16","parcial"]];
 const dayV = DAYS.map(d => ({ d, v: sum(ONLINE.filter(l=>l[1]===d[0]),l=>l[5]), u: sum(ONLINE.filter(l=>l[1]===d[0]),l=>l[4]) }));
 const maxD = Math.max(...dayV.map(x=>x.v));
 document.getElementById("days").innerHTML = dayV.map(x=>`
@@ -549,11 +572,12 @@ document.getElementById("kpiWs").innerHTML = [
   ["Facturado Latinas", cop(ws.v), `${ws.u} uds · antes de IVA`],
   ["Facturas con Latinas", `${INVOICES.filter(i=>i.lat).length} de ${INVOICES.length}`, "facturas de noviembre revisadas en Drive"],
   ["Precio mayorista promedio", cop(ws.v/ws.u), `${pct(ws.v,wsPVP)} del PVP antes de IVA`],
-  ["Pedido sin facturar", num(PIPE_U), `uds de ${PIPE.length} clientes, order sheet 4-nov`],
+  ["Pedido sin facturar", num(PIPE_U), `uds de ${PIPE.length} clientes · más ${num(CONSIG_U)} en consignación`],
 ].map(k=>`<div class="kpi"><div class="kl">${k[0]}</div><div class="kv">${k[1]}</div><div class="km">${k[2]}</div></div>`).join("");
 document.getElementById("tInvoices").innerHTML = `<thead><tr><th>Factura</th><th>Cliente</th><th>Fecha</th><th class="n">Uds Latinas</th><th class="n">Latinas antes de IVA</th></tr></thead><tbody>${INVOICES.map(i=>`<tr><td><b>${i.n}</b><br><span class="note">${i.folder}</span></td><td>${i.client}<br><span class="note">${i.city}</span></td><td>${i.date}</td><td class="n">${i.lat||'<span class="zero">0</span>'}</td><td class="n">${i.latNet?cop(i.latNet):'<span class="zero">—</span>'}</td></tr>`).join("")}</tbody><tfoot><tr><td colspan="3">Total</td><td class="n">${ws.u}</td><td class="n">${cop(ws.v)}</td></tr></tfoot>`;
 const wsR = REFS.filter(r=>r.ws.u).sort((a,b)=>b.ws.v-a.ws.v);
 rankRows("rankWs", wsR.map(r=>({ name:r.name, segs:[["ws",r.ws.v]], val:cop(r.ws.v), val2:`${r.ws.u} uds` })), Math.max(...wsR.map(r=>r.ws.v)));
+rankRows("rankConsig", CONSIG.map(c=>({ name:c[0], sub:`${c[1]} · ${c[2]}`, segs:[["tr",c[3]]], val:`${num(c[3])} uds`, val2:"Cristalina" })), Math.max(...CONSIG.map(c=>c[3])));
 rankRows("rankPipe", PIPE.map(p=>({ name:p[0], sub:p[2], segs:[["ws",p[1]]], val:`${num(p[1])} uds`, val2: pct(p[1],PIPE_U) })), Math.max(...PIPE.map(p=>p[1])));
 </script>
 
