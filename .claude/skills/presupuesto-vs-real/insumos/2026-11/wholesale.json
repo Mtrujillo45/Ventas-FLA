@@ -68,5 +68,35 @@
   "partner": "Falabella (marketplace vía Shopify)",
   "carpeta": "Shopify (Falabella marketplace)",
   "note": "Sin IVA (subtotal + envío − IVA del pedido en Shopify)"
+ },
+ {
+  "channel": "nacional",
+  "date": "2026-11-11",
+  "value": 3319378,
+  "units": 43,
+  "invoice": "RFEL8477",
+  "partner": "Nathalie Toro Ruiz (Granada)",
+  "note": "Subtotal sin IVA, sin descuento",
+  "carpeta": "11. NOVIEMBRE (comercial@)/FIRME"
+ },
+ {
+  "channel": "nacional",
+  "date": "2026-11-11",
+  "value": 14103324,
+  "units": 172,
+  "invoice": "RFEL8478",
+  "partner": "Falabella de Colombia SAS",
+  "note": "Reporte de ventas de consignación ya vendida; subtotal sin IVA, sin descuento",
+  "carpeta": "11. NOVIEMBRE (comercial@)/CONSIGNACIÓN/REPORTE DE VENTAS"
+ },
+ {
+  "channel": "nacional",
+  "date": "2026-11-15",
+  "value": 117563,
+  "units": 1,
+  "invoice": "#35336",
+  "partner": "Falabella (marketplace vía Shopify)",
+  "note": "Sin IVA: subtotal 139.900 + envío 0 − IVA 22.337",
+  "carpeta": "Shopify (Falabella marketplace)"
  }
 ]
