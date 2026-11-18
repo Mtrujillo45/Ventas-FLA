@@ -98,5 +98,15 @@
   "partner": "Falabella (marketplace vía Shopify)",
   "note": "Sin IVA: subtotal 139.900 + envío 0 − IVA 22.337",
   "carpeta": "Shopify (Falabella marketplace)"
+ },
+ {
+  "channel": "nacional",
+  "date": "2026-11-16",
+  "value": 63360,
+  "units": 1,
+  "invoice": "#35348",
+  "partner": "Falabella (marketplace vía Shopify)",
+  "note": "Sin IVA = subtotal $64,900 + envío $10,500 − IVA $12,040. Tags Falabella/B2C, sourceName 3441759.",
+  "carpeta": "Shopify (Falabella marketplace)"
  }
 ]
