@@ -108,5 +108,35 @@
   "partner": "Falabella (marketplace vía Shopify)",
   "note": "Sin IVA = subtotal $64,900 + envío $10,500 − IVA $12,040. Tags Falabella/B2C, sourceName 3441759.",
   "carpeta": "Shopify (Falabella marketplace)"
+ },
+ {
+  "channel": "nacional",
+  "date": "2026-11-19",
+  "value": 117563,
+  "units": 1,
+  "invoice": "#35372",
+  "partner": "Falabella (marketplace vía Shopify)",
+  "note": "Sin IVA: subtotal 139.900 + envío 0 − IVA 22.337. Tags Falabella/B2C, sourceName 3441759.",
+  "carpeta": "Shopify (Falabella marketplace)"
+ },
+ {
+  "channel": "nacional",
+  "date": "2026-11-19",
+  "value": 109159,
+  "units": 1,
+  "invoice": "#35381",
+  "partner": "Falabella (marketplace vía Shopify)",
+  "note": "Sin IVA: subtotal 129.900 + envío 0 − IVA 20.741. Tags Falabella/B2C, sourceName 3441759.",
+  "carpeta": "Shopify (Falabella marketplace)"
+ },
+ {
+  "channel": "nacional",
+  "date": "2026-11-20",
+  "value": 113276,
+  "units": 2,
+  "invoice": "#35491",
+  "partner": "Falabella (marketplace vía Shopify)",
+  "note": "Sin IVA: subtotal 134.800 + envío 0 − IVA 21.524. Tags Falabella/B2C, sourceName 3441759.",
+  "carpeta": "Shopify (Falabella marketplace)"
  }
 ]
