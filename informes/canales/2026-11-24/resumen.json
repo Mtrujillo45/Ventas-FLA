@@ -1,0 +1,50 @@
+{
+ "cutoff": "24 nov 2026, 23:59 hora Bogotá",
+ "month": "Noviembre 2026",
+ "grupos": [
+  {
+   "id": "online",
+   "titulo": "Online",
+   "responsables": "Verónica y Laura",
+   "textos": [
+    {
+     "canal": "Online",
+     "texto": "En rojo: $68.1M de $200.4M (34.0% de la meta); a la fecha deberíamos llevar $160.3M (80.0%). Unidades: 790 de 1.734 (esperado a la fecha: 1.387). Para cumplir faltan $132.3M: $22.0M y 157 unidades por día en los 6 días restantes."
+    }
+   ]
+  },
+  {
+   "id": "showroom",
+   "titulo": "Showroom",
+   "responsables": "Greisy",
+   "textos": [
+    {
+     "canal": "Showroom",
+     "texto": "En rojo: $12.3M de $32.5M (37.8% de la meta); a la fecha deberíamos llevar $26.0M (80.0%). Unidades: 223 de 281 (esperado a la fecha: 225). Para cumplir faltan $20.2M: $3.4M y 10 unidades por día en los 6 días restantes."
+    }
+   ]
+  },
+  {
+   "id": "mayoristas",
+   "titulo": "Mayoristas nacionales e internacionales",
+   "responsables": "Camila y Natalia",
+   "textos": [
+    {
+     "canal": "May. nacionales",
+     "texto": "En rojo: $26.8M de $70.0M (38.3% de la meta); a la fecha deberíamos llevar $56.0M (80.0%). Unidades: 343 de 1.061 (esperado a la fecha: 849). Para cumplir faltan $43.2M: $7.2M y 120 unidades por día en los 6 días restantes."
+    },
+    {
+     "canal": "May. internacionales",
+     "texto": "En rojo: $17.2M de $120.0M (14.3% de la meta); a la fecha deberíamos llevar $96.0M (80.0%). Unidades: 8 de 888 (esperado a la fecha: 710). Para cumplir faltan $102.8M. Este canal se factura por despachos, no a diario."
+    }
+   ]
+  }
+ ],
+ "total": {
+  "realValue": 124346326.6,
+  "budgetValue": 422900000,
+  "pctValue": 29.403245826436507,
+  "expectedValue": 338320000.0,
+  "pctElapsed": 80.0
+ }
+}
