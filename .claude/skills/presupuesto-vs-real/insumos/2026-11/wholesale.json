@@ -138,5 +138,65 @@
   "partner": "Falabella (marketplace vía Shopify)",
   "note": "Sin IVA: subtotal 134.800 + envío 0 − IVA 21.524. Tags Falabella/B2C, sourceName 3441759.",
   "carpeta": "Shopify (Falabella marketplace)"
+ },
+ {
+  "channel": "nacional",
+  "date": "2026-11-23",
+  "value": 94050,
+  "units": 1,
+  "invoice": "#35634",
+  "partner": "Falabella (marketplace vía Shopify)",
+  "carpeta": "Shopify (Falabella marketplace)",
+  "note": "Sin IVA (subtotal + envío − IVA del pedido en Shopify)"
+ },
+ {
+  "channel": "nacional",
+  "date": "2026-11-24",
+  "value": 87327,
+  "units": 1,
+  "invoice": "#35650",
+  "partner": "Falabella (marketplace vía Shopify)",
+  "carpeta": "Shopify (Falabella marketplace)",
+  "note": "Sin IVA (subtotal + envío − IVA del pedido en Shopify)"
+ },
+ {
+  "channel": "nacional",
+  "date": "2026-11-24",
+  "value": 74202,
+  "units": 0,
+  "invoice": "RFEL8488",
+  "partner": "Falabella de Colombia SAS",
+  "carpeta": "11. NOVIEMBRE (comercial@)/CONSIGNACIÓN/REPORTE DE VENTAS",
+  "note": "'Servicio de descuento no autorizado', subtotal sin IVA. Cuenta como venta real por la carpeta (REPORTE DE VENTAS); sin prendas, unidades 0."
+ },
+ {
+  "channel": "nacional",
+  "date": "2026-11-24",
+  "value": 8542966,
+  "units": 118,
+  "invoice": "RFEL8489",
+  "partner": "Patopati SAS",
+  "carpeta": "11. NOVIEMBRE (comercial@)/FIRME",
+  "note": "Subtotal $13,143,025 − descuento $4,600,059, sin IVA."
+ },
+ {
+  "channel": "nacional",
+  "date": "2026-11-24",
+  "value": -2861202,
+  "units": -38,
+  "invoice": "NC 62",
+  "partner": "Patopati SAS",
+  "carpeta": "11. NOVIEMBRE (comercial@)/FIRME",
+  "note": "Nota crédito por devolución de la RFEL8386 (sep-2026): subtotal $4,401,849 − descuento $1,540,647, sin IVA; 38 prendas devueltas. Resta del canal nacional en noviembre (septiembre está cerrado)."
+ },
+ {
+  "channel": "internacional",
+  "date": "2026-11-24",
+  "value": 13878048,
+  "units": 0,
+  "invoice": "RFEL8492",
+  "partner": "Cristalina Swimwear (Miami)",
+  "carpeta": "11. NOVIEMBRE (hellosales@)/CONSIGNACIÓN/REPORTE DE VENTAS",
+  "note": "USD 3.959,50 a TRM 3.505,00. Descrita como 'asesoría en diseño' sin prendas; por la regla de carpetas (REPORTE DE VENTAS = venta real) cuenta como venta, unidades 0."
  }
 ]
